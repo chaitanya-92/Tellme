@@ -457,8 +457,97 @@ async function chooseVoices() {
   return selected;
 }
 
-function speechChunks(text, maxLength = 1100) {
-  const normalized = cleanText(text);
+function expandSpeechShortcuts(text, contentType = "") {
+  let value = cleanText(text);
+  if (!value) return value;
+
+  const socialReplacements = [
+    [/"?cfbr"?/gi, "commenting for better reach"],
+    [/"?idk"?/gi, "I don't know"],
+    [/"?idc"?/gi, "I don't care"],
+    [/"?ikr"?/gi, "I know, right"],
+    [/"?imo"?/gi, "in my opinion"],
+    [/"?imho"?/gi, "in my humble opinion"],
+    [/"?tbh"?/gi, "to be honest"],
+    [/"?ngl"?/gi, "not gonna lie"],
+    [/"?afaik"?/gi, "as far as I know"],
+    [/"?fwiw"?/gi, "for what it's worth"],
+    [/"?btw"?/gi, "by the way"],
+    [/"?fyi"?/gi, "for your information"],
+    [/"?rn"?/gi, "right now"],
+    [/"?fr"?/gi, "for real"],
+    [/"?smh"?/gi, "shaking my head"],
+    [/"?lmk"?/gi, "let me know"],
+    [/"?asap"?/gi, "as soon as possible"],
+    [/"?irl"?/gi, "in real life"],
+    [/"?brb"?/gi, "be right back"],
+    [/"?afk"?/gi, "away from keyboard"],
+    [/"?omg"?/gi, "oh my God"],
+    [/"?lol"?/gi, "laughing out loud"],
+    [/"?lmao"?/gi, "laughing my ass off"],
+    [/"?rofl"?/gi, "rolling on the floor laughing"],
+    [/"?wtf"?/gi, "what the fuck"],
+    [/"?ffs"?/gi, "for fuck's sake"],
+    [/"?gg"?/gi, "good game"],
+    [/"?iykyk"?/gi, "if you know, you know"],
+    [/"?iirc"?/gi, "if I recall correctly"],
+    [/"?wym"?/gi, "what you mean"],
+    [/"?wyd"?/gi, "what are you doing"],
+    [/"?omw"?/gi, "on my way"],
+    [/"?tw"?/gi, "trigger warning"],
+    [/"?nsfw"?/gi, "not safe for work"],
+    [/"?nsfl"?/gi, "not safe for life"],
+    [/"?dm"?/gi, "direct message"],
+    [/"?pm"?/gi, "private message"],
+    [/"?psa"?/gi, "public service announcement"],
+    [/"?mic"?/gi, "more in comments"],
+    [/"?tldr\b"?/gi, "to sum it up"],
+    [/"?tl;dr\b"?/gi, "to sum it up"]
+  ];
+
+  for (const [pattern, replacement] of socialReplacements) {
+    value = value.replace(pattern, replacement);
+  }
+
+  const isReddit = contentType === "reddit-discussion";
+  if (isReddit) {
+    const redditReplacements = [
+      [/(?<![A-Za-z])op(?![A-Za-z])/gi, "original poster"],
+      [/(?<![A-Za-z])oc(?![A-Za-z])/gi, "original content"],
+      [/(?<![A-Za-z])til(?![A-Za-z])/gi, "today I learned"],
+      [/(?<![A-Za-z])eli5(?![A-Za-z])/gi, "explain like I'm five"],
+      [/(?<![A-Za-z])ama(?![A-Za-z])/gi, "ask me anything"],
+      [/(?<![A-Za-z])cmv(?![A-Za-z])/gi, "change my view"],
+      [/(?<![A-Za-z])eta(?![A-Za-z])/gi, "edited to add"],
+      [/(?<![A-Za-z])tifu(?![A-Za-z])/gi, "today I fucked up"],
+      [/(?<![A-Za-z])aita(?![A-Za-z])/gi, "am I the asshole"],
+      [/(?<![A-Za-z])nta(?![A-Za-z])/gi, "not the asshole"],
+      [/(?<![A-Za-z])yta(?![A-Za-z])/gi, "you're the asshole"],
+      [/(?<![A-Za-z])esh(?![A-Za-z])/gi, "everyone sucks here"],
+      [/(?<![A-Za-z])nah(?![A-Za-z])/gi, "no assholes here"],
+      [/(?<![A-Za-z])ianal(?![A-Za-z])/gi, "I am not a lawyer"],
+      [/(?<![A-Za-z])nal(?![A-Za-z])/gi, "not a lawyer"],
+      [/(?<![A-Za-z])ianad(?![A-Za-z])/gi, "I am not a doctor"],
+      [/(?<![A-Za-z])dae(?![A-Za-z])/gi, "does anyone else"],
+      [/(?<![A-Za-z])fify(?![A-Za-z])/gi, "fixed that for you"],
+      [/(?<![A-Za-z])ysk(?![A-Za-z])/gi, "you should know"],
+      [/(?<![A-Za-z])mrw(?![A-Za-z])/gi, "my reaction when"],
+      [/(?<![A-Za-z])itt(?![A-Za-z])/gi, "in this thread"],
+      [/(?<![A-Za-z])wcgw(?![A-Za-z])/gi, "what could go wrong"]
+    ];
+
+    for (const [pattern, replacement] of redditReplacements) {
+      value = value.replace(pattern, replacement);
+    }
+
+    value = value.replace(/(^|\s)\/s(?=\s|[.!?,;:]|$)/gi, "$1sarcasm");
+  }
+
+  return value.replace(/\s{2,}/g, " ").trim();
+}
+
+function speechChunks(text, maxLength = 1100, contentType = "") {
+  const normalized = expandSpeechShortcuts(text, contentType);
   if (normalized.length <= maxLength) return [normalized];
 
   const sentences = normalized.split(/(?<=[.!?])\s+/);
@@ -504,7 +593,7 @@ function buildStoryQueue(payload, voices) {
   };
 
   const add = (text, options) => {
-    speechChunks(text).forEach((chunk) => {
+    speechChunks(text, 1100, payload.contentType).forEach((chunk) => {
       queue.push({
         text: chunk,
         ...options
