@@ -13,7 +13,6 @@ import {
   Sparkles,
   Volume2,
   Zap,
-  Cookie,
   Mic,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -299,7 +298,6 @@ export default function Home() {
   const [activeUseCase, setActiveUseCase] = useState(0);
   const [signalPath, setSignalPath] = useState("");
   const listeningTime = useListeningClock(161, isListening);
-  const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
   const [missionPhase, setMissionPhase] = useState<"board" | "pinned" | "released">("board");
   const [missionColorProgress, setMissionColorProgress] = useState(0);
   const orbGuideRef = useRef<HTMLDivElement>(null);
@@ -504,22 +502,6 @@ export default function Home() {
 
     return () => window.clearInterval(timer);
   }, [isListening]);
-
-  useEffect(() => {
-    const saved = window.localStorage.getItem("tellme-cookie-choice");
-    if (saved === "accepted" || saved === "rejected") {
-      setCookieChoice(saved);
-      return;
-    }
-
-    const timer = window.setTimeout(() => setCookieChoice("unset"), 700);
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  const chooseCookies = (choice: "accepted" | "rejected") => {
-    window.localStorage.setItem("tellme-cookie-choice", choice);
-    setCookieChoice(choice);
-  };
 
   const mixPaperColor = (from: [number, number, number], to: [number, number, number], amount: number) => {
     const t = Math.min(1, Math.max(0, amount));
@@ -1601,46 +1583,6 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {cookieChoice === "unset" && (
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-x-4 bottom-5 z-[70] mx-auto max-w-[800px] rounded-2xl bg-[#172131] px-5 py-5 text-white shadow-[0_20px_60px_rgba(23,33,49,.28)] sm:px-7"
-        >
-          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-            <div className="max-w-[570px]">
-              <div className="flex items-center gap-2 text-sm font-semibold">
-                <Cookie size={16} />
-                <span>Audience measurement</span>
-              </div>
-              <p className="mt-2 text-xs leading-5 text-white/70 sm:text-sm">
-                With your permission, Tellme uses cookies to understand visits and improve the experience. You can change your choice at any time.
-              </p>
-              <a href="#" className="mt-2 inline-block text-xs underline underline-offset-2 text-white/80 hover:text-white">
-                Privacy policy
-              </a>
-            </div>
-            <div className="flex shrink-0 gap-2">
-              <button
-                type="button"
-                onClick={() => chooseCookies("rejected")}
-                className="rounded-xl border border-white/20 px-5 py-3 text-sm font-medium transition hover:bg-white/10"
-              >
-                Reject
-              </button>
-              <button
-                type="button"
-                onClick={() => chooseCookies("accepted")}
-                className="rounded-xl bg-white px-5 py-3 text-sm font-medium text-[#172131] transition hover:bg-[#F4EEDF]"
-              >
-                Allow
-              </button>
-            </div>
-          </div>
-        </motion.div>
-      )}
 
       <footer className="relative z-10 border-t-2 border-[#262522]">
         <div className="mx-auto max-w-[1080px] px-6 py-8 lg:px-8">
