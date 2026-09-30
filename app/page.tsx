@@ -90,7 +90,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="vintage-paper min-h-screen overflow-hidden text-[#26384D]">
+    <main className="vintage-paper min-h-screen overflow-hidden text-[#26384D] selection:bg-[#7A263A]/15">
       <div className="pointer-events-none fixed left-0 top-[47%] z-0 h-px w-[43%] dashed-path opacity-80" />
       <div className="pointer-events-none fixed right-0 top-[59%] z-0 h-px w-[31%] dashed-path opacity-80" />
       <div className="pointer-events-none fixed bottom-0 left-[50%] z-0 h-48 dashed-path-vertical opacity-70" />
@@ -148,10 +148,10 @@ export default function Home() {
                 <span className="absolute top-[18px] h-px w-6 bg-[#F3EBDD]" />
                 <span className="absolute top-[23px] h-px w-6 bg-[#F3EBDD]" />
               </span>
-              <span className="vintage-serif text-[21px]">tellme.</span>
+              <span className="vintage-serif text-[23px] tracking-[-.02em]">tellme.</span>
             </a>
 
-            <div className="flex h-full items-center justify-end gap-7 text-[13px] text-[#70685E] sm:gap-9">
+            <div className="flex h-full items-center justify-end gap-6 text-[11px] uppercase tracking-[.12em] text-[#70685E] sm:gap-8">
               <a href="#how" className="transition-colors hover:text-[#1F3044]">how it works</a>
               <a href="#features" className="transition-colors hover:text-[#1F3044]">features</a>
               <a href="#use-cases" className="transition-colors hover:text-[#1F3044]">use cases</a>
@@ -162,7 +162,7 @@ export default function Home() {
           </div>
         </motion.div>
       </motion.nav>
-      <section className="relative z-10 mx-auto min-h-[760px] max-w-[1400px] px-6 pb-24 pt-40 lg:px-10 lg:pt-52">
+      <section className="relative z-10 mx-auto min-h-[760px] max-w-[1400px] px-6 pb-24 pt-40 lg:px-10 lg:pt-44">
         <div className="grid items-center gap-14 lg:grid-cols-[1fr_.72fr]">
           <div className="max-w-3xl">
             <motion.div
@@ -171,15 +171,16 @@ export default function Home() {
               transition={{ duration: .7 }}
               className="mb-7 flex items-center gap-3 text-xs uppercase tracking-[.18em] text-[#70685E]"
             >
-              <span className="h-2 w-2 rounded-full bg-[#7A263A]" />
-              the web, spoken
+              <span className="h-px w-10 bg-[#7A263A]" />
+              <span>THE WEB, SPOKEN</span>
+              <span className="text-[#AFA18D]">VOL. 01 · 2026</span>
             </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: .8 }}
-              className="vintage-serif text-balance text-[58px] leading-[.91] sm:text-[78px] lg:text-[104px]"
+              className="vintage-serif text-balance text-[58px] leading-[.84] sm:text-[78px] lg:text-[108px]"
             >
               You found something
               <span className="relative block">
@@ -192,7 +193,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: .7, delay: .1 }}
-              className="mt-8 max-w-xl text-base leading-7 text-[#70685E] sm:text-lg"
+              className="magazine-dropcap mt-8 max-w-xl text-[15px] leading-7 text-[#70685E] sm:text-base"
             >
               Tellme turns long threads, articles, and webpages into natural audio you can listen to while you keep working.
             </motion.p>
@@ -201,7 +202,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: .7, delay: .2 }}
-              className="mt-9 flex flex-col gap-3 sm:flex-row"
+              className="mt-9 flex flex-col gap-3 border-t border-[#1F3044]/15 pt-6 sm:flex-row"
             >
               <Button size="lg">
                 Start listening free <ArrowRight size={17} className="ml-2" />
@@ -250,7 +251,7 @@ export default function Home() {
           transition={{ duration: .8, delay: .35 }}
           className="relative mx-auto mt-20 max-w-6xl"
         >
-          <div className="paper-card overflow-hidden rounded-[24px]">
+          <div className="overflow-hidden border-y-2 border-[#1F3044] bg-[#F3EBDD]/60">
             <div className="flex h-11 items-center gap-2 border-b border-[#1F3044]/10 px-4">
               <span className="h-2.5 w-2.5 rounded-full bg-[#1F3044]/20" />
               <span className="h-2.5 w-2.5 rounded-full bg-[#1F3044]/20" />
@@ -261,7 +262,7 @@ export default function Home() {
             </div>
 
             <div className="grid min-h-[390px] md:grid-cols-[1fr_340px]">
-              <div className="p-7 md:border-r md:border-[#1F3044]/10 md:p-10">
+              <div className="p-7 md:border-r md:border-dashed md:border-[#C9BBA7] md:p-10">
                 <div className="mb-6 flex items-center gap-2 text-[10px] uppercase tracking-[.18em] text-[#70685E]">
                   <span className="h-2 w-2 rounded-full bg-[#7A263A]" /> Reddit · Discussion
                 </div>
@@ -279,7 +280,7 @@ export default function Home() {
                   ].map((x, i) => (
                     <div
                       key={x}
-                      className="flex items-center gap-3 rounded-xl border border-[#1F3044]/10 bg-white/45 px-4 py-3 text-xs text-[#70685E]"
+                      className="flex items-center gap-3 border-b border-dashed border-[#C9BBA7] px-1 py-3 text-xs text-[#70685E]"
                     >
                       <span className="text-[#1F3044]/35">0{i + 1}</span>
                       {x}
@@ -288,7 +289,7 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="flex flex-col justify-between bg-[#1F3044] p-6 text-white sm:p-7">
+              <div className="flex flex-col justify-between border-t border-[#F3EBDD]/15 bg-[#1F3044] p-6 text-white sm:border-l sm:border-t-0 sm:p-7">
                 <div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-sm font-medium">
@@ -317,7 +318,7 @@ export default function Home() {
                   </div>
                 </div>
 
-                <div className="mt-8 rounded-2xl border border-white/10 bg-white/[.05] p-4">
+                <div className="mt-8 border-t border-white/15 bg-transparent pt-4">
                   <p className="text-xs leading-5 text-white/65">
                     &quot;The discussion really comes down to three ideas. First, ...&quot;
                   </p>
@@ -361,49 +362,38 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="how" className="relative z-10 mx-auto max-w-[1400px] px-6 py-28 lg:px-10 lg:py-36">
-        <div className="grid gap-16 lg:grid-cols-[.8fr_1.2fr]">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[.2em] text-[#7A263A]">How it works</p>
-            <h2 className="vintage-serif mt-5 max-w-lg text-5xl leading-[.98] sm:text-6xl">
-              Stop switching between work and the web.
-            </h2>
-            <p className="mt-6 max-w-md text-base leading-7 text-[#70685E]">
-              Tellme sits beside your browser and turns the pages you care about into something you can consume hands-free.
-            </p>
+      <section id="how" className="relative z-10 border-y border-[#1F3044]/15 bg-[#E7DED0]/35">
+        <div className="mx-auto max-w-[1400px] px-6 py-24 lg:px-10 lg:py-32">
+          <div className="flex items-end justify-between border-b-2 border-[#1F3044] pb-5">
+            <div>
+              <p className="magazine-kicker text-[#7A263A]">How it works</p>
+              <p className="mt-2 text-[10px] uppercase tracking-[.18em] text-[#70685E]">Three steps · One less screen to read</p>
+            </div>
+            <span className="magazine-caption hidden sm:block">Page 02</span>
           </div>
-
-          <div className="paper-card overflow-hidden rounded-[22px]">
-            {steps.map((step, i) => {
-              const isOpen = openStep === i;
-              return (
-                <div key={step.num} className="border-b border-[#1F3044]/10 last:border-b-0">
-                  <button
-                    type="button"
-                    onClick={() => setOpenStep(isOpen ? -1 : i)}
-                    aria-expanded={isOpen}
-                    className="flex w-full items-center gap-5 px-6 py-6 text-left transition-colors hover:bg-[#CFC2AE]/70 sm:px-7"
-                  >
-                    <span className="w-8 shrink-0 text-xs text-[#70685E]">{step.num}</span>
-                    <span className="vintage-serif flex-1 text-xl sm:text-2xl">{step.title}</span>
-                    <ChevronDown
-                      size={19}
-                      className={`shrink-0 text-[#70685E] transition-transform duration-300 ${isOpen ? "rotate-180 text-[#7A263A]" : ""}`}
-                    />
-                  </button>
-                  <motion.div
-                    initial={false}
-                    animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                    className="overflow-hidden"
-                  >
-                    <p className="px-6 pb-7 pl-[68px] text-sm leading-6 text-[#70685E] sm:px-7 sm:pl-[76px]">
-                      {step.text}
-                    </p>
-                  </motion.div>
-                </div>
-              );
-            })}
+          <div className="grid lg:grid-cols-[.9fr_1.7fr]">
+            <div className="border-b border-dashed border-[#C9BBA7] py-10 lg:border-b-0 lg:border-r lg:pr-14">
+              <h2 className="vintage-serif max-w-xl text-5xl leading-[.9] sm:text-7xl">Stop switching between work and the web.</h2>
+              <p className="mt-7 max-w-md text-sm leading-6 text-[#70685E]">Tellme sits beside your browser and turns the pages you care about into something you can consume hands-free.</p>
+            </div>
+            <div className="lg:pl-14">
+              {steps.map((step, i) => {
+                const isOpen = openStep === i;
+                return (
+                  <div key={step.num} className="border-b border-dashed border-[#C9BBA7] last:border-b-0">
+                    <button type="button" onClick={() => setOpenStep(isOpen ? -1 : i)} aria-expanded={isOpen}
+                      className="group flex w-full items-center gap-5 py-7 text-left transition-colors">
+                      <span className="font-mono text-[10px] text-[#7A263A]">{step.num}</span>
+                      <span className="vintage-serif flex-1 text-2xl sm:text-3xl">{step.title}</span>
+                      <ChevronDown size={18} className={`text-[#70685E] transition-transform duration-300 ${isOpen ? "rotate-180 text-[#7A263A]" : "group-hover:translate-y-0.5"}`} />
+                    </button>
+                    <motion.div initial={false} animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }} transition={{ duration: .28, ease: "easeOut" }} className="overflow-hidden">
+                      <p className="pb-7 pl-10 max-w-xl text-sm leading-6 text-[#70685E]">{step.text}</p>
+                    </motion.div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
