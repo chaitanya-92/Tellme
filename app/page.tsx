@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   Check,
@@ -57,10 +57,163 @@ const features = [
   },
 ];
 
+function FeatureIllustration({ index }: { index: number }) {
+  return (
+    <div className="relative h-full w-full overflow-hidden">
+      <svg
+        viewBox="0 0 680 420"
+        className="absolute inset-0 h-full w-full"
+        role="img"
+        aria-label={[
+          "Listening while working illustration",
+          "Understanding a long discussion illustration",
+          "Asking a thread a question illustration",
+        ][index]}
+      >
+        <defs>
+          <pattern id={`paper-grid-${index}`} width="28" height="28" patternUnits="userSpaceOnUse">
+            <path d="M 28 0 L 0 0 0 28" fill="none" stroke="#6f665d" strokeOpacity=".10" />
+          </pattern>
+        </defs>
+        <rect width="680" height="420" fill="#F4EEDF" />
+        <rect width="680" height="420" fill={`url(#paper-grid-${index})`} />
+
+        {index === 0 && (
+          <>
+            <motion.path
+              d="M92 278 C155 242 192 306 252 274 C315 241 361 290 418 264 C474 239 520 272 585 238"
+              fill="none"
+              stroke="#9A3038"
+              strokeWidth="3"
+              strokeLinecap="round"
+              animate={{ pathLength: [0.15, 1, 0.15], opacity: [0.45, 1, 0.45] }}
+              transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <g transform="translate(215 70)">
+              <path d="M72 68v38c0 45-35 80-80 80S-88 151-88 106V68" fill="none" stroke="#262522" strokeWidth="10" strokeLinecap="round"/>
+              <path d="M-88 106V69c0-59 48-107 107-107h3c59 0 107 48 107 107v37" fill="none" stroke="#262522" strokeWidth="10" strokeLinecap="round"/>
+              <rect x="-113" y="62" width="30" height="76" rx="15" fill="#9A3038"/>
+              <rect x="105" y="62" width="30" height="76" rx="15" fill="#9A3038"/>
+              <circle cx="-8" cy="107" r="7" fill="#262522"/>
+              <circle cx="8" cy="107" r="7" fill="#262522"/>
+            </g>
+            <motion.g
+              animate={{ y: [0, -7, 0], rotate: [-1.2, 1.2, -1.2] }}
+              transition={{ duration: 3.4, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <rect x="465" y="72" width="118" height="76" rx="2" fill="#D8E0C1" stroke="#262522" strokeOpacity=".18"/>
+              <text x="484" y="101" fontSize="10" letterSpacing="2" fill="#665F56">NOW PLAYING</text>
+              <text x="484" y="126" fontSize="13" fontFamily="Georgia, serif" fill="#262522">useful parts</text>
+            </motion.g>
+            {[0,1,2,3,4,5,6,7,8].map((bar) => (
+              <motion.rect
+                key={bar}
+                x={103 + bar * 30}
+                y={312 - ((bar * 19) % 22)}
+                width="9"
+                rx="4"
+                fill="#262522"
+                initial={{ height: 18 }}
+                animate={{ height: [18 + (bar % 3) * 5, 42 + (bar % 4) * 7, 18 + (bar % 3) * 5] }}
+                transition={{ duration: 1.2 + bar * 0.05, repeat: Infinity, delay: bar * 0.08, ease: "easeInOut" }}
+              />
+            ))}
+          </>
+        )}
+
+        {index === 1 && (
+          <>
+            <motion.path
+              d="M120 292 C178 260 228 306 285 269 C341 233 387 286 443 248 C497 212 548 258 602 220"
+              fill="none"
+              stroke="#B77945"
+              strokeWidth="2"
+              strokeDasharray="6 8"
+              animate={{ strokeDashoffset: [0, -56] }}
+              transition={{ duration: 2.6, repeat: Infinity, ease: "linear" }}
+            />
+            <g>
+              {[
+                [120,122,"A"],
+                [274,176,"B"],
+                [428,112,"C"],
+                [558,182,"D"],
+              ].map(([x,y,label], i) => (
+                <g key={label} transform={`translate(${x} ${y})`}>
+                  <rect x="-42" y="-28" width="84" height="56" fill={i === 1 ? "#E9D8A6" : "#F1D6A7"} stroke="#262522" strokeOpacity=".18"/>
+                  <text x="0" y="6" textAnchor="middle" fontSize="17" fontFamily="Georgia, serif" fill="#262522">{label}</text>
+                  <circle cx="38" cy="-24" r="4" fill="#9A3038"/>
+                </g>
+              ))}
+            </g>
+            <motion.circle
+              cx="342"
+              cy="205"
+              r="27"
+              fill="#D8E0C1"
+              stroke="#262522"
+              strokeOpacity=".2"
+              animate={{ r: [24, 30, 24] }}
+              transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <path d="M326 205h32M342 189v32" stroke="#262522" strokeWidth="2"/>
+            <text x="342" y="354" textAnchor="middle" fontSize="10" letterSpacing="3" fill="#665F56">CONNECT THE USEFUL THREAD</text>
+          </>
+        )}
+
+        {index === 2 && (
+          <>
+            <motion.rect
+              x="84"
+              y="80"
+              width="512"
+              height="246"
+              fill="#F7F2E8"
+              stroke="#262522"
+              strokeOpacity=".18"
+              animate={{ y: [80, 86, 80] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <path d="M118 128H562M118 170H488M118 212H536M118 254H451" stroke="#B8AB95" strokeWidth="1.5" strokeDasharray="3 7"/>
+            <motion.g
+              animate={{ x: [0, 6, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <rect x="176" y="344" width="328" height="50" fill="#262522"/>
+              <circle cx="206" cy="369" r="14" fill="#9A3038"/>
+              <path d="M201 369h10M206 364v10" stroke="#F4EEDF" strokeWidth="2"/>
+              <text x="233" y="365" fontSize="10" letterSpacing="2" fill="#F4EEDF">ASK TELLME</text>
+              <text x="233" y="383" fontSize="10" fill="#F4EEDF" fillOpacity=".65">what do people disagree about?</text>
+            </motion.g>
+            <motion.path
+              d="M480 112 C536 106 552 139 537 158 C526 171 501 174 484 168 L472 182 L474 163 C452 154 451 126 480 112Z"
+              fill="#D8E0C1"
+              stroke="#262522"
+              strokeOpacity=".18"
+              animate={{ scale: [1, 1.025, 1] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              style={{ transformOrigin: "510px 145px" }}
+            />
+            <circle cx="494" cy="144" r="2.5" fill="#262522"/>
+            <circle cx="510" cy="144" r="2.5" fill="#262522"/>
+            <circle cx="526" cy="144" r="2.5" fill="#262522"/>
+          </>
+        )}
+      </svg>
+
+      <div className="pointer-events-none absolute bottom-4 left-5 right-5 flex items-center justify-between text-[9px] uppercase tracking-[.18em] text-[#665F56]">
+        <span>Illustration · 0{index + 1}</span>
+        <span>{["Listen", "Understand", "Ask"][index]} / Tellme</span>
+      </div>
+    </div>
+  );
+}
+
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [orbOffset, setOrbOffset] = useState({ x: 0, y: 0 });
   const [showConversation, setShowConversation] = useState(false);
+  const [activeFeature, setActiveFeature] = useState(0);
   const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
   const [missionPhase, setMissionPhase] = useState<"board" | "pinned" | "released">("board");
   const [missionColorProgress, setMissionColorProgress] = useState(0);
@@ -638,7 +791,7 @@ export default function Home() {
             <p className="hidden text-[10px] font-semibold uppercase tracking-[.22em] text-[#665F56] sm:block">Vol. 01 — 03</p>
           </div>
 
-          <div className="grid gap-10 py-10 lg:grid-cols-[1.05fr_1.95fr] lg:gap-14">
+          <div className="grid gap-10 py-10 lg:grid-cols-[.9fr_2.1fr] lg:gap-14">
             <div className="lg:border-r lg:border-dashed lg:border-[#B8AB95] lg:pr-14">
               <p className="text-xs font-semibold uppercase tracking-[.2em] text-[#9A3038]">More than text-to-speech</p>
               <h2 className="vintage-serif mt-5 max-w-xl text-5xl leading-[.9] sm:text-7xl">
@@ -647,30 +800,107 @@ export default function Home() {
               <p className="mt-7 max-w-sm text-sm leading-6 text-[#665F56]">
                 A quieter way to keep up with the internet without giving every interesting page your full attention.
               </p>
+
+              <div className="mt-10 border-t border-[#262522] pt-4">
+                <div className="flex items-center justify-between text-[9px] uppercase tracking-[.18em] text-[#665F56]">
+                  <span>Selected feature</span>
+                  <span>Click to explore</span>
+                </div>
+                <div className="mt-4 flex items-center gap-3">
+                  {features.map((feature, i) => (
+                    <button
+                      key={feature.title}
+                      type="button"
+                      aria-label={`Show feature ${i + 1}: ${feature.title}`}
+                      aria-pressed={activeFeature === i}
+                      onClick={() => setActiveFeature(i)}
+                      className={`group flex h-10 w-10 items-center justify-center border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9A3038] ${activeFeature === i ? "border-[#262522] bg-[#262522] text-[#F4EEDF]" : "border-[#B8AB95] bg-[#F4EEDF]/50 text-[#665F56] hover:-translate-y-0.5 hover:border-[#262522]"}`}
+                    >
+                      <span className="font-mono text-[9px] tracking-[.14em]">0{i + 1}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className="grid md:grid-cols-3">
-              {features.map(({ icon: Icon, title, text }, i) => (
-                <motion.article
-                  key={title}
-                  whileHover={{ y: -4 }}
-                  transition={{ duration: .25, ease: "easeOut" }}
-                  className={`group relative py-2 md:px-7 lg:px-8 ${i > 0 ? "mt-8 border-t border-dashed border-[#B8AB95] pt-8 md:mt-0 md:border-l md:border-t-0 md:pt-2" : ""}`}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-semibold tracking-[.18em] text-[#665F56]">0{i + 1}</span>
-                    <span className="text-[#9A3038] transition-transform duration-300 group-hover:translate-x-1">
-                      <Icon size={18} strokeWidth={1.5} />
-                    </span>
-                  </div>
-                  <h3 className="vintage-serif mt-12 text-3xl leading-[1.02] sm:text-[2.15rem]">
-                    {title}
-                  </h3>
-                  <div className="mt-5 h-px w-12 bg-[#9A3038] transition-all duration-300 group-hover:w-20" />
-                  <p className="mt-5 text-sm leading-6 text-[#665F56]">{text}</p>
-                  <p className="mt-10 text-[9px] uppercase tracking-[.2em] text-[#9D9180]">Tellme / 2026</p>
-                </motion.article>
-              ))}
+            <div className="min-w-0">
+              <div className="relative overflow-hidden border border-[#262522]/15 bg-[#F4EEDF] shadow-[0_16px_35px_rgba(38,37,34,.07)]">
+                <div className="flex items-center justify-between border-b border-dashed border-[#B8AB95] px-5 py-3 text-[9px] uppercase tracking-[.18em] text-[#665F56]">
+                  <span>Tellme / interaction study</span>
+                  <span>0{activeFeature + 1} / 03</span>
+                </div>
+
+                <div className="relative h-[310px] sm:h-[390px]">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={activeFeature}
+                      initial={{ opacity: 0, y: 14, scale: .985, filter: "blur(2px)" }}
+                      animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                      exit={{ opacity: 0, y: -10, scale: .99, filter: "blur(1px)" }}
+                      transition={{ duration: .5, ease: [0.22, 1, 0.36, 1] }}
+                      className="absolute inset-0"
+                    >
+                      <FeatureIllustration index={activeFeature} />
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+
+                <div className="border-t border-[#262522]/15 bg-[#F7F2E8]/70 px-5 py-5 sm:px-7">
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={activeFeature + "-copy"}
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -8 }}
+                      transition={{ duration: .35, ease: "easeOut" }}
+                      className="grid gap-4 sm:grid-cols-[1fr_auto] sm:items-end"
+                    >
+                      <div>
+                        <div className="flex items-center gap-3 text-[9px] uppercase tracking-[.18em] text-[#9A3038]">
+                          <span>0{activeFeature + 1}</span>
+                          <span className="h-px w-8 bg-[#9A3038]/50" />
+                          <span>{["A hands-free layer", "A clearer thread", "A better question"][activeFeature]}</span>
+                        </div>
+                        <h3 className="vintage-serif mt-3 text-3xl leading-none sm:text-4xl">
+                          {features[activeFeature].title}
+                        </h3>
+                        <p className="mt-3 max-w-2xl text-sm leading-6 text-[#665F56]">
+                          {features[activeFeature].text}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2 text-[9px] uppercase tracking-[.16em] text-[#665F56]">
+                        <span className="h-2 w-2 rounded-full bg-[#9A3038] motion-safe:animate-pulse" />
+                        Interactive
+                      </div>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+              </div>
+
+              <div className="grid sm:grid-cols-3">
+                {features.map(({ icon: Icon, title }, i) => (
+                  <button
+                    key={title}
+                    type="button"
+                    onClick={() => setActiveFeature(i)}
+                    aria-pressed={activeFeature === i}
+                    className={`group relative border-b border-dashed border-[#B8AB95] px-2 py-6 text-left transition-colors duration-300 sm:border-b-0 sm:px-5 ${i > 0 ? "sm:border-l" : ""} ${activeFeature === i ? "bg-[#D8E0C1]/55" : "hover:bg-[#F7F2E8]/55"}`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[9px] tracking-[.18em] text-[#665F56]">0{i + 1}</span>
+                      <span className={`text-[#9A3038] transition-transform duration-300 ${activeFeature === i ? "translate-x-1" : "group-hover:translate-x-1"}`}>
+                        <Icon size={18} strokeWidth={1.5} />
+                      </span>
+                    </div>
+                    <h3 className="vintage-serif mt-7 text-3xl leading-[1.02] sm:text-[2rem]">
+                      {title}
+                    </h3>
+                    <div className={`mt-5 h-px bg-[#9A3038] transition-all duration-500 ${activeFeature === i ? "w-20" : "w-10"}`} />
+                    <p className="mt-4 text-[10px] uppercase tracking-[.15em] text-[#9D9180]">Click to view</p>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
 
