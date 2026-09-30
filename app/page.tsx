@@ -33,6 +33,11 @@ const steps = [
   },
 ];
 
+const waveformHeights = [
+  22, 34, 48, 29, 58, 72, 41, 64, 31, 52, 78, 44, 67, 36, 59, 74, 28, 47, 69, 38, 61,
+  76, 43, 55, 30, 68, 49, 73, 35, 57, 80, 42, 63, 27, 51, 70, 39, 60, 75, 33, 54, 66, 45
+];
+
 const features = [
   {
     icon: Headphones,
@@ -541,7 +546,7 @@ export default function Home() {
                 <div className="py-10">
                   <div className="mx-auto flex h-28 items-center justify-center gap-1">
                     {Array.from({ length: 42 }).map((_, i) => (
-                      <div key={i} className="w-1 bg-[#9A3038]/65" style={{ height: 16 + Math.abs(Math.sin(i * 1.7)) * 65 + "px" }} />
+                      <div key={i} className="w-1 bg-[#9A3038]/65" style={{ height: `${waveformHeights[i]}px` }} />
                     ))}
                   </div>
                   <p className="vintage-serif mx-auto max-w-md text-center text-2xl leading-8 text-[#262522]">
