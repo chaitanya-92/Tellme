@@ -454,77 +454,72 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="use-cases" className="relative z-10 mx-auto max-w-[1400px] px-6 py-28 lg:px-10 lg:py-36">
-        <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-[.2em] text-[#7A263A]">Built for real life</p>
-            <h2 className="vintage-serif mt-5 text-5xl leading-[.98] sm:text-7xl">
-              Keep your hands busy. Stay in the loop.
-            </h2>
-            <p className="mt-6 max-w-xl text-base leading-7 text-[#70685E]">
-              Whether you're shipping code, studying, commuting, cooking, or moving between tasks — Tellme lets information follow you instead of the other way around.
-            </p>
-            <div className="mt-8 space-y-3">
-              {["Coding & building", "Research & studying", "Long Reddit & Quora threads", "Articles you saved for later"].map((x) => (
-                <div key={x} className="flex items-center gap-3 text-sm text-[#6f4b3a]">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#7A263A]/10 text-[#7A263A]">
-                    <Check size={12} />
-                  </span>
-                  {x}
-                </div>
-              ))}
+      <section id="use-cases" className="relative z-10 border-y border-[#1F3044]/15 bg-[#F3EBDD]">
+        <div className="mx-auto max-w-[1400px] px-6 py-24 lg:px-10 lg:py-32">
+          <div className="flex items-end justify-between border-b-2 border-[#1F3044] pb-5">
+            <div>
+              <p className="magazine-kicker text-[#7A263A]">Built for real life</p>
+              <p className="mt-2 text-[10px] uppercase tracking-[.18em] text-[#70685E]">What happens when the web follows you</p>
             </div>
+            <span className="magazine-caption hidden sm:block">The weekend edition</span>
           </div>
 
-          <div className="relative">
-            <div className="paper-card relative overflow-hidden rounded-[24px] bg-white/70 p-6">
-              <div className="flex items-center justify-between border-b border-[#1F3044]/10 pb-5">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#7A263A] text-white">
-                    <Zap size={16} fill="currentColor" />
-                  </span>
-                  <div>
-                    <p className="text-sm font-medium">Tellme is listening</p>
-                    <p className="text-[11px] text-[#70685E]">Reddit thread · 14 min read</p>
+          <div className="grid lg:grid-cols-[1.15fr_.85fr]">
+            <div className="py-10 lg:border-r lg:border-dashed lg:border-[#C9BBA7] lg:pr-14">
+              <h2 className="vintage-serif max-w-3xl text-5xl leading-[.88] sm:text-7xl">Keep your hands busy. Stay in the loop.</h2>
+              <p className="magazine-dropcap mt-7 max-w-2xl text-[15px] leading-7 text-[#70685E]">
+                Whether you're shipping code, studying, commuting, cooking, or moving between tasks — Tellme lets information follow you instead of the other way around.
+              </p>
+              <div className="mt-9 grid max-w-2xl grid-cols-2 border-t border-[#1F3044]">
+                {["Coding & building", "Research & studying", "Long Reddit & Quora threads", "Articles you saved for later"].map((x, i) => (
+                  <div key={x} className="border-b border-dashed border-[#C9BBA7] py-4 pr-5 text-sm text-[#70685E]">
+                    <span className="mr-3 font-mono text-[9px] text-[#7A263A]">0{i + 1}</span>{x}
                   </div>
-                </div>
-                <span className="text-xs text-[#7A263A]">02:41</span>
+                ))}
               </div>
+            </div>
 
-              <div className="py-10">
-                <div className="mx-auto flex h-28 max-w-md items-center justify-center gap-1.5">
-                  {Array.from({ length: 48 }).map((_, i) => (
-                    <div
-                      key={i}
-                      className="w-1 rounded-full bg-[#7A263A]/70"
-                      style={{ height: 18 + Math.abs(Math.sin(i * 1.7)) * 65 + "px" }}
-                    />
-                  ))}
+            <div className="py-10 lg:pl-14">
+              <div className="border-y-2 border-[#1F3044] py-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-semibold">Tellme is listening</p>
+                    <p className="text-[10px] uppercase tracking-[.16em] text-[#70685E]">Reddit thread · 14 min read</p>
+                  </div>
+                  <span className="text-xs text-[#7A263A]">02:41</span>
                 </div>
-                <p className="vintage-serif mx-auto mt-8 max-w-md text-center text-2xl leading-8 text-[#6f4b3a]">
-                  &quot;Most commenters agree on the outcome — they disagree on why it works.&quot;
-                </p>
-              </div>
-
-              <div className="flex items-center justify-between border-t border-[#1F3044]/10 pt-5">
-                <span className="text-xs text-[#70685E]">1.5×</span>
-                <div className="flex items-center gap-2">
-                  <button className="h-10 w-10 rounded-full border border-[#1F3044]/10 text-[#6f4b3a]">↶</button>
-                  <button className="flex h-11 w-11 items-center justify-center rounded-full bg-[#7A263A] text-white">
-                    <Play size={15} fill="currentColor" />
-                  </button>
-                  <button className="h-10 w-10 rounded-full border border-[#1F3044]/10 text-[#6f4b3a]">↷</button>
+                <div className="py-10">
+                  <div className="mx-auto flex h-28 items-center justify-center gap-1">
+                    {Array.from({ length: 42 }).map((_, i) => (
+                      <div key={i} className="w-1 bg-[#7A263A]/65" style={{ height: 16 + Math.abs(Math.sin(i * 1.7)) * 65 + "px" }} />
+                    ))}
+                  </div>
+                  <p className="vintage-serif mx-auto max-w-md text-center text-2xl leading-8 text-[#1F3044]">
+                    &quot;Most commenters agree on the outcome — they disagree on why it works.&quot;
+                  </p>
                 </div>
-                <span className="text-xs text-[#70685E]">Ask ↗</span>
+                <div className="flex items-center justify-between border-t border-dashed border-[#C9BBA7] pt-4">
+                  <span className="text-xs text-[#70685E]">1.5×</span>
+                  <div className="flex items-center gap-3">
+                    <button className="text-xs text-[#70685E]">↶</button>
+                    <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[#7A263A] text-white"><Play size={14} fill="currentColor" /></button>
+                    <button className="text-xs text-[#70685E]">↷</button>
+                  </div>
+                  <span className="text-xs text-[#70685E]">Ask ↗</span>
+                </div>
               </div>
+              <p className="magazine-caption mt-3 text-[#70685E]">A listening desk for the pages you never have time to finish.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section className="relative z-10 px-6 pb-20 lg:px-10">
-        <div className="mx-auto max-w-[1400px] overflow-hidden rounded-[30px] border border-[#1F3044]/10 bg-[#1F3044] px-7 py-20 text-center text-white sm:px-10 lg:py-28">
-          <p className="text-xs font-medium uppercase tracking-[.2em] text-[#B08D57]">Your next tab can wait</p>
+      <section className="relative z-10 px-6 pb-20 pt-10 lg:px-10">
+        <div className="mx-auto max-w-[1400px] border-y-2 border-[#1F3044] bg-[#1F3044] px-7 py-20 text-center text-white sm:px-10 lg:py-28">
+          <div className="mb-8 flex items-center justify-between border-b border-white/15 pb-4 text-[9px] uppercase tracking-[.2em] text-white/45">
+            <span>The Tellme Review</span><span>Final page</span><span>2026</span>
+          </div>
+          <p className="magazine-kicker text-[#B08D57]">Your next tab can wait</p>
           <motion.h2
             initial="hidden"
             whileInView="visible"
@@ -569,8 +564,8 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="relative z-10 border-t border-[#1F3044]/10">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-8 px-6 py-10 sm:flex-row sm:items-center sm:justify-between lg:px-10">
+      <footer className="relative z-10 border-t-2 border-[#1F3044]">
+        <div className="mx-auto grid max-w-[1400px] gap-8 px-6 py-10 sm:grid-cols-3 sm:items-center lg:px-10">
           <div className="flex items-center gap-3">
             <span className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#1F3044]">
               <span className="absolute top-[7px] h-px w-5 bg-[#F3EBDD]" />
@@ -585,7 +580,7 @@ export default function Home() {
             <a href="#" className="hover:text-[#1F3044]">Terms</a>
             <a href="https://github.com/chaitanya-92/Tellme" className="hover:text-[#1F3044]">GitHub</a>
           </div>
-          <p className="text-xs text-[#70685E]">© 2026 Tellme. The web, spoken.</p>
+          <p className="text-right text-[9px] uppercase tracking-[.18em] text-[#70685E]">© 2026 Tellme · The web, spoken.</p>
         </div>
       </footer>
     </main>
