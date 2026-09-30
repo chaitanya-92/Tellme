@@ -98,7 +98,8 @@ export default function Home() {
       const delta = currentScrollY - lastScrollY;
 
       if (delta !== 0) {
-        marqueeTargetRef.current -= delta * 0.34;
+        // Follow the page direction: scroll down → marquee moves right, scroll up → left.
+        marqueeTargetRef.current += delta * 0.34;
       }
 
       lastScrollY = currentScrollY;
