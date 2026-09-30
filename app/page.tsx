@@ -293,6 +293,7 @@ export default function Home() {
   const [extensionSource, setExtensionSource] = useState<{ title: string; url: string } | null>(null);
   const [showExtensionInstall, setShowExtensionInstall] = useState(false);
   const [isExtensionDownloading, setIsExtensionDownloading] = useState(false);
+  const [showDownloadToast, setShowDownloadToast] = useState(false);
   const [isListening, setIsListening] = useState(true);
   const [activeFocusWord, setActiveFocusWord] = useState(0);
   const [activeUseCase, setActiveUseCase] = useState(0);
@@ -1503,11 +1504,13 @@ export default function Home() {
                   </p>
 
                   <a
-                    href="https://github.com/chaitanya-92/Tellme/raw/refs/heads/main/store/tellme-0.6.1.zip"
+                    href="https://github.com/chaitanya-92/Tellme/raw/58dfced66a4f3de361415168904b37c670db9144/store/tellme-0.6.1.zip"
                     download
                     onClick={() => {
                       setIsExtensionDownloading(true);
+                      setShowDownloadToast(true);
                       window.setTimeout(() => setIsExtensionDownloading(false), 2200);
+                      window.setTimeout(() => setShowDownloadToast(false), 4200);
                     }}
                     aria-label="Download Tellme extension"
                     className="mt-6 flex items-center gap-3 border-y border-dashed border-[#B8AB95] px-1 py-4 transition-colors hover:bg-[#F7F2E8]/70"
@@ -1570,6 +1573,31 @@ export default function Home() {
                 <span>Tellme / Browser reader · v0.6.1</span>
               </div>
             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showDownloadToast && (
+          <motion.div
+            initial={{ opacity: 0, y: 16, scale: .98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: .98 }}
+            transition={{ duration: .28, ease: [0.22, 1, 0.36, 1] }}
+            className="pointer-events-none fixed bottom-6 right-6 z-[95] w-[min(360px,calc(100vw-32px))] border border-[#262522]/15 bg-[#262522] px-4 py-3 text-white shadow-[0_18px_48px_rgba(38,37,34,.24)]"
+            role="status"
+            aria-live="polite"
+          >
+            <div className="flex items-center gap-3">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#9A3038] text-white">
+                <Check size={15} strokeWidth={2.2} />
+              </span>
+              <div className="min-w-0">
+                <p className="text-[10px] font-semibold uppercase tracking-[.16em]">Download started</p>
+                <p className="mt-1 truncate text-[10px] text-white/55">Tellme · tellme-0.6.1.zip</p>
+              </div>
+              <span className="ml-auto shrink-0 text-[8px] uppercase tracking-[.14em] text-white/35">Downloads</span>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
