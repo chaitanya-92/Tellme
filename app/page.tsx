@@ -62,7 +62,7 @@ export default function Home() {
   const [orbOffset, setOrbOffset] = useState({ x: 0, y: 0 });
   const [showConversation, setShowConversation] = useState(false);
   const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
-  const [showPinnedStep, setShowPinnedStep] = useState(false);
+  const [missionPhase, setMissionPhase] = useState<"board" | "pinned" | "released">("board");
   const orbGuideRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const marqueeTargetRef = useRef(0);
@@ -110,8 +110,17 @@ export default function Home() {
       const featuresSection = featuresSectionRef.current;
       if (featuresSection) {
         const featuresTop = featuresSection.getBoundingClientRect().top;
-        // Let the final mission note travel with the navbar as the next section arrives.
-        setShowPinnedStep(featuresTop <= 118 && featuresTop >= -360);
+
+        // The note becomes attached to the navbar before the next section arrives.
+        // It stays there while the section approaches, then releases into the
+        // next section once the section header reaches the navbar.
+        if (featuresTop > 430) {
+          setMissionPhase("board");
+        } else if (featuresTop > 108) {
+          setMissionPhase("pinned");
+        } else {
+          setMissionPhase("released");
+        }
       }
     };
 
@@ -424,6 +433,29 @@ export default function Home() {
       </section>
 
       <section id="how" className="relative z-10 border-y border-[#262522]/15 bg-[#DED3BF]/35">
+        {missionPhase === "released" && (
+          <div className="mx-auto max-w-[1080px] px-6 pt-10 lg:px-8">
+            <div className="flex justify-end">
+              <motion.div
+                layoutId="mission-note-03"
+                initial={{ opacity: 0, y: -12, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                className="w-full max-w-[500px]"
+              >
+                <div className="relative border border-[#262522]/15 bg-[#D8E0C1] px-6 pb-5 pt-6 shadow-[0_10px_22px_rgba(38,37,34,.09)] rotate-[-.7deg]">
+                  <span className="absolute left-1/2 top-[-7px] h-4 w-11 -translate-x-1/2 rotate-[-2deg] bg-[#F4EEDF]/90 shadow-sm" />
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] uppercase tracking-[.18em] text-[#665F56]">Mission complete</span>
+                    <span className="text-[9px] uppercase tracking-[.16em] text-[#665F56]">step 03</span>
+                  </div>
+                  <p className="vintage-serif mt-3 text-2xl">Keep doing your thing.</p>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        )}
+
         <div className="mx-auto max-w-[1080px] px-6 py-24 lg:px-8 lg:py-32">
           <div className="flex items-end justify-between border-b-2 border-[#262522] pb-5">
             <div>
@@ -493,14 +525,12 @@ export default function Home() {
                     const note = (
                       <motion.div
                         layoutId={`mission-note-${step.num}`}
+                        layout="position"
                         initial={{ opacity: 0, x: 22 }}
                         animate={{ opacity: 1, x: 0 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true, amount: 0.25 }}
                         transition={{
-                          duration: 0.65,
-                          delay: i * 0.12,
-                          ease: [0.16, 1, 0.3, 1],
+                          layout: { duration: 0.62, ease: [0.16, 1, 0.3, 1] },
+                          opacity: { duration: 0.3 },
                         }}
                         className={[
                           "relative border border-[#262522]/15 px-6 pb-6 pt-7 shadow-[0_10px_22px_rgba(38,37,34,.09)]",
@@ -523,12 +553,11 @@ export default function Home() {
                       </motion.div>
                     );
 
-                    if (i === 2 && showPinnedStep) {
+                    if (i === 2 && missionPhase === "pinned") {
                       return (
                         <motion.div
                           key={step.num}
-                          className="fixed z-40 top-[76px] w-[min(380px,calc(100vw-32px))]"
-                          style={{ right: "max(16px, calc((100vw - 1040px) / 2 + 16px))" }}
+                          className="fixed left-1/2 top-[76px] z-40 w-[min(500px,calc(100vw-32px))] -translate-x-1/2"
                         >
                           {note}
                         </motion.div>
@@ -546,12 +575,15 @@ export default function Home() {
                           delay: i * 0.12,
                           ease: [0.16, 1, 0.3, 1],
                         }}
-                        className="relative mb-7 pl-14 last:mb-0"
+                        className={[
+                          "relative mb-7 pl-14 last:mb-0",
+                          i === 2 && missionPhase === "released" ? "hidden" : "",
+                        ].join(" ")}
                       >
                         <div className="absolute left-0 top-7 flex h-12 w-12 items-center justify-center rounded-full border border-[#262522]/25 bg-[#F7F2E8] shadow-[0_4px_12px_rgba(38,37,34,.08)]">
                           <span className="font-mono text-[10px] font-semibold text-[#9A3038]">{step.num}</span>
                         </div>
-                        {note}
+                        {i === 2 && missionPhase === "pinned" ? null : note}
                       </motion.div>
                     );
                   })}                </div>
@@ -561,7 +593,13 @@ export default function Home() {
         </div>
       </section>
 
-      <section ref={featuresSectionRef} id="features" className="relative z-10 border-y border-[#262522]/15 bg-[#D8E0C1] text-[#262522]">
+      <motion.section
+        ref={featuresSectionRef}
+        id="features"
+        animate={{ backgroundColor: missionPhase === "released" ? "#D8E0C1" : "#F4EEDF" }}
+        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 border-y border-[#262522]/15 text-[#262522]"
+      >
         <div className="mx-auto max-w-[1080px] px-6 py-24 lg:px-8 lg:py-32">
           <div className="flex items-end justify-between border-b-2 border-[#262522] pb-5">
             <div>
@@ -615,7 +653,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       <section id="use-cases" className="relative z-10 border-y border-[#262522]/15 bg-[#F4EEDF]">
         <div className="mx-auto max-w-[1080px] px-6 py-24 lg:px-8 lg:py-32">
