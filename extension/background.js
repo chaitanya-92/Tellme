@@ -462,7 +462,7 @@ function expandSpeechShortcuts(text, contentType = "") {
   if (!value) return value;
 
   const socialReplacements = [
-    [/\\bhash?cfbr\\b/gi, "commenting for better reach"],
+    [/\\b(?:cfbr|#cfbr)\\b/gi, "commenting for better reach"],
     [/\\bidk\\b/gi, "I don't know"],
     [/\\bidc\\b/gi, "I don't care"],
     [/\\bikr\\b/gi, "I know, right"],
@@ -501,7 +501,7 @@ function expandSpeechShortcuts(text, contentType = "") {
     [/\\bpm\\b/gi, "private message"],
     [/\\bpsa\\b/gi, "public service announcement"],
     [/\\bmic\\b/gi, "more in comments"]
-  ];;
+  ];
 
   for (const [pattern, replacement] of socialReplacements) {
     value = value.replace(pattern, replacement);
