@@ -110,14 +110,11 @@ a {
   transform: translate3d(0, 0, 0);
 }
 
-  to { transform: translateX(-50%); }
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .marquee-track { animation: none; }
+  .marquee-track {
+    animation: none;
+  }
 }
-
-
 /* Editorial newspaper system */
 .magazine-rule {
   border-color: rgba(38,37,34,.18);
