@@ -56,7 +56,7 @@ export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 72);
+    const onScroll = () => setIsScrolled(window.scrollY > 48);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -71,21 +71,44 @@ export default function Home() {
       <motion.nav
         initial={false}
         animate={{
-          top: isScrolled ? 16 : 0,
-          left: isScrolled ? 16 : 0,
-          right: isScrolled ? 16 : 0,
+          top: isScrolled ? 0 : 0,
+          left: isScrolled ? 12 : 0,
+          right: isScrolled ? 12 : 0,
+          y: isScrolled ? [0, -9, 3, 0] : 0,
+          scaleX: isScrolled ? [1, 1.018, 0.992, 1] : 1,
+          rotate: isScrolled ? [0, -0.45, 0.18, 0] : 0,
         }}
-        transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed z-50 px-0 sm:px-0 ${isScrolled ? "mx-auto max-w-[1180px] rounded-[18px]" : "w-full"}`}
+        transition={{
+          top: { duration: 0.58, ease: [0.22, 1, 0.36, 1] },
+          left: { duration: 0.58, ease: [0.22, 1, 0.36, 1] },
+          right: { duration: 0.58, ease: [0.22, 1, 0.36, 1] },
+          y: { duration: 0.68, ease: [0.16, 1, 0.3, 1] },
+          scaleX: { duration: 0.68, ease: [0.16, 1, 0.3, 1] },
+          rotate: { duration: 0.68, ease: [0.16, 1, 0.3, 1] },
+        }}
+        style={{ transformOrigin: "top center" }}
+        className={`fixed z-50 ${isScrolled ? "mx-auto max-w-[1180px]" : "w-full"}`}
       >
         <motion.div
           animate={{
-            height: isScrolled ? 62 : 104,
+            height: isScrolled ? 64 : 104,
             borderRadius: isScrolled ? 18 : 0,
-            boxShadow: isScrolled ? "0 14px 40px rgba(37,37,42,.12)" : "0 0 0 rgba(37,37,42,0)",
-            backgroundColor: isScrolled ? "rgba(255,255,255,.78)" : "rgba(243,240,233,0)",
+            boxShadow: isScrolled
+              ? [
+                  "0 0 0 rgba(37,37,42,0)",
+                  "0 22px 45px rgba(37,37,42,.18)",
+                  "0 8px 24px rgba(37,37,42,.12)",
+                  "0 12px 34px rgba(37,37,42,.12)",
+                ]
+              : "0 0 0 rgba(37,37,42,0)",
+            backgroundColor: isScrolled ? "rgba(255,255,255,.86)" : "rgba(243,240,233,0)",
           }}
-          transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+          transition={{
+            height: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+            borderRadius: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+            boxShadow: { duration: 0.68, ease: [0.16, 1, 0.3, 1] },
+            backgroundColor: { duration: 0.35, ease: "easeOut" },
+          }}
           className="mx-auto overflow-hidden border border-[#25252a]/[0.08] backdrop-blur-xl"
         >
           <div className="mx-auto grid h-full max-w-[1180px] grid-cols-[1fr_auto] items-center px-5 sm:px-7 md:grid-cols-[1fr_1fr]">
