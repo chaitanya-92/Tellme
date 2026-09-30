@@ -245,3 +245,10 @@ h1 {
 .brief-loading{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:9px;letter-spacing:.13em;text-transform:uppercase}
 .brief-loading i{width:6px;height:6px;border-radius:50%;background:var(--red);animation:briefPulse 1s ease-in-out infinite alternate}
 @keyframes briefPulse{from{transform:scale(.7);opacity:.35}to{transform:scale(1);opacity:1}}
+
+.primary-actions{display:grid;grid-template-columns:1.15fr .85fr;gap:8px;margin-top:12px}
+.primary-actions .primary,.primary-actions .brief-button{margin-top:0}
+.listen-brief-button{width:100%;margin-top:10px;min-height:38px;border:1px solid var(--red);background:var(--red);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:0 13px;font-size:9px;letter-spacing:.13em;text-transform:uppercase;transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+.listen-brief-button:hover{transform:translateY(-1px);background:#852b32;box-shadow:0 8px 18px rgba(154,48,56,.16)}
+.listen-brief-button:disabled{cursor:wait;opacity:.7}
+@media (max-width:350px){.primary-actions{grid-template-columns:1fr}}
