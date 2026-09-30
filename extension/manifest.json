@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Tellme — Web, Spoken",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Read the useful parts of webpages, Reddit posts, comments and replies aloud while you browse.",
   "permissions": [
     "activeTab",
@@ -11,7 +11,7 @@
     "offscreen"
   ],
   "host_permissions": [
-    "http://localhost:3000/*"
+    "<all_urls>"
   ],
   "action": {
     "default_title": "Tellme",
@@ -28,5 +28,17 @@
       },
       "description": "Read the current page with Tellme"
     }
-  }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
 }
