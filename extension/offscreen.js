@@ -9,8 +9,10 @@ function loadVoices() {
 
 function findVoice(name) {
   if (!name) return null;
-  const voices = window.speechSynthesis.getVoices();
-  return voices.find((voice) => voice.name === name) || null;
+
+  return window.speechSynthesis
+    .getVoices()
+    .find((voice) => voice.name === name) || null;
 }
 
 function speak(message, sendResponse) {
@@ -20,6 +22,7 @@ function speak(message, sendResponse) {
   const voice = findVoice(message.voiceName);
 
   if (voice) utterance.voice = voice;
+
   utterance.lang = voice?.lang || "en-US";
   utterance.rate = message.rate ?? 0.97;
   utterance.pitch = message.pitch ?? 1;
@@ -34,7 +37,11 @@ function speak(message, sendResponse) {
       type: "tellme-speech-error",
       error: event.error || "speech error"
     }).catch(() => {});
-    sendResponse?.({ ok: false, error: event.error || "speech error" });
+
+    sendResponse?.({
+      ok: false,
+      error: event.error || "speech error"
+    });
   };
 
   window.speechSynthesis.speak(utterance);
@@ -44,6 +51,7 @@ function speak(message, sendResponse) {
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message?.type === "tellme-list-voices") {
     const voices = loadVoices();
+
     if (voices.length) {
       sendResponse({ ok: true, voices });
       return true;
@@ -53,6 +61,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
     const finish = () => {
       if (responded) return;
+
       responded = true;
       window.speechSynthesis.removeEventListener("voiceschanged", onVoices);
       sendResponse({ ok: true, voices: loadVoices() });
