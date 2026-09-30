@@ -140,7 +140,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: .7 }}
-              className="mb-7 flex items-center gap-3 text-xs uppercase tracking-[.18em] text-[#77736e]"
+              className="mb-7 flex items-center gap-3 text-xs uppercase tracking-[.18em] text-[#8c5a3c]"
             >
               <span className="h-2 w-2 rounded-full bg-[#c08552]" />
               the web, spoken
@@ -156,14 +156,14 @@ export default function Home() {
               <span className="relative block">
                 interesting<span className="absolute -bottom-2 ml-1 text-[#8c5a3c]">.</span>
               </span>
-              <span className="mt-5 block text-[#77736e]">You don't have to read it.</span>
+              <span className="mt-5 block text-[#8c5a3c]">You don't have to read it.</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: .7, delay: .1 }}
-              className="mt-8 max-w-xl text-base leading-7 text-[#77736e] sm:text-lg"
+              className="mt-8 max-w-xl text-base leading-7 text-[#8c5a3c] sm:text-lg"
             >
               Tellme turns long threads, articles, and webpages into natural audio you can listen to while you keep working.
             </motion.p>
@@ -228,7 +228,7 @@ export default function Home() {
                 <h3 className="vintage-serif max-w-xl text-3xl leading-tight sm:text-4xl">
                   What's something you learned way too late?
                 </h3>
-                <p className="mt-4 max-w-xl text-sm leading-6 text-[#77736e]">
+                <p className="mt-4 max-w-xl text-sm leading-6 text-[#8c5a3c]">
                   Hundreds of replies, arguments, stories and useful advice. Tellme turns the noise into something you can hear.
                 </p>
                 <div className="mt-9 space-y-3">
@@ -310,7 +310,7 @@ export default function Home() {
             <h2 className="vintage-serif mt-5 max-w-lg text-5xl leading-[.98] sm:text-6xl">
               Stop switching between work and the web.
             </h2>
-            <p className="mt-6 max-w-md text-base leading-7 text-[#77736e]">
+            <p className="mt-6 max-w-md text-base leading-7 text-[#8c5a3c]">
               Tellme sits beside your browser and turns the pages you care about into something you can consume hands-free.
             </p>
           </div>
@@ -330,7 +330,7 @@ export default function Home() {
                     <span className="vintage-serif flex-1 text-xl sm:text-2xl">{step.title}</span>
                     <ChevronDown
                       size={19}
-                      className={`shrink-0 text-[#77736e] transition-transform duration-300 ${isOpen ? "rotate-180 text-[#c08552]" : ""}`}
+                      className={`shrink-0 text-[#8c5a3c] transition-transform duration-300 ${isOpen ? "rotate-180 text-[#c08552]" : ""}`}
                     />
                   </button>
                   <motion.div
@@ -339,7 +339,7 @@ export default function Home() {
                     transition={{ duration: 0.25, ease: "easeOut" }}
                     className="overflow-hidden"
                   >
-                    <p className="px-6 pb-7 pl-[68px] text-sm leading-6 text-[#77736e] sm:px-7 sm:pl-[76px]">
+                    <p className="px-6 pb-7 pl-[68px] text-sm leading-6 text-[#8c5a3c] sm:px-7 sm:pl-[76px]">
                       {step.text}
                     </p>
                   </motion.div>
@@ -382,7 +382,7 @@ export default function Home() {
             <h2 className="vintage-serif mt-5 text-5xl leading-[.98] sm:text-7xl">
               Keep your hands busy. Stay in the loop.
             </h2>
-            <p className="mt-6 max-w-xl text-base leading-7 text-[#77736e]">
+            <p className="mt-6 max-w-xl text-base leading-7 text-[#8c5a3c]">
               Whether you're shipping code, studying, commuting, cooking, or moving between tasks — Tellme lets information follow you instead of the other way around.
             </p>
             <div className="mt-8 space-y-3">
