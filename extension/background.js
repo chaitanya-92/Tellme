@@ -744,6 +744,86 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       return;
     }
 
+    if (message?.type === "tellme-brief") {
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        lastFocusedWindow: true
+      });
+
+      if (!tab?.id) throw new Error("No active tab");
+
+      const payload = await getPagePayload(tab.id);
+      const brief = buildQuickBrief(payload);
+
+      await chrome.storage.local.set({
+        tellmeBrief: {
+          brief,
+          sourceTitle: payload.title,
+          sourceUrl: payload.url,
+          updatedAt: Date.now()
+        }
+      });
+
+      sendResponse({
+        ok: true,
+        brief,
+        source: {
+          title: payload.title,
+          url: payload.url,
+          contentType: payload.contentType
+        }
+      });
+      return;
+    }
+
+    if (message?.type === "tellme-read-brief") {
+      const brief = message.brief;
+      if (!brief) throw new Error("No brief available");
+
+      const voiceName = await chooseVoice();
+      const paragraphs = [
+        "Here's the brief.",
+        brief.about,
+        ...(brief.viewpoints || []).length
+          ? ["The discussion adds a few useful points.", ...(brief.viewpoints || [])]
+          : [],
+        ...(brief.stats
+          ? [`The thread contains ${brief.stats.comments} comments and ${brief.stats.replies} replies.`]
+          : [])
+      ];
+
+      const queue = paragraphs
+        .filter((text) => cleanText(text))
+        .map((text, index) => ({
+          text: cleanText(text),
+          label: index === 0 ? "Brief introduction" : "Brief",
+          kind: "brief",
+          voiceName,
+          rate: index === 0 ? 0.95 : 0.98,
+          pitch: 1
+        }));
+
+      const state = {
+        ...DEFAULT_STATE,
+        queue,
+        index: 0,
+        status: queue.length ? "reading" : "empty",
+        sourceTitle: brief.title || "",
+        sourceUrl: "",
+        contentType: "brief",
+        voiceName
+      };
+
+      await writeState(state);
+
+      if (queue.length) {
+        await speakQueueItem(0);
+      }
+
+      sendResponse({ ok: true, state });
+      return;
+    }
+
     if (message?.type === "tellme-reader-state") {
       sendResponse({ ok: true, state: await readState() });
       return;
