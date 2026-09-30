@@ -878,27 +878,52 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-3">
+              <div className="grid gap-3 sm:grid-cols-3">
                 {features.map(({ icon: Icon, title }, i) => (
-                  <button
+                  <motion.button
                     key={title}
                     type="button"
                     onClick={() => setActiveFeature(i)}
                     aria-pressed={activeFeature === i}
-                    className={`group relative border-b border-dashed border-[#B8AB95] px-2 py-6 text-left transition-colors duration-300 sm:border-b-0 sm:px-5 ${i > 0 ? "sm:border-l" : ""} ${activeFeature === i ? "bg-[#D8E0C1]/55" : "hover:bg-[#F7F2E8]/55"}`}
+                    whileHover={{ y: -5 }}
+                    whileTap={{ y: -1, scale: 0.995 }}
+                    transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                    className={`group relative min-h-[190px] cursor-pointer overflow-hidden border p-5 text-left transition-[background-color,border-color,box-shadow] duration-300 sm:p-6 ${i > 0 ? "" : ""} ${activeFeature === i ? "border-[#262522] bg-[#F7F2E8] shadow-[0_14px_30px_rgba(38,37,34,.10)]" : "border-[#B8AB95] bg-[#F7F2E8]/45 shadow-[0_4px_14px_rgba(38,37,34,.035)] hover:border-[#665F56] hover:bg-[#F7F2E8] hover:shadow-[0_12px_24px_rgba(38,37,34,.08)]"}`}
                   >
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[9px] tracking-[.18em] text-[#665F56]">0{i + 1}</span>
-                      <span className={`text-[#9A3038] transition-transform duration-300 ${activeFeature === i ? "translate-x-1" : "group-hover:translate-x-1"}`}>
-                        <Icon size={18} strokeWidth={1.5} />
+                    <span
+                      className={`absolute inset-x-0 top-0 h-[3px] origin-left bg-[#9A3038] transition-transform duration-500 ${activeFeature === i ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100"}`}
+                    />
+
+                    <div className="flex items-start justify-between">
+                      <div className={`flex h-9 w-9 items-center justify-center border transition-all duration-300 ${activeFeature === i ? "border-[#262522] bg-[#262522] text-[#F4EEDF]" : "border-[#B8AB95] bg-[#F4EEDF]/70 text-[#9A3038] group-hover:border-[#665F56]"}`}>
+                        <Icon size={17} strokeWidth={1.5} />
+                      </div>
+
+                      <span className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[.16em] text-[#665F56]">
+                        0{i + 1}
+                        <span className="h-px w-5 bg-[#B8AB95]" />
                       </span>
                     </div>
-                    <h3 className="vintage-serif mt-7 text-3xl leading-[1.02] sm:text-[2rem]">
+
+                    <h3 className="vintage-serif mt-8 pr-5 text-3xl leading-[1.02] sm:text-[2rem]">
                       {title}
                     </h3>
-                    <div className={`mt-5 h-px bg-[#9A3038] transition-all duration-500 ${activeFeature === i ? "w-20" : "w-10"}`} />
-                    <p className="mt-4 text-[10px] uppercase tracking-[.15em] text-[#9D9180]">Click to view</p>
-                  </button>
+
+                    <div className="mt-5 flex items-center justify-between gap-4">
+                      <span className={`h-px bg-[#9A3038] transition-all duration-500 ${activeFeature === i ? "w-20" : "w-10 group-hover:w-16"}`} />
+
+                      <span
+                        className={`inline-flex h-8 items-center gap-2 border px-3 text-[9px] font-medium uppercase tracking-[.14em] transition-all duration-300 ${activeFeature === i ? "border-[#262522] bg-[#262522] text-[#F4EEDF]" : "border-[#B8AB95] bg-[#F4EEDF]/80 text-[#665F56] group-hover:border-[#665F56]"}`}
+                      >
+                        View
+                        <ArrowRight size={12} className={`transition-transform duration-300 ${activeFeature === i ? "translate-x-0.5" : "group-hover:translate-x-0.5"}`} />
+                      </span>
+                    </div>
+
+                    <span className="pointer-events-none absolute bottom-3 right-4 text-[8px] uppercase tracking-[.18em] text-[#9D9180]">
+                      {activeFeature === i ? "Selected" : "Click to explore"}
+                    </span>
+                  </motion.button>
                 ))}
               </div>
             </div>
