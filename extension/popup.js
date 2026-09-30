@@ -39,8 +39,8 @@ async function preview() {
     titleEl.textContent = payload.title || "Untitled page";
     metaEl.textContent = new URL(payload.url).hostname.replace(/^www\./, "") || "Current page";
     extraEl.textContent = payload.isReddit
-      ? "Reddit mode · title → post → comments → replies"
-      : "Web mode · title → description → content";
+      ? "Story mode · title → post → comments → replies"
+      : "Story mode · title → description → content";
   } catch {
     titleEl.textContent = "This page cannot be inspected";
     metaEl.textContent = "Try another tab";
