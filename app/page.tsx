@@ -527,7 +527,6 @@ export default function Home() {
                       return (
                         <motion.div
                           key={step.num}
-                          layoutId={`mission-note-${step.num}`}
                           className="fixed z-40 top-[76px] w-[min(380px,calc(100vw-32px))]"
                           style={{ right: "max(16px, calc((100vw - 1040px) / 2 + 16px))" }}
                         >
