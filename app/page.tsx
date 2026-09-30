@@ -339,12 +339,21 @@ export default function Home() {
         <div className="marquee-track flex w-max items-center py-7 text-[11px] font-medium tracking-[.18em] text-[#1F3044]">
           {[0, 1].map((group) => (
             <div key={group} className="flex shrink-0 items-center">
-              {["REDDIT", "QUORA", "HACKER NEWS", "MEDIUM", "DEV.TO", "HASHNODE", "STACK OVERFLOW"].map((x) => (
+              {[
+                ["REDDIT", "https://cdn.simpleicons.org/reddit/26384D"],
+                ["QUORA", "https://cdn.simpleicons.org/quora/26384D"],
+                ["HACKER NEWS", "https://cdn.simpleicons.org/ycombinator/26384D"],
+                ["MEDIUM", "https://cdn.simpleicons.org/medium/26384D"],
+                ["DEV.TO", "https://cdn.simpleicons.org/devdotto/26384D"],
+                ["HASHNODE", "https://cdn.simpleicons.org/hashnode/26384D"],
+                ["STACK OVERFLOW", "https://cdn.simpleicons.org/stackoverflow/26384D"],
+              ].map(([name, logo]) => (
                 <span
-                  key={group + "-" + x}
-                  className="mx-7 whitespace-nowrap bg-[#F3EBDD] text-[#26384D] px-2.5 py-1.5 rounded-[2px] ring-1 ring-[#C9BBA7]/70 shadow-[0_2px_8px_rgba(38,56,77,.06)] lg:mx-12"
+                  key={group + "-" + name}
+                  className="mx-5 inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-[3px] bg-[#F3EBDD] px-3 text-[#26384D] ring-1 ring-[#C9BBA7]/70 shadow-[0_2px_8px_rgba(38,56,77,.05)] lg:mx-8"
                 >
-                  {x}
+                  <img src={logo} alt="" aria-hidden="true" className="h-4 w-4 object-contain opacity-90" />
+                  <span>{name}</span>
                 </span>
               ))}
             </div>
