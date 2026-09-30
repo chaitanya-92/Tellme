@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Tellme — Web, Spoken",
+  "version": "0.1.0",
+  "description": "Send the page you are reading to Tellme and turn it into a listening session.",
+  "permissions": ["activeTab", "scripting", "storage", "contextMenus"],
+  "action": {
+    "default_title": "Tellme",
+    "default_popup": "popup.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "commands": {
+    "send-page-to-tellme": {
+      "suggested_key": {
+        "default": "Alt+Shift+T",
+        "mac": "Command+Shift+T"
+      },
+      "description": "Send the current page to Tellme"
+    }
+  }
+}
