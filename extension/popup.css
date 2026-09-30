@@ -252,3 +252,39 @@ h1 {
 .listen-brief-button:hover{transform:translateY(-1px);background:#852b32;box-shadow:0 8px 18px rgba(154,48,56,.16)}
 .listen-brief-button:disabled{cursor:wait;opacity:.7}
 @media (max-width:350px){.primary-actions{grid-template-columns:1fr}}
+
+.activity-banner{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  margin-top:14px;
+  min-height:34px;
+  padding:0 10px;
+  border:1px solid var(--line);
+  background:rgba(248,243,232,.58);
+  color:var(--muted);
+  font-size:9px;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.activity-banner.reading,.activity-banner.analyzing{
+  border-color:rgba(154,48,56,.35);
+  background:rgba(154,48,56,.045);
+  color:var(--ink);
+}
+.activity-banner.complete{background:rgba(216,224,193,.55)}
+.activity-banner.error{border-color:rgba(122,31,42,.35);color:#7A1F2A}
+.activity-dot{
+  width:7px;
+  height:7px;
+  flex:0 0 7px;
+  border-radius:50%;
+  background:var(--line);
+}
+.activity-dot.active{
+  background:var(--red);
+  box-shadow:0 0 0 4px rgba(154,48,56,.09);
+  animation:readerPulse 1.1s ease-in-out infinite;
+}
+#activity-label{font-weight:600}
+#activity-meta{margin-left:auto;color:#9d9180}
