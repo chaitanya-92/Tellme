@@ -207,37 +207,3 @@ briefButton.addEventListener("click", () => {
     status.textContent = "Speaking your brief.";
   });
 });
-
-
-function addBriefListenButton() {
-  const existing = document.getElementById("listen-brief-btn");
-  if (existing) existing.remove();
-
-  const button = document.createElement("button");
-  button.id = "listen-brief-btn";
-  button.className = "listen-brief-button";
-  button.type = "button";
-  button.innerHTML = "<span>Listen to this brief</span><span aria-hidden=\"true\">▶</span>";
-  briefPanel.appendChild(button);
-
-  button.addEventListener("click", () => {
-    if (!latestBrief) return;
-    button.disabled = true;
-    button.innerHTML = "<span>Starting brief…</span><span aria-hidden=\"true\">•</span>";
-
-    chrome.runtime.sendMessage(
-      { type: "tellme-read-brief", brief: latestBrief },
-      (response) => {
-        if (chrome.runtime.lastError || !response?.ok) {
-          button.disabled = false;
-          button.innerHTML = "<span>Listen to this brief</span><span aria-hidden=\"true\">▶</span>";
-          return;
-        }
-
-        renderReaderState(response.state);
-        status.textContent = "Playing your brief.";
-        window.setTimeout(() => window.close(), 450);
-      }
-    );
-  });
-}
