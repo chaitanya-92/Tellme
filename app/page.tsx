@@ -115,7 +115,6 @@ export default function Home() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("pointermove", onPointerMove);
-      cancelAnimationFrame(frame);
     };
   }, []);
 
