@@ -63,6 +63,7 @@ export default function Home() {
   const [showConversation, setShowConversation] = useState(false);
   const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
   const [missionPhase, setMissionPhase] = useState<"board" | "pinned" | "released">("board");
+  const [missionColorProgress, setMissionColorProgress] = useState(0);
   const orbGuideRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const marqueeTargetRef = useRef(0);
@@ -111,12 +112,22 @@ export default function Home() {
       if (featuresSection) {
         const featuresTop = featuresSection.getBoundingClientRect().top;
 
-        // The note becomes attached to the navbar before the next section arrives.
-        // It stays there while the section approaches, then releases into the
-        // next section once the section header reaches the navbar.
+        // The handoff is driven by the actual visual relationship between
+        // the pinned note and the incoming section. As soon as the note starts
+        // overlapping the section, the section begins inheriting the note's
+        // green paper tone. The colour completes as the note is released.
+        const colorStart = 246;
+        const releasePoint = 108;
+        const colorProgress = Math.min(
+          1,
+          Math.max(0, (colorStart - featuresTop) / (colorStart - releasePoint))
+        );
+
+        setMissionColorProgress(colorProgress);
+
         if (featuresTop > 430) {
           setMissionPhase("board");
-        } else if (featuresTop > 108) {
+        } else if (featuresTop > releasePoint) {
           setMissionPhase("pinned");
         } else {
           setMissionPhase("released");
@@ -172,6 +183,14 @@ export default function Home() {
     window.localStorage.setItem("tellme-cookie-choice", choice);
     setCookieChoice(choice);
   };
+
+  const mixPaperColor = (from: [number, number, number], to: [number, number, number], amount: number) => {
+    const t = Math.min(1, Math.max(0, amount));
+    const values = from.map((value, index) => Math.round(value + (to[index] - value) * t));
+    return `rgb(${values[0]}, ${values[1]}, ${values[2]})`;
+  };
+
+  const missionSectionColor = mixPaperColor([244, 238, 223], [216, 224, 193], missionColorProgress);
 
   return (
     <main className="vintage-paper min-h-screen overflow-hidden text-[#262522] selection:bg-[#9A3038]/15">
@@ -438,9 +457,9 @@ export default function Home() {
             <div className="flex justify-end">
               <motion.div
                 layoutId="mission-note-03"
-                initial={{ opacity: 0, y: -12, scale: 0.98 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                initial={{ opacity: 0, y: -22, scale: 0.97, rotate: -1.8 }}
+                animate={{ opacity: 1, y: 0, scale: 1, rotate: -0.7 }}
+                transition={{ duration: 0.68, ease: [0.22, 1, 0.36, 1] }}
                 className="w-full max-w-[500px]"
               >
                 <div className="relative border border-[#262522]/15 bg-[#D8E0C1] px-6 pb-5 pt-6 shadow-[0_10px_22px_rgba(38,37,34,.09)] rotate-[-.7deg]">
@@ -529,8 +548,11 @@ export default function Home() {
                         initial={{ opacity: 0, x: 22 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{
-                          layout: { duration: 0.62, ease: [0.16, 1, 0.3, 1] },
-                          opacity: { duration: 0.3 },
+                          layout: {
+                            duration: 0.72,
+                            ease: [0.22, 1, 0.36, 1],
+                          },
+                          opacity: { duration: 0.34 },
                         }}
                         className={[
                           "relative border border-[#262522]/15 px-6 pb-6 pt-7 shadow-[0_10px_22px_rgba(38,37,34,.09)]",
@@ -557,6 +579,13 @@ export default function Home() {
                       return (
                         <motion.div
                           key={step.num}
+                          initial={{ opacity: 0, y: -18, scale: 0.985 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          exit={{ opacity: 0, y: -8, scale: 0.99 }}
+                          transition={{
+                            duration: 0.52,
+                            ease: [0.22, 1, 0.36, 1],
+                          }}
                           className="fixed left-1/2 top-[76px] z-40 w-[min(500px,calc(100vw-32px))] -translate-x-1/2"
                         >
                           {note}
@@ -596,9 +625,9 @@ export default function Home() {
       <motion.section
         ref={featuresSectionRef}
         id="features"
-        animate={{ backgroundColor: missionPhase === "released" ? "#D8E0C1" : "#F4EEDF" }}
-        transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 border-y border-[#262522]/15 text-[#262522]"
+        animate={{ backgroundColor: missionSectionColor }}
+        transition={{ duration: 0.18, ease: "linear" }}
+        className="relative z-10 overflow-hidden border-y border-[#262522]/15 text-[#262522]"
       >
         <div className="mx-auto max-w-[1080px] px-6 py-24 lg:px-8 lg:py-32">
           <div className="flex items-end justify-between border-b-2 border-[#262522] pb-5">
