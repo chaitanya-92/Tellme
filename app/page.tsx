@@ -283,6 +283,7 @@ export default function Home() {
   const [showConversation, setShowConversation] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
   const [extensionSource, setExtensionSource] = useState<{ title: string; url: string } | null>(null);
+  const [showExtensionInstall, setShowExtensionInstall] = useState(false);
   const [isListening, setIsListening] = useState(true);
   const [activeFocusWord, setActiveFocusWord] = useState(0);
   const [activeUseCase, setActiveUseCase] = useState(0);
@@ -555,8 +556,12 @@ export default function Home() {
               <a href="#how" className="transition-colors hover:text-[#262522]">how it works</a>
               <a href="#features" className="transition-colors hover:text-[#262522]">features</a>
               <a href="#use-cases" className="transition-colors hover:text-[#262522]">use cases</a>
-              <Button size="sm" className="ml-2 hidden sm:inline-flex">
-                Get Tellme <ArrowRight size={15} className="ml-2" />
+              <Button
+                size="sm"
+                className="ml-2 hidden sm:inline-flex"
+                onClick={() => setShowExtensionInstall(true)}
+              >
+                Add to Chrome <ArrowRight size={15} className="ml-2" />
               </Button>
             </div>
           </div>
@@ -630,8 +635,8 @@ export default function Home() {
               transition={{ duration: .7, delay: .2 }}
               className="mt-7 flex flex-col gap-3 border-t border-[#262522]/15 pt-5 sm:flex-row"
             >
-              <Button size="lg">
-                Start listening free <ArrowRight size={17} className="ml-2" />
+              <Button size="lg" onClick={() => setShowExtensionInstall(true)}>
+                Add to Chrome <ArrowRight size={17} className="ml-2" />
               </Button>
               <Button size="lg" variant="secondary">
                 <Play size={15} className="mr-2 fill-current" /> See how it works
@@ -1424,6 +1429,96 @@ export default function Home() {
       </section>
 
       
+      <AnimatePresence>
+        {showExtensionInstall && (
+          <motion.div
+            className="fixed inset-0 z-[80] flex items-center justify-center bg-[#262522]/25 p-5 backdrop-blur-[3px]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) setShowExtensionInstall(false);
+            }}
+          >
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="extension-install-title"
+              initial={{ opacity: 0, y: 22, scale: .97 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 12, scale: .98 }}
+              transition={{ duration: .42, ease: [0.22, 1, 0.36, 1] }}
+              className="w-full max-w-[620px] overflow-hidden border border-[#262522]/15 bg-[#F4EEDF] shadow-[0_24px_70px_rgba(38,37,34,.20)]"
+            >
+              <div className="flex items-center justify-between border-b border-[#262522]/15 px-6 py-4 sm:px-7">
+                <div>
+                  <p className="text-[9px] font-semibold uppercase tracking-[.2em] text-[#9A3038]">Tellme extension</p>
+                  <h2 id="extension-install-title" className="vintage-serif mt-1 text-2xl">Put Tellme in Chrome.</h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setShowExtensionInstall(false)}
+                  aria-label="Close install dialog"
+                  className="flex h-9 w-9 cursor-pointer items-center justify-center border border-[#B8AB95] text-lg text-[#665F56] transition-colors hover:border-[#262522] hover:text-[#262522]"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="grid gap-7 px-6 py-6 sm:px-7 sm:py-7 lg:grid-cols-[.9fr_1.1fr]">
+                <div>
+                  <p className="text-sm leading-6 text-[#665F56]">
+                    Tellme reads the useful parts of the page you are on — including Reddit posts, comments, and replies — and turns them into a listening queue.
+                  </p>
+                  <div className="mt-6 flex items-center gap-3 border-y border-dashed border-[#B8AB95] py-4">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#262522] text-[#F4EEDF]">
+                      <Headphones size={16} />
+                    </span>
+                    <div>
+                      <p className="text-[10px] font-semibold uppercase tracking-[.16em]">Chrome / Chromium</p>
+                      <p className="mt-1 text-[10px] text-[#665F56]">Developer build · v0.4</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="border-l border-dashed border-[#B8AB95] pl-6">
+                  <p className="text-[9px] font-semibold uppercase tracking-[.2em] text-[#9A3038]">Install locally</p>
+                  <ol className="mt-4 space-y-4 text-sm text-[#665F56]">
+                    <li className="flex gap-3">
+                      <span className="font-mono text-[9px] text-[#9A3038]">01</span>
+                      <span>Open <strong className="font-medium text-[#262522]">chrome://extensions</strong>.</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-mono text-[9px] text-[#9A3038]">02</span>
+                      <span>Turn on <strong className="font-medium text-[#262522]">Developer mode</strong>.</span>
+                    </li>
+                    <li className="flex gap-3">
+                      <span className="font-mono text-[9px] text-[#9A3038]">03</span>
+                      <span>Click <strong className="font-medium text-[#262522]">Load unpacked</strong> and choose the Tellme <strong className="font-medium text-[#262522]">extension/</strong> folder.</span>
+                    </li>
+                  </ol>
+
+                  <a
+                    href="https://github.com/chaitanya-92/Tellme/tree/main/extension"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="mt-6 inline-flex cursor-pointer items-center gap-2 border border-[#262522] bg-[#262522] px-4 py-3 text-[9px] font-semibold uppercase tracking-[.16em] text-[#F4EEDF] transition-transform duration-200 hover:-translate-y-0.5"
+                  >
+                    Get extension folder
+                    <ArrowRight size={13} />
+                  </a>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-2 border-t border-dashed border-[#B8AB95] px-6 py-4 text-[9px] uppercase tracking-[.14em] text-[#9D9180] sm:flex-row sm:items-center sm:justify-between sm:px-7">
+                <span>Store install coming later</span>
+                <span>Tellme / Browser reader</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {cookieChoice === "unset" && (
         <motion.div
           initial={{ opacity: 0, y: 30 }}
