@@ -62,11 +62,13 @@ export default function Home() {
   const [orbOffset, setOrbOffset] = useState({ x: 0, y: 0 });
   const [showConversation, setShowConversation] = useState(false);
   const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
+  const [showPinnedStep, setShowPinnedStep] = useState(false);
   const orbGuideRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
   const marqueeTargetRef = useRef(0);
   const marqueePositionRef = useRef(0);
   const marqueeFrameRef = useRef<number | null>(null);
+  const featuresSectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -104,6 +106,13 @@ export default function Home() {
 
       lastScrollY = currentScrollY;
       setIsScrolled(currentScrollY > 48);
+
+      const featuresSection = featuresSectionRef.current;
+      if (featuresSection) {
+        const featuresTop = featuresSection.getBoundingClientRect().top;
+        // Let the final mission note travel with the navbar as the next section arrives.
+        setShowPinnedStep(featuresTop <= 118 && featuresTop >= -360);
+      }
     };
 
     onScroll();
@@ -480,24 +489,19 @@ export default function Home() {
                   <div className="absolute bottom-10 left-[24px] top-10 w-px bg-[#B8AB95]" />
                   <div className="absolute bottom-10 left-[24px] top-10 w-px border-l border-dashed border-[#9A3038]/45" />
 
-                  {steps.map((step, i) => (
-                    <motion.div
-                      key={step.num}
-                      initial={{ opacity: 0, x: 22 }}
-                      whileInView={{ opacity: 1, x: 0 }}
-                      viewport={{ once: true, amount: 0.25 }}
-                      transition={{
-                        duration: 0.55,
-                        delay: i * 0.12,
-                        ease: [0.16, 1, 0.3, 1],
-                      }}
-                      className="relative mb-7 pl-14 last:mb-0"
-                    >
-                      <div className="absolute left-0 top-7 flex h-12 w-12 items-center justify-center rounded-full border border-[#262522]/25 bg-[#F7F2E8] shadow-[0_4px_12px_rgba(38,37,34,.08)]">
-                        <span className="font-mono text-[10px] font-semibold text-[#9A3038]">{step.num}</span>
-                      </div>
-
-                      <div
+                  {steps.map((step, i) => {
+                    const note = (
+                      <motion.div
+                        layoutId={`mission-note-${step.num}`}
+                        initial={{ opacity: 0, x: 22 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, amount: 0.25 }}
+                        transition={{
+                          duration: 0.65,
+                          delay: i * 0.12,
+                          ease: [0.16, 1, 0.3, 1],
+                        }}
                         className={[
                           "relative border border-[#262522]/15 px-6 pb-6 pt-7 shadow-[0_10px_22px_rgba(38,37,34,.09)]",
                           i === 0 ? "rotate-[-1.2deg] bg-[#E9D8A6]" : "",
@@ -516,17 +520,49 @@ export default function Home() {
                           <span className="h-px w-8 bg-[#665F56]/40" />
                           step {i + 1} of 3
                         </div>
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
+                      </motion.div>
+                    );
+
+                    if (i === 2 && showPinnedStep) {
+                      return (
+                        <motion.div
+                          key={step.num}
+                          layoutId={`mission-note-${step.num}`}
+                          className="fixed z-40 top-[76px] w-[min(380px,calc(100vw-32px))]"
+                          style={{ right: "max(16px, calc((100vw - 1040px) / 2 + 16px))" }}
+                        >
+                          {note}
+                        </motion.div>
+                      );
+                    }
+
+                    return (
+                      <motion.div
+                        key={step.num}
+                        initial={{ opacity: 0, x: 22 }}
+                        whileInView={{ opacity: 1, x: 0 }}
+                        viewport={{ once: true, amount: 0.25 }}
+                        transition={{
+                          duration: 0.55,
+                          delay: i * 0.12,
+                          ease: [0.16, 1, 0.3, 1],
+                        }}
+                        className="relative mb-7 pl-14 last:mb-0"
+                      >
+                        <div className="absolute left-0 top-7 flex h-12 w-12 items-center justify-center rounded-full border border-[#262522]/25 bg-[#F7F2E8] shadow-[0_4px_12px_rgba(38,37,34,.08)]">
+                          <span className="font-mono text-[10px] font-semibold text-[#9A3038]">{step.num}</span>
+                        </div>
+                        {note}
+                      </motion.div>
+                    );
+                  })}                </div>
               </div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      <section id="features" className="relative z-10 border-y border-[#262522]/15 bg-[#F4EEDF] text-[#262522]">
+      <section ref={featuresSectionRef} id="features" className="relative z-10 border-y border-[#262522]/15 bg-[#D8E0C1] text-[#262522]">
         <div className="mx-auto max-w-[1080px] px-6 py-24 lg:px-8 lg:py-32">
           <div className="flex items-end justify-between border-b-2 border-[#262522] pb-5">
             <div>
