@@ -282,6 +282,7 @@ export default function Home() {
   const [orbOffset, setOrbOffset] = useState({ x: 0, y: 0 });
   const [showConversation, setShowConversation] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
+  const [extensionSource, setExtensionSource] = useState<{ title: string; url: string } | null>(null);
   const [isListening, setIsListening] = useState(true);
   const [activeFocusWord, setActiveFocusWord] = useState(0);
   const [activeUseCase, setActiveUseCase] = useState(0);
@@ -299,6 +300,31 @@ export default function Home() {
   const useCaseGridRef = useRef<HTMLDivElement>(null);
   const listeningSourceRef = useRef<HTMLDivElement>(null);
   const focusWordRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("source") !== "extension" || !params.get("token")) return;
+
+    const token = params.get("token");
+
+    fetch(`/api/extension/source/${encodeURIComponent(token)}`)
+      .then(async (response) => {
+        if (!response.ok) throw new Error("source unavailable");
+        return response.json();
+      })
+      .then((source) => {
+        setExtensionSource({
+          title: source.title || "Captured page",
+          url: source.url || "",
+        });
+
+        const cleanUrl = window.location.pathname + window.location.hash;
+        window.history.replaceState({}, "", cleanUrl);
+      })
+      .catch(() => {
+        // Keep the landing page usable even if a handoff expires or the dev server restarts.
+      });
+  }, []);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -536,6 +562,35 @@ export default function Home() {
           </div>
         </motion.div>
       </motion.nav>
+
+      <AnimatePresence>
+        {extensionSource && (
+          <motion.div
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: .45, ease: [0.22, 1, 0.36, 1] }}
+            className="pointer-events-none fixed inset-x-0 top-[112px] z-40 flex justify-center px-4"
+          >
+            <div className="pointer-events-auto flex max-w-[720px] items-center gap-4 border border-[#262522]/15 bg-[#F4EEDF]/95 px-4 py-3 shadow-[0_12px_28px_rgba(38,37,34,.10)] backdrop-blur-md sm:px-5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#9A3038] text-[#F4EEDF]">
+                <Volume2 size={15} />
+              </span>
+              <div className="min-w-0">
+                <p className="text-[9px] font-semibold uppercase tracking-[.18em] text-[#9A3038]">Captured from Tellme extension</p>
+                <p className="mt-1 truncate font-serif text-sm text-[#262522]">{extensionSource.title}</p>
+              </div>
+              <a
+                href="#use-cases"
+                onClick={() => setExtensionSource(null)}
+                className="ml-auto shrink-0 border border-[#262522] bg-[#262522] px-3 py-2 text-[9px] font-medium uppercase tracking-[.14em] text-[#F4EEDF] transition-transform duration-200 hover:-translate-y-0.5"
+              >
+                Listening desk →
+              </a>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <section className="relative z-10 mx-auto min-h-[650px] max-w-[1080px] px-6 pb-16 pt-32 lg:px-8 lg:pt-36">
         <div className="grid items-center gap-8 lg:grid-cols-[1.08fr_.72fr]">
           <div className="max-w-3xl">
