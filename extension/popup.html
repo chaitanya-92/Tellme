@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tellme</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <header class="topline">
+        <div class="brand">
+          <span class="mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+          <span>tellme.</span>
+        </div>
+        <span class="edition">WEB / SPOKEN</span>
+      </header>
+
+      <section class="intro">
+        <p class="kicker">CURRENT PAGE</p>
+        <h1>Put this page<br />in your ears.</h1>
+        <p class="copy">
+          Tellme pulls the useful parts from the page you are reading and prepares them for listening.
+        </p>
+      </section>
+
+      <section class="page-card" aria-live="polite">
+        <div class="signal"><span></span><span></span><span></span><span></span><span></span></div>
+        <div>
+          <p id="page-title" class="page-title">Reading the current tab…</p>
+          <p id="page-meta" class="page-meta">Detecting page</p>
+        </div>
+      </section>
+
+      <button id="tellme-btn" class="primary" type="button">
+        <span>Tellme this page</span>
+        <span aria-hidden="true">→</span>
+      </button>
+
+      <div class="footer-row">
+        <span>⌘⇧T</span>
+        <span>Right-click any page too</span>
+      </div>
+
+      <p id="status" class="status" role="status"></p>
+    </main>
+    <script src="popup.js"></script>
+  </body>
+</html>
