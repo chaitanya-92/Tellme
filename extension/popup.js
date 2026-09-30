@@ -134,3 +134,52 @@ chrome.runtime.sendMessage({ type: "tellme-reader-state" }, (response) => {
 });
 
 preview();
+const briefButton = document.getElementById("brief-btn");
+const briefPanel = document.getElementById("brief-panel");
+
+function escapeHtml(value) {
+  return String(value || "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function renderBrief(brief) {
+  const points = (brief.viewpoints || []).slice(0, 3)
+    .map((x) => "<li>" + escapeHtml(x) + "</li>").join("");
+  const topics = (brief.topics || []).slice(0, 5)
+    .map((x) => "<span class=\"brief-topic\">" + escapeHtml(x) + "</span>").join("");
+  const stats = brief.stats
+    ? "<div class=\"brief-stats\"><span>" + brief.stats.comments + " comments</span><span>" + brief.stats.replies + " replies</span></div>"
+    : "";
+
+  briefPanel.hidden = false;
+  briefPanel.innerHTML =
+    "<div class=\"brief-head\"><div><p class=\"brief-kicker\">QUICK BRIEF</p><p class=\"brief-source\">" +
+    escapeHtml(brief.title) +
+    "</p></div><span class=\"edition\">TELLME</span></div>" +
+    "<div class=\"brief-body\"><p class=\"brief-label\">What it is about</p>" +
+    "<p class=\"brief-main\">" + escapeHtml(brief.about) + "</p>" +
+    (points ? "<ul class=\"brief-list\">" + points + "</ul>" : "") +
+    (topics ? "<div class=\"brief-topics\">" + topics + "</div>" : "") +
+    stats + "</div>";
+}
+
+briefButton.addEventListener("click", () => {
+  briefButton.disabled = true;
+  briefButton.innerHTML = "<span>Analyzing…</span><span>•</span>";
+  briefPanel.hidden = false;
+  briefPanel.innerHTML = "<div class=\"brief-body\"><div class=\"brief-loading\"><i></i><span>Finding the useful parts</span></div></div>";
+
+  chrome.runtime.sendMessage({ type: "tellme-brief" }, (response) => {
+    briefButton.disabled = false;
+    briefButton.innerHTML = "<span>Give me a brief</span><span>↗</span>";
+
+    if (chrome.runtime.lastError || !response?.ok) {
+      briefPanel.innerHTML = "<div class=\"brief-body\">Couldn't build the brief. Reload the page and try again.</div>";
+      return;
+    }
+
+    renderBrief(response.brief);
+  });
+});
