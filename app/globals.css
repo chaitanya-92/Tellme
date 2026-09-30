@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -28,7 +29,7 @@ body {
     radial-gradient(circle at 50% 0%, rgba(243,235,221,.88), transparent 35%),
     var(--paper);
   color: var(--ink);
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "DM Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -46,9 +47,9 @@ a {
 .text-balance { text-wrap: balance; }
 
 .vintage-serif {
-  font-family: Georgia, "Times New Roman", serif;
-  font-weight: 400;
-  letter-spacing: -0.045em;
+  font-family: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  font-weight: 500;
+  letter-spacing: -0.035em;
 }
 
 .vintage-paper {
@@ -116,4 +117,31 @@ a {
 
 @media (prefers-reduced-motion: reduce) {
   .marquee-track { animation: none; }
+}
+
+
+/* Editorial newspaper system */
+.magazine-rule {
+  border-color: rgba(31,48,68,.18);
+}
+.magazine-kicker {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .24em;
+  text-transform: uppercase;
+}
+.magazine-caption {
+  font-size: 9px;
+  line-height: 1.5;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.magazine-dropcap::first-letter {
+  float: left;
+  margin: .08em .08em 0 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 4.6em;
+  line-height: .72;
+  font-weight: 600;
+  color: #7A263A;
 }
