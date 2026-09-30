@@ -12,6 +12,8 @@ import {
   Sparkles,
   Volume2,
   Zap,
+  Cookie,
+  Mic,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -60,6 +62,8 @@ export default function Home() {
   const [openStep, setOpenStep] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const [orbOffset, setOrbOffset] = useState({ x: 0, y: 0 });
+  const [showConversation, setShowConversation] = useState(false);
+  const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
   const orbGuideRef = useRef<HTMLDivElement>(null);
 
   const marqueeRef = useRef<HTMLDivElement>(null);
@@ -117,6 +121,22 @@ export default function Home() {
       window.removeEventListener("pointermove", onPointerMove);
     };
   }, []);
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem("tellme-cookie-choice");
+    if (saved === "accepted" || saved === "rejected") {
+      setCookieChoice(saved);
+      return;
+    }
+
+    const timer = window.setTimeout(() => setCookieChoice("unset"), 700);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  const chooseCookies = (choice: "accepted" | "rejected") => {
+    window.localStorage.setItem("tellme-cookie-choice", choice);
+    setCookieChoice(choice);
+  };
 
   return (
     <main className="vintage-paper min-h-screen overflow-hidden text-[#262522] selection:bg-[#9A3038]/15">
@@ -416,6 +436,62 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="relative z-10 overflow-hidden border-b border-[#262522]/10 bg-[#F8F5EE]">
+        <div className="mx-auto max-w-[1080px] px-6 py-28 text-center lg:px-8 lg:py-36">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto max-w-3xl"
+          >
+            <p className="magazine-caption text-[#9A3038]">A word from the listening desk</p>
+            <div className="mx-auto mt-4 h-px w-10 bg-[#9A3038]" />
+            <blockquote className="vintage-serif mt-10 text-4xl leading-[1.08] sm:text-6xl lg:text-7xl">
+              &quot;I stopped saving articles for later. Tellme lets me hear the useful parts while I keep working.&quot;
+            </blockquote>
+            <p className="mx-auto mt-6 max-w-2xl text-2xl text-[#B8AB95]">
+              Curiosity should not have to wait for an empty afternoon.
+            </p>
+
+            <div className="mt-10 flex flex-col items-center">
+              <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-[#262522] bg-[#DED3BF]">
+                <span className="vintage-serif text-3xl">A</span>
+              </div>
+              <p className="mt-4 text-sm font-semibold">A curious listener</p>
+              <p className="mt-1 text-[10px] uppercase tracking-[.18em] text-[#665F56]">Tellme early user · Listening edition</p>
+            </div>
+
+            <motion.button
+              type="button"
+              onClick={() => setShowConversation((value) => !value)}
+              whileTap={{ scale: 0.98 }}
+              className="mx-auto mt-9 flex w-full max-w-[680px] items-center justify-between rounded-full border border-[#262522]/15 bg-white px-5 py-3 text-left shadow-[0_8px_30px_rgba(38,37,34,.06)] transition-shadow hover:shadow-[0_12px_38px_rgba(38,37,34,.10)]"
+            >
+              <span className="flex items-center gap-3 text-sm text-[#665F56]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F0ECE3]">
+                  <Cookie size={15} />
+                </span>
+                {showConversation ? "Tellme is ready to listen." : "What would you like Tellme to hear?"}
+              </span>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F0ECE3] text-[#262522]">
+                <Mic size={14} />
+              </span>
+            </motion.button>
+
+            <motion.div
+              initial={false}
+              animate={{ height: showConversation ? "auto" : 0, opacity: showConversation ? 1 : 0 }}
+              className="mx-auto max-w-[680px] overflow-hidden text-left"
+            >
+              <div className="mt-2 rounded-2xl border border-[#262522]/10 bg-[#F0ECE3] px-5 py-4 text-sm text-[#665F56]">
+                Ask Tellme to summarize a thread, explain a disagreement, or find the part worth hearing.
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
       <section id="how" className="relative z-10 border-y border-[#262522]/15 bg-[#DED3BF]/35">
         <div className="mx-auto max-w-[1080px] px-6 py-24 lg:px-8 lg:py-32">
           <div className="flex items-end justify-between border-b-2 border-[#262522] pb-5">
@@ -683,7 +759,58 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="relative z-10 border-t-2 border-[#262522]">
+      
+      {cookieChoice === "unset" && (
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed inset-x-4 bottom-5 z-[70] mx-auto max-w-[800px] rounded-2xl bg-[#172131] px-5 py-5 text-white shadow-[0_20px_60px_rgba(23,33,49,.28)] sm:px-7"
+        >
+          <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+            <div className="max-w-[570px]">
+              <div className="flex items-center gap-2 text-sm font-semibold">
+                <Cookie size={16} />
+                <span>Audience measurement</span>
+              </div>
+              <p className="mt-2 text-xs leading-5 text-white/70 sm:text-sm">
+                With your permission, Tellme uses cookies to understand visits and improve the experience. You can change your choice at any time.
+              </p>
+              <a href="#" className="mt-2 inline-block text-xs underline underline-offset-2 text-white/80 hover:text-white">
+                Privacy policy
+              </a>
+            </div>
+            <div className="flex shrink-0 gap-2">
+              <button
+                type="button"
+                onClick={() => chooseCookies("rejected")}
+                className="rounded-xl border border-white/20 px-5 py-3 text-sm font-medium transition hover:bg-white/10"
+              >
+                Reject
+              </button>
+              <button
+                type="button"
+                onClick={() => chooseCookies("accepted")}
+                className="rounded-xl bg-white px-5 py-3 text-sm font-medium text-[#172131] transition hover:bg-[#F4EEDF]"
+              >
+                Allow
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
+      {cookieChoice !== "unset" && (
+        <button
+          type="button"
+          onClick={() => setCookieChoice("unset")}
+          className="fixed bottom-5 right-5 z-[60] flex h-12 w-12 items-center justify-center rounded-full bg-[#172131] text-white shadow-[0_10px_30px_rgba(23,33,49,.22)] transition hover:-translate-y-1"
+          aria-label="Cookie settings"
+        >
+          <Cookie size={18} />
+        </button>
+      )}
+\n      <footer className="relative z-10 border-t-2 border-[#262522]">
         <div className="mx-auto grid max-w-[1080px] gap-8 px-6 py-10 sm:grid-cols-3 sm:items-center lg:px-8">
           <div className="flex items-center gap-3">
             <span className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#262522]">
