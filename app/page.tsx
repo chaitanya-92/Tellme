@@ -276,6 +276,7 @@ export default function Home() {
   const [showConversation, setShowConversation] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
   const [isListening, setIsListening] = useState(true);
+  const [activeUseCase, setActiveUseCase] = useState(0);
   const listeningTime = useListeningClock(161, isListening);
   const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
   const [missionPhase, setMissionPhase] = useState<"board" | "pinned" | "released">("board");
@@ -383,6 +384,16 @@ export default function Home() {
       }
     };
   }, []);
+
+  useEffect(() => {
+    if (!isListening) return;
+
+    const timer = window.setInterval(() => {
+      setActiveUseCase((value) => (value + 1) % 4);
+    }, 1850);
+
+    return () => window.clearInterval(timer);
+  }, [isListening]);
 
   useEffect(() => {
     const saved = window.localStorage.getItem("tellme-cookie-choice");
@@ -986,23 +997,60 @@ export default function Home() {
             <span className="magazine-caption hidden sm:block">The weekend edition</span>
           </div>
 
-          <div className="grid lg:grid-cols-[1.15fr_.85fr]">
-            <div className="py-10 lg:border-r lg:border-dashed lg:border-[#B8AB95] lg:pr-14">
+          <div className="relative grid lg:grid-cols-[1.15fr_.85fr]">
+            <div className="relative z-10 py-10 lg:border-r lg:border-dashed lg:border-[#B8AB95] lg:pr-14">
               <h2 className="vintage-serif max-w-3xl text-5xl leading-[.88] sm:text-7xl">Keep your hands busy. Stay in the loop.</h2>
               <p className="magazine-dropcap mt-7 max-w-2xl text-[15px] leading-7 text-[#665F56]">
                 Whether you're shipping code, studying, commuting, cooking, or moving between tasks — Tellme lets information follow you instead of the other way around.
               </p>
+
               <div className="mt-9 grid max-w-2xl grid-cols-2 border-t border-[#262522]">
-                {["Coding & building", "Research & studying", "Long Reddit & Quora threads", "Articles you saved for later"].map((x, i) => (
-                  <div key={x} className="border-b border-dashed border-[#B8AB95] py-4 pr-5 text-sm text-[#665F56]">
-                    <span className="mr-3 font-mono text-[9px] text-[#9A3038]">0{i + 1}</span>{x}
-                  </div>
-                ))}
+                {[
+                  "Coding & building",
+                  "Research & studying",
+                  "Long Reddit & Quora threads",
+                  "Articles you saved for later",
+                ].map((x, i) => {
+                  const active = activeUseCase === i && isListening;
+                  return (
+                    <motion.div
+                      key={x}
+                      animate={{
+                        backgroundColor: active ? "rgba(216,224,193,.42)" : "rgba(244,238,223,0)",
+                      }}
+                      transition={{ duration: .42, ease: [0.22, 1, 0.36, 1] }}
+                      className="relative flex min-h-[58px] items-center border-b border-dashed border-[#B8AB95] py-4 pr-5 text-sm text-[#665F56]"
+                    >
+                      <motion.span
+                        animate={{ opacity: active ? 1 : .46, scaleX: active ? 1 : .7 }}
+                        transition={{ duration: .32 }}
+                        className="mr-4 h-px w-8 origin-left bg-[#9A3038]"
+                      />
+                      <motion.span
+                        animate={{
+                          x: active ? 2 : 0,
+                          color: active ? "#262522" : "#665F56",
+                        }}
+                        transition={{ duration: .35 }}
+                      >
+                        {x}
+                      </motion.span>
+                    </motion.div>
+                  );
+                })}
+              </div>
+
+              <div className="pointer-events-none absolute inset-y-[39%] right-[-1px] hidden w-[18px] lg:block">
+                <motion.span
+                  animate={{ opacity: isListening ? [0.2, .72, .2] : .12 }}
+                  transition={{ duration: 1.15, repeat: isListening ? Infinity : 0, ease: "easeInOut" }}
+                  className="absolute right-0 top-0 h-16 w-px bg-[#9A3038]"
+                />
               </div>
             </div>
 
-            <div className="py-10 lg:pl-14">
-              <div className="border-y-2 border-[#262522] py-5">
+            <div className="relative z-10 py-10 lg:pl-14">
+              <div className="relative border-y-2 border-[#262522] py-5">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="min-h-[1.25rem] text-sm font-semibold">
@@ -1123,8 +1171,90 @@ export default function Home() {
                 A listening desk for the pages you never have time to finish.
               </motion.p>
             </div>
-          </div>
-        </div>
+
+            <div className="pointer-events-none absolute inset-0 z-20 hidden lg:block" aria-hidden="true">
+              <svg viewBox="0 0 1080 520" className="h-full w-full overflow-visible">
+                <defs>
+                  <linearGradient id="signal-fade" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stopColor="#9A3038" stopOpacity="0" />
+                    <stop offset="38%" stopColor="#9A3038" stopOpacity=".15" />
+                    <stop offset="72%" stopColor="#9A3038" stopOpacity=".55" />
+                    <stop offset="100%" stopColor="#9A3038" stopOpacity=".85" />
+                  </linearGradient>
+                  <filter id="signal-soft">
+                    <feGaussianBlur stdDeviation="2.2" />
+                  </filter>
+                </defs>
+
+                <g transform="translate(0 0)">
+                  {[
+                    "M 865 160 C 770 188 700 285 575 335",
+                    "M 865 160 C 760 202 690 325 260 335",
+                    "M 865 160 C 755 220 680 365 575 395",
+                    "M 865 160 C 745 238 670 408 260 395",
+                  ].map((path, i) => {
+                    const active = activeUseCase === i && isListening;
+                    return (
+                      <g key={i}>
+                        <motion.path
+                          d={path}
+                          fill="none"
+                          stroke="url(#signal-fade)"
+                          strokeWidth={active ? 2.2 : 1}
+                          strokeDasharray={active ? "4 8" : "2 12"}
+                          initial={false}
+                          animate={{
+                            opacity: active ? .88 : .10,
+                            pathLength: active ? [0, 1] : 1,
+                            strokeDashoffset: active ? [0, -28] : 0,
+                          }}
+                          transition={{
+                            opacity: { duration: .4 },
+                            pathLength: active ? { duration: .8, ease: "easeOut" } : { duration: .2 },
+                            strokeDashoffset: active ? { duration: 1.05, repeat: Infinity, ease: "linear" } : { duration: .2 },
+                          }}
+                        />
+                        {active && (
+                          <>
+                            <motion.circle
+                              r="4.2"
+                              fill="#9A3038"
+                              initial={{ opacity: 0, scale: .4 }}
+                              animate={{
+                                opacity: [0, 1, 1, 0],
+                                scale: [.45, 1, 1.1, .45],
+                                cx: [865, 790, 690, 575],
+                                cy: [160, 190, 285, i % 2 === 0 ? 335 : 395],
+                              }}
+                              transition={{ duration: 1.05, repeat: Infinity, ease: "easeInOut" }}
+                            />
+                            <motion.g
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: [.15, .9, .15] }}
+                              transition={{ duration: .85, repeat: Infinity, ease: "easeInOut", delay: .15 }}
+                            >
+                              {[0,1,2,3,4].map((bar) => (
+                                <rect
+                                  key={bar}
+                                  x={820 + bar * 8}
+                                  y={148 - ((bar * 9) % 12)}
+                                  width="3"
+                                  rx="1.5"
+                                  fill="#9A3038"
+                                  opacity=".75"
+                                  height={10 + ((bar * 7) % 15)}
+                                />
+                              ))}
+                            </motion.g>
+                          </>
+                        )}
+                      </g>
+                    );
+                  })}
+                </g>
+              </svg>
+            </div>
+          </div>       </div>
       </section>
 
       <section className="relative z-10 px-6 pb-20 pt-10 lg:px-8">
