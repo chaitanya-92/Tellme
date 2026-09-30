@@ -1376,51 +1376,44 @@ export default function Home() {
       </section>
 
       <section className="relative z-10 border-y border-[#F4EEDF]/10 bg-[#262522] text-white">
-        <div className="mx-auto max-w-[1080px] px-6 py-20 text-center sm:px-8 lg:py-28">
-          <div className="mb-8 flex items-center justify-between border-b border-white/15 pb-4 text-[9px] uppercase tracking-[.2em] text-white/45">
-            <span>The Tellme Review</span><span>Final page</span><span>2026</span>
+        <div className="mx-auto max-w-[1080px] px-6 py-20 sm:px-8 lg:py-24">
+          <div className="mb-10 flex items-center justify-between border-b border-white/15 pb-4 text-[9px] uppercase tracking-[.2em] text-white/45">
+            <span>The Tellme Review</span><span>Get started</span><span>2026</span>
           </div>
-          <p className="magazine-kicker text-[#A47732]">Your next tab can wait</p>
-          <motion.h2
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.55 }}
-            variants={{
-              hidden: {},
-              visible: { transition: { staggerChildren: 0.16, delayChildren: 0.08 } },
-            }}
-            className="vintage-serif mt-5 text-5xl leading-[.95] sm:text-7xl"
-          >
-            <span className="block overflow-hidden">
-              <motion.span
-                variants={{
-                  hidden: { y: "105%", opacity: 0 },
-                  visible: { y: "0%", opacity: 1 },
-                }}
-                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                className="block"
+
+          <div className="grid gap-12 lg:grid-cols-[1.1fr_.9fr] lg:items-end">
+            <div>
+              <p className="magazine-kicker text-[#A47732]">Put the web in your ears.</p>
+              <motion.h2
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.45 }}
+                transition={{ duration: .75, ease: [0.16, 1, 0.3, 1] }}
+                className="vintage-serif mt-5 max-w-3xl text-5xl leading-[.9] sm:text-7xl"
               >
-                Hear what matters.
-              </motion.span>
-            </span>
-            <span className="block overflow-hidden">
-              <motion.span
-                variants={{
-                  hidden: { y: "105%", opacity: 0 },
-                  visible: { y: "0%", opacity: 1 },
-                }}
-                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-                className="block text-white/45"
+                Listen to the useful parts.
+              </motion.h2>
+              <p className="mt-7 max-w-2xl text-sm leading-6 text-white/55">
+                Install Tellme once, then use it from your browser whenever a page is too long to read. Hear the post, the thread, or the brief and keep moving.
+              </p>
+            </div>
+
+            <div className="border-t border-dashed border-white/15 pt-6 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
+              <p className="text-[9px] font-semibold uppercase tracking-[.2em] text-white/40">Browser extension</p>
+              <p className="mt-3 text-sm leading-6 text-white/65">
+                The Chrome Web Store release is the direct-install version of Tellme.
+              </p>
+              <Button
+                size="lg"
+                className="mt-6"
+                onClick={() => setShowExtensionInstall(true)}
               >
-                Keep doing what matters.
-              </motion.span>
-            </span>
-          </motion.h2>
-          <p className="mx-auto mt-6 max-w-xl text-sm leading-6 text-white/50">
-            Tellme is being built for people who want to stay curious without putting everything else on pause.
-          </p>
-          <div className="mt-9">
-            <Button size="lg">Get early access <ArrowRight size={17} className="ml-2" /></Button>
+                Add to Chrome <ArrowRight size={17} className="ml-2" />
+              </Button>
+              <p className="mt-3 text-[9px] uppercase tracking-[.16em] text-white/30">
+                Web Store install · v0.6
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -1555,22 +1548,40 @@ export default function Home() {
       )}
 
       <footer className="relative z-10 border-t-2 border-[#262522]">
-        <div className="mx-auto grid max-w-[1080px] gap-8 px-6 py-10 sm:grid-cols-3 sm:items-center lg:px-8">
-          <div className="flex items-center gap-3">
-            <span className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#262522]">
-              <span className="absolute top-[7px] h-px w-5 bg-[#F4EEDF]" />
-              <span className="absolute top-[12px] h-px w-5 bg-[#F4EEDF]" />
-              <span className="absolute top-[17px] h-px w-5 bg-[#F4EEDF]" />
-              <span className="absolute top-[22px] h-px w-5 bg-[#F4EEDF]" />
+        <div className="mx-auto max-w-[1080px] px-6 py-8 lg:px-8">
+          <div className="grid gap-7 border-b border-[#262522]/10 pb-7 sm:grid-cols-[1fr_auto_auto] sm:items-center">
+            <div className="flex items-center gap-3">
+              <span className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#262522]">
+                <span className="absolute top-[7px] h-px w-5 bg-[#F4EEDF]" />
+                <span className="absolute top-[12px] h-px w-5 bg-[#F4EEDF]" />
+                <span className="absolute top-[17px] h-px w-5 bg-[#F4EEDF]" />
+                <span className="absolute top-[22px] h-px w-5 bg-[#F4EEDF]" />
+              </span>
+              <span className="vintage-serif text-lg">tellme.</span>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-5 text-[10px] uppercase tracking-[.15em] text-[#665F56]">
+              <a href="#" className="transition-colors hover:text-[#9A3038]">Privacy</a>
+              <a href="#" className="transition-colors hover:text-[#9A3038]">Terms</a>
+              <a
+                href="https://github.com/chaitanya-92/Tellme"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 font-semibold text-[#262522] transition-colors hover:text-[#9A3038]"
+              >
+                GitHub <ArrowRight size={11} />
+              </a>
+            </div>
+
+            <span className="text-[9px] uppercase tracking-[.18em] text-[#9D9180] sm:text-right">
+              The web, spoken.
             </span>
-            <span className="vintage-serif text-lg">tellme.</span>
           </div>
-          <div className="flex gap-6 text-xs text-[#665F56]">
-            <a href="#" className="hover:text-[#262522]">Privacy</a>
-            <a href="#" className="hover:text-[#262522]">Terms</a>
-            <a href="https://github.com/chaitanya-92/Tellme" className="hover:text-[#262522]">GitHub</a>
+
+          <div className="flex flex-col gap-2 pt-5 text-[9px] uppercase tracking-[.16em] text-[#9D9180] sm:flex-row sm:items-center sm:justify-between">
+            <span>Tellme / Browser reader</span>
+            <span>© 2026 Tellme</span>
           </div>
-          <p className="text-right text-[9px] uppercase tracking-[.18em] text-[#665F56]">© 2026 Tellme · The web, spoken.</p>
         </div>
       </footer>
     </main>
