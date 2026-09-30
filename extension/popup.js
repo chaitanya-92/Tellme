@@ -203,9 +203,8 @@ briefButton.addEventListener("click", () => {
     }
 
     latestBrief = response.brief;
-    latestBrief = response.brief;
     renderBrief(response.brief);
-    addBriefListenButton();
+    status.textContent = "Speaking your brief.";
   });
 });
 
