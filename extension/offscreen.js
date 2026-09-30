@@ -49,16 +49,19 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       return true;
     }
 
-    const onVoices = () => {
+    let responded = false;
+
+    const finish = () => {
+      if (responded) return;
+      responded = true;
       window.speechSynthesis.removeEventListener("voiceschanged", onVoices);
       sendResponse({ ok: true, voices: loadVoices() });
     };
 
-    window.speechSynthesis.addEventListener("voiceschanged", onVoices, { once: true });
-    window.setTimeout(() => {
-      window.speechSynthesis.removeEventListener("voiceschanged", onVoices);
-      sendResponse({ ok: true, voices: loadVoices() });
-    }, 1200);
+    const onVoices = () => finish();
+
+    window.speechSynthesis.addEventListener("voiceschanged", onVoices);
+    window.setTimeout(finish, 1200);
 
     return true;
   }
