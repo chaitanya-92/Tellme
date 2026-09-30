@@ -339,7 +339,7 @@ export default function Home() {
         <div className="marquee-track flex w-max items-center py-7 text-[11px] font-medium tracking-[.18em] text-[#1F3044]">
           {[0, 1].map((group) => (
             <div key={group} className="flex shrink-0 items-center">
-              {["REDDIT", "QUORA", "HACKER NEWS", "MEDIUM"].map((x) => (
+              {["REDDIT", "QUORA", "HACKER NEWS", "MEDIUM", "DEV.TO", "HASHNODE", "STACK OVERFLOW"].map((x) => (
                 <span
                   key={group + "-" + x}
                   className="mx-7 whitespace-nowrap bg-[#F3EBDD] text-[#26384D] px-2.5 py-1.5 rounded-[2px] ring-1 ring-[#C9BBA7]/70 shadow-[0_2px_8px_rgba(38,56,77,.06)] lg:mx-12"
