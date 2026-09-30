@@ -669,58 +669,169 @@ async function speakQueueItem(index) {
   });
 }
 
+function buildQuickBrief(payload) {
+  const segments = (payload.segments || []).filter((item) => cleanText(item.text));
+  const sentences = (text) =>
+    cleanText(text)
+      .split(/(?<=[.!?])\s+/)
+      .map(cleanText)
+      .filter((sentence) => sentence.length > 45);
+
+  const title =
+    segments.find((s) => s.kind === "post-title" || s.kind === "page-title")?.text ||
+    payload.title ||
+    "Untitled page";
+
+  const body =
+    segments.find((s) => s.kind === "post-body" || s.kind === "description")?.text ||
+    "";
+
+  const discussion = segments.filter(
+    (s) => s.kind === "comment" || s.kind === "reply"
+  );
+
+  const score = (sentence) => {
+    const lower = sentence.toLowerCase();
+    const signals = [
+      "because", "however", "but", "reason", "problem", "solution",
+      "experience", "recommend", "important", "actually", "instead", "learned"
+    ];
+    return signals.reduce(
+      (total, word) => total + (lower.includes(word) ? 2 : 0),
+      0
+    ) + Math.min(4, sentence.length / 120);
+  };
+
+  const pick = (items, count) =>
+    items
+      .map((sentence, index) => ({ sentence, index, score: score(sentence) }))
+      .sort((a, b) => b.score - a.score || a.index - b.index)
+      .slice(0, count)
+      .sort((a, b) => a.index - b.index)
+      .map((item) => item.sentence);
+
+  const about = pick(sentences(body), 2);
+  const viewpoints = pick(
+    discussion.flatMap((item) => sentences(item.text)),
+    3
+  );
+
+  const words = cleanText([body, ...discussion.map((item) => item.text)].join(" "))
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((word) => word.length >= 5);
+
+  const stop = new Set([
+    "there","their","about","would","could","which","because","really",
+    "people","these","those","being","while","where","after","before",
+    "other","still","think","thing","things"
+  ]);
+
+  const counts = {};
+  words.forEach((word) => {
+    if (!stop.has(word)) counts[word] = (counts[word] || 0) + 1;
+  });
+
+  const topics = Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([word]) => word);
+
+  const comments = discussion.filter((s) => s.kind === "comment").length;
+  const replies = discussion.filter((s) => s.kind === "reply").length;
+
+  return {
+    title,
+    about:
+      (about.length ? about.join(" ") : cleanText(body)) ||
+      "Tellme found limited body text, so the title is the clearest context.",
+    viewpoints,
+    topics,
+    stats:
+      payload.contentType === "reddit-discussion"
+        ? { comments, replies }
+        : null
+  };
+}
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   (async () => {
     if (message?.type === "tellme-brief") {
-      const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        lastFocusedWindow: true
+      });
+
       if (!tab?.id) throw new Error("No active tab");
 
+      await sendSpeech({ type: "tellme-stop" }).catch(() => {});
+      await writeState({
+        ...(await readState()),
+        status: "analyzing",
+        sourceTitle: tab.title || "",
+        sourceUrl: tab.url || ""
+      });
+
       const payload = await getPagePayload(tab.id);
-      const segments = (payload.segments || []).filter((item) => cleanText(item.text));
-      const sentences = (text) => cleanText(text).split(/(?<=[.!?])\s+/).filter((s) => s.length > 45);
+      const brief = buildQuickBrief(payload);
 
-      const title = segments.find((s) => s.kind === "post-title" || s.kind === "page-title")?.text || payload.title;
-      const body = segments.find((s) => s.kind === "post-body" || s.kind === "description")?.text || "";
-      const discussion = segments.filter((s) => s.kind === "comment" || s.kind === "reply");
+      await chrome.storage.local.set({
+        tellmeBrief: {
+          brief,
+          sourceTitle: payload.title,
+          sourceUrl: payload.url,
+          updatedAt: Date.now()
+        }
+      });
 
-      const score = (sentence) => {
-        const lower = sentence.toLowerCase();
-        const signals = ["because","however","but","reason","problem","solution","experience","recommend","important","actually","instead","learned"];
-        return signals.reduce((n, word) => n + (lower.includes(word) ? 2 : 0), 0) + Math.min(4, sentence.length / 120);
+      const voices = await chooseVoices();
+      const voiceName = voices[0]?.name || "";
+      const paragraphs = [
+        "Here's the brief.",
+        brief.about,
+        ...(brief.viewpoints || []).length
+          ? ["The discussion adds a few useful points.", ...(brief.viewpoints || [])]
+          : [],
+        ...(brief.stats
+          ? [`The thread contains ${brief.stats.comments} comments and ${brief.stats.replies} replies.`]
+          : [])
+      ];
+
+      const queue = paragraphs
+        .filter((text) => cleanText(text))
+        .flatMap((text) =>
+          speechChunks(text).map((chunk) => ({
+            text: chunk,
+            label: "Brief",
+            kind: "brief",
+            voiceName,
+            rate: 0.97,
+            pitch: 1
+          }))
+        );
+
+      const state = {
+        ...DEFAULT_STATE,
+        queue,
+        index: 0,
+        status: queue.length ? "reading" : "empty",
+        sourceTitle: payload.title || "",
+        sourceUrl: payload.url || "",
+        contentType: "brief",
+        voiceName
       };
 
-      const pick = (items, count) => items
-        .map((s, i) => ({ s, i, score: score(s) }))
-        .sort((a, b) => b.score - a.score || a.i - b.i)
-        .slice(0, count)
-        .sort((a, b) => a.i - b.i)
-        .map((x) => x.s);
+      await writeState(state);
 
-      const about = pick(sentences(body), 2);
-      const discussionPoints = pick(discussion.flatMap((s) => sentences(s.text)), 3);
-
-      const counts = {};
-      [...body, ...discussion.flatMap((s) => s.text)].join("");
-      const words = cleanText([body, ...discussion.map((s) => s.text)].join(" "))
-        .toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/)
-        .filter((w) => w.length >= 5);
-
-      const stop = new Set(["there","their","about","would","could","which","because","really","people","these","those","being","while","where","after","before","other","still","think","thing","things"]);
-      words.forEach((w) => { if (!stop.has(w)) counts[w] = (counts[w] || 0) + 1; });
-
-      const topics = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,5).map(([w]) => w);
-      const commentCount = discussion.filter((s) => s.kind === "comment").length;
-      const replyCount = discussion.filter((s) => s.kind === "reply").length;
+      if (queue.length) {
+        await speakQueueItem(0);
+      }
 
       sendResponse({
         ok: true,
-        brief: {
-          title,
-          about: (about.length ? about.join(" ") : body) || "Tellme found limited body text, so the title is the clearest context.",
-          viewpoints: discussionPoints,
-          topics,
-          stats: payload.contentType === "reddit-discussion" ? { comments: commentCount, replies: replyCount } : null
-        }
+        brief,
+        state
       });
       return;
     }
@@ -813,54 +924,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           contentType: payload.contentType
         }
       });
-      return;
-    }
-
-    if (message?.type === "tellme-read-brief") {
-      const brief = message.brief;
-      if (!brief) throw new Error("No brief available");
-
-      const voiceName = await chooseVoice();
-      const paragraphs = [
-        "Here's the brief.",
-        brief.about,
-        ...(brief.viewpoints || []).length
-          ? ["The discussion adds a few useful points.", ...(brief.viewpoints || [])]
-          : [],
-        ...(brief.stats
-          ? [`The thread contains ${brief.stats.comments} comments and ${brief.stats.replies} replies.`]
-          : [])
-      ];
-
-      const queue = paragraphs
-        .filter((text) => cleanText(text))
-        .map((text, index) => ({
-          text: cleanText(text),
-          label: index === 0 ? "Brief introduction" : "Brief",
-          kind: "brief",
-          voiceName,
-          rate: index === 0 ? 0.95 : 0.98,
-          pitch: 1
-        }));
-
-      const state = {
-        ...DEFAULT_STATE,
-        queue,
-        index: 0,
-        status: queue.length ? "reading" : "empty",
-        sourceTitle: brief.title || "",
-        sourceUrl: "",
-        contentType: "brief",
-        voiceName
-      };
-
-      await writeState(state);
-
-      if (queue.length) {
-        await speakQueueItem(0);
-      }
-
-      sendResponse({ ok: true, state });
       return;
     }
 
