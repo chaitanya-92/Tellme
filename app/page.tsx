@@ -440,6 +440,16 @@ export default function Home() {
   }, [activeFocusWord, isListening]);
 
   useEffect(() => {
+    if (!isListening) return;
+
+    const timer = window.setInterval(() => {
+      setActiveUseCase((value) => (value + 1) % 4);
+    }, 1850);
+
+    return () => window.clearInterval(timer);
+  }, [isListening]);
+
+  useEffect(() => {
     const saved = window.localStorage.getItem("tellme-cookie-choice");
     if (saved === "accepted" || saved === "rejected") {
       setCookieChoice(saved);
