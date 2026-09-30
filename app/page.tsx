@@ -39,6 +39,13 @@ const waveformHeights = [
   76, 43, 55, 30, 68, 49, 73, 35, 57, 80, 42, 63, 27, 51, 70, 39, 60, 75, 33, 54, 66, 45
 ];
 
+const listeningFocusWords = [
+  "Whether", "you're", "shipping", "code,", "studying,",
+  "commuting,", "cooking,", "or", "moving", "between",
+  "tasks", "Tellme", "lets", "information", "follow",
+  "you", "instead", "of", "the", "other", "way", "around.",
+];
+
 const features = [
   {
     icon: Headphones,
@@ -276,7 +283,8 @@ export default function Home() {
   const [showConversation, setShowConversation] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
   const [isListening, setIsListening] = useState(true);
-  const [activeUseCase, setActiveUseCase] = useState(0);
+  const [activeFocusWord, setActiveFocusWord] = useState(0);
+  const [signalPath, setSignalPath] = useState("");
   const listeningTime = useListeningClock(161, isListening);
   const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
   const [missionPhase, setMissionPhase] = useState<"board" | "pinned" | "released">("board");
@@ -287,6 +295,9 @@ export default function Home() {
   const marqueePositionRef = useRef(0);
   const marqueeFrameRef = useRef<number | null>(null);
   const featuresSectionRef = useRef<HTMLElement>(null);
+  const useCaseGridRef = useRef<HTMLDivElement>(null);
+  const listeningSourceRef = useRef<HTMLDivElement>(null);
+  const focusWordRefs = useRef<(HTMLSpanElement | null)[]>([]);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
@@ -389,11 +400,44 @@ export default function Home() {
     if (!isListening) return;
 
     const timer = window.setInterval(() => {
-      setActiveUseCase((value) => (value + 1) % 4);
-    }, 1850);
+      setActiveFocusWord((value) => (value + 1) % listeningFocusWords.length);
+    }, 820);
 
     return () => window.clearInterval(timer);
   }, [isListening]);
+
+  useEffect(() => {
+    const updateSignalPath = () => {
+      const grid = useCaseGridRef.current;
+      const source = listeningSourceRef.current;
+      const word = focusWordRefs.current[activeFocusWord];
+
+      if (!grid || !source || !word) return;
+
+      const gridRect = grid.getBoundingClientRect();
+      const sourceRect = source.getBoundingClientRect();
+      const wordRect = word.getBoundingClientRect();
+
+      const sx = sourceRect.left + sourceRect.width / 2 - gridRect.left;
+      const sy = sourceRect.top + sourceRect.height / 2 - gridRect.top;
+      const ex = wordRect.left + wordRect.width / 2 - gridRect.left;
+      const ey = wordRect.top + wordRect.height / 2 - gridRect.top;
+
+      const distance = Math.hypot(ex - sx, ey - sy);
+      const curve = Math.max(35, Math.min(150, distance * 0.2));
+      setSignalPath(
+        `M ${sx} ${sy} C ${sx - curve} ${sy + 18}, ${ex + curve} ${ey - 18}, ${ex} ${ey}`
+      );
+    };
+
+    const frame = window.requestAnimationFrame(updateSignalPath);
+    window.addEventListener("resize", updateSignalPath);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", updateSignalPath);
+    };
+  }, [activeFocusWord, isListening]);
 
   useEffect(() => {
     const saved = window.localStorage.getItem("tellme-cookie-choice");
@@ -997,11 +1041,24 @@ export default function Home() {
             <span className="magazine-caption hidden sm:block">The weekend edition</span>
           </div>
 
-          <div className="relative grid lg:grid-cols-[1.15fr_.85fr]">
+          <div ref={useCaseGridRef} className="relative grid lg:grid-cols-[1.15fr_.85fr]">
             <div className="relative z-10 py-10 lg:border-r lg:border-dashed lg:border-[#B8AB95] lg:pr-14">
               <h2 className="vintage-serif max-w-3xl text-5xl leading-[.88] sm:text-7xl">Keep your hands busy. Stay in the loop.</h2>
-              <p className="magazine-dropcap mt-7 max-w-2xl text-[15px] leading-7 text-[#665F56]">
-                Whether you're shipping code, studying, commuting, cooking, or moving between tasks — Tellme lets information follow you instead of the other way around.
+              <p className="mt-7 max-w-2xl text-[15px] leading-7 text-[#665F56]">
+                {listeningFocusWords.map((word, i) => {
+                  const active = isListening && activeFocusWord === i;
+                  return (
+                    <span
+                      key={`${word}-${i}`}
+                      ref={(node) => {
+                        focusWordRefs.current[i] = node;
+                      }}
+                      className={`relative inline rounded-[2px] px-[2px] transition-[background-color,color,box-shadow] duration-[220ms] ${active ? "bg-[#D8E0C1] text-[#262522] shadow-[0_2px_0_rgba(154,48,56,.16)]" : ""}`}
+                    >
+                      {word}{" "}
+                    </span>
+                  );
+                })}
               </p>
 
               <div className="mt-9 grid max-w-2xl grid-cols-2 border-t border-[#262522]">
@@ -1078,7 +1135,7 @@ export default function Home() {
                 </div>
 
                 <div className="py-10">
-                  <div className="mx-auto flex h-28 items-center justify-center gap-1">
+                  <div ref={listeningSourceRef} className="mx-auto flex h-28 items-center justify-center gap-1">
                     {waveformHeights.map((height, i) => (
                       <motion.div
                         key={i}
@@ -1173,88 +1230,62 @@ export default function Home() {
             </div>
 
             <div className="pointer-events-none absolute inset-0 z-20 hidden lg:block" aria-hidden="true">
-              <svg viewBox="0 0 1080 520" className="h-full w-full overflow-visible">
+              <svg className="h-full w-full overflow-visible">
                 <defs>
-                  <linearGradient id="signal-fade" x1="0" y1="0" x2="1" y2="0">
-                    <stop offset="0%" stopColor="#9A3038" stopOpacity="0" />
-                    <stop offset="38%" stopColor="#9A3038" stopOpacity=".15" />
-                    <stop offset="72%" stopColor="#9A3038" stopOpacity=".55" />
-                    <stop offset="100%" stopColor="#9A3038" stopOpacity=".85" />
-                  </linearGradient>
-                  <filter id="signal-soft">
-                    <feGaussianBlur stdDeviation="2.2" />
+                  <filter id="audio-ray-glow-word" x="-35%" y="-35%" width="170%" height="170%">
+                    <feGaussianBlur stdDeviation="3.2" />
                   </filter>
+                  <linearGradient id="audio-ray-word-gradient" x1="1" y1="0" x2="0" y2="0">
+                    <stop offset="0%" stopColor="#9A3038" stopOpacity=".92" />
+                    <stop offset="58%" stopColor="#9A3038" stopOpacity=".34" />
+                    <stop offset="100%" stopColor="#9A3038" stopOpacity="0" />
+                  </linearGradient>
                 </defs>
 
-                <g transform="translate(0 0)">
-                  {[
-                    "M 865 160 C 770 188 700 285 575 335",
-                    "M 865 160 C 760 202 690 325 260 335",
-                    "M 865 160 C 755 220 680 365 575 395",
-                    "M 865 160 C 745 238 670 408 260 395",
-                  ].map((path, i) => {
-                    const active = activeUseCase === i && isListening;
-                    return (
-                      <g key={i}>
-                        <motion.path
-                          d={path}
-                          fill="none"
-                          stroke="url(#signal-fade)"
-                          strokeWidth={active ? 2.2 : 1}
-                          strokeDasharray={active ? "4 8" : "2 12"}
-                          initial={false}
-                          animate={{
-                            opacity: active ? .88 : .10,
-                            pathLength: active ? [0, 1] : 1,
-                            strokeDashoffset: active ? [0, -28] : 0,
-                          }}
-                          transition={{
-                            opacity: { duration: .4 },
-                            pathLength: active ? { duration: .8, ease: "easeOut" } : { duration: .2 },
-                            strokeDashoffset: active ? { duration: 1.05, repeat: Infinity, ease: "linear" } : { duration: .2 },
-                          }}
-                        />
-                        {active && (
-                          <>
-                            <motion.circle
-                              r="4.2"
-                              fill="#9A3038"
-                              initial={{ opacity: 0, scale: .4 }}
-                              animate={{
-                                opacity: [0, 1, 1, 0],
-                                scale: [.45, 1, 1.1, .45],
-                                cx: [865, 790, 690, 575],
-                                cy: [160, 190, 285, i % 2 === 0 ? 335 : 395],
-                              }}
-                              transition={{ duration: 1.05, repeat: Infinity, ease: "easeInOut" }}
-                            />
-                            <motion.g
-                              initial={{ opacity: 0 }}
-                              animate={{ opacity: [.15, .9, .15] }}
-                              transition={{ duration: .85, repeat: Infinity, ease: "easeInOut", delay: .15 }}
-                            >
-                              {[0,1,2,3,4].map((bar) => (
-                                <rect
-                                  key={bar}
-                                  x={820 + bar * 8}
-                                  y={148 - ((bar * 9) % 12)}
-                                  width="3"
-                                  rx="1.5"
-                                  fill="#9A3038"
-                                  opacity=".75"
-                                  height={10 + ((bar * 7) % 15)}
-                                />
-                              ))}
-                            </motion.g>
-                          </>
-                        )}
-                      </g>
-                    );
-                  })}
-                </g>
+                {signalPath && (
+                  <>
+                    <motion.path
+                      d={signalPath}
+                      fill="none"
+                      stroke="#9A3038"
+                      strokeWidth="9"
+                      strokeLinecap="round"
+                      filter="url(#audio-ray-glow-word)"
+                      animate={{ opacity: isListening ? [0.04, 0.2, 0.04] : 0 }}
+                      transition={{ duration: .9, repeat: isListening ? Infinity : 0, ease: "easeInOut" }}
+                    />
+                    <motion.path
+                      key={signalPath}
+                      d={signalPath}
+                      fill="none"
+                      stroke="url(#audio-ray-word-gradient)"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeDasharray="2 8"
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      animate={{ pathLength: isListening ? 1 : 0, opacity: isListening ? .82 : 0 }}
+                      transition={{ duration: .56, ease: [0.22, 1, 0.36, 1] }}
+                    />
+                    <motion.path
+                      d={signalPath}
+                      fill="none"
+                      stroke="#9A3038"
+                      strokeWidth="1"
+                      strokeLinecap="round"
+                      strokeDasharray="1 12"
+                      animate={{
+                        opacity: isListening ? [.08, .3, .08] : 0,
+                        strokeDashoffset: isListening ? [0, -18] : 0,
+                      }}
+                      transition={{
+                        opacity: { duration: 1.1, repeat: isListening ? Infinity : 0, ease: "easeInOut" },
+                        strokeDashoffset: { duration: .78, repeat: isListening ? Infinity : 0, ease: "linear" },
+                      }}
+                    />
+                  </>
+                )}
               </svg>
-            </div>
-          </div>       </div>
+            </div>          </div>       </div>
       </section>
 
       <section className="relative z-10 px-6 pb-20 pt-10 lg:px-8">
