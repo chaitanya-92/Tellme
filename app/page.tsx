@@ -55,25 +55,37 @@ export default function Home() {
   const [openStep, setOpenStep] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const [orbOffset, setOrbOffset] = useState({ x: 0, y: 0 });
-  const [marqueeDirection, setMarqueeDirection] = useState<"left" | "right">("right");
   const orbGuideRef = useRef<HTMLDivElement>(null);
+
+  const marqueeRef = useRef<HTMLDivElement>(null);
+  const marqueeVelocity = useRef(0.75);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
+    let position = 0;
+    let frame = 0;
+
     const onScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY) {
-        setMarqueeDirection("left");
-      } else if (currentScrollY < lastScrollY) {
-        setMarqueeDirection("right");
-      } else if (currentScrollY <= 8) {
-        setMarqueeDirection("right");
-      }
+      if (currentScrollY > lastScrollY) marqueeVelocity.current = -0.75;
+      else if (currentScrollY < lastScrollY) marqueeVelocity.current = 0.75;
       lastScrollY = currentScrollY;
       setIsScrolled(currentScrollY > 48);
     };
+
+    const animateMarquee = () => {
+      position += marqueeVelocity.current;
+      if (position <= -50) position += 50;
+      if (position >= 0) position -= 50;
+      if (marqueeRef.current) {
+        marqueeRef.current.style.transform = `translate3d(${position}%, 0, 0)`;
+      }
+      frame = requestAnimationFrame(animateMarquee);
+    };
+
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
+    frame = requestAnimationFrame(animateMarquee);
 
     const onPointerMove = (event: PointerEvent) => {
       const guide = orbGuideRef.current;
@@ -99,6 +111,7 @@ export default function Home() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("pointermove", onPointerMove);
+      cancelAnimationFrame(frame);
     };
   }, []);
 
@@ -350,7 +363,7 @@ export default function Home() {
       </section>
 
       <section className="relative z-10 overflow-hidden border-y border-[#262522]/10 bg-[#DED3BF]">
-        <div className={`marquee-track flex w-max items-center py-7 text-[11px] font-medium tracking-[.18em] text-[#262522] ${marqueeDirection === "right" ? "marquee-right" : "marquee-left"}`}>
+        <div className="marquee-track flex w-max items-center py-7 text-[11px] font-medium tracking-[.18em] text-[#262522]" ref={marqueeRef}>
           {[0, 1].map((group) => (
             <div key={group} className="flex shrink-0 items-center">
               {[
