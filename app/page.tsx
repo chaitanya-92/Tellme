@@ -660,7 +660,7 @@ export default function Home() {
                 Add to Chrome <ArrowRight size={17} className="ml-2" />
               </Button>
               <Button size="lg" variant="secondary" asChild>
-                <a href="#features">
+                <a href="#how">
                   <Play size={15} className="mr-2 fill-current" /> See how it works
                 </a>
               </Button>
