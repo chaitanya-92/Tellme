@@ -552,13 +552,10 @@ export default function Home() {
               <span className="vintage-serif text-[23px] tracking-[-.02em]">tellme.</span>
             </a>
 
-            <div className="flex h-full items-center justify-end gap-6 text-[11px] uppercase tracking-[.12em] text-[#665F56] sm:gap-8">
-              <a href="#how" className="transition-colors hover:text-[#262522]">how it works</a>
-              <a href="#features" className="transition-colors hover:text-[#262522]">features</a>
-              <a href="#use-cases" className="transition-colors hover:text-[#262522]">use cases</a>
+            <div className="flex h-full items-center justify-end">
               <Button
                 size="sm"
-                className="ml-2 hidden sm:inline-flex"
+                className="hidden sm:inline-flex"
                 onClick={() => setShowExtensionInstall(true)}
               >
                 Add to Chrome <ArrowRight size={15} className="ml-2" />
