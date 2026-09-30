@@ -919,30 +919,10 @@ export default function Home() {
                 A quieter way to keep up with the internet without giving every interesting page your full attention.
               </p>
 
-              <div className="mt-10 border-t border-[#262522] pt-4">
-                <div className="flex items-center justify-between text-[9px] uppercase tracking-[.18em] text-[#665F56]">
-                  <span>Selected feature</span>
-                  <span>Click to explore</span>
-                </div>
-                <div className="mt-4 flex items-center gap-3">
-                  {features.map((feature, i) => (
-                    <button
-                      key={feature.title}
-                      type="button"
-                      aria-label={`Show feature ${i + 1}: ${feature.title}`}
-                      aria-pressed={activeFeature === i}
-                      onClick={() => setActiveFeature(i)}
-                      className={`group flex h-10 w-10 items-center justify-center border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9A3038] ${activeFeature === i ? "border-[#262522] bg-[#262522] text-[#F4EEDF]" : "border-[#B8AB95] bg-[#F4EEDF]/50 text-[#665F56] hover:-translate-y-0.5 hover:border-[#262522]"}`}
-                    >
-                      <span className="font-mono text-[9px] tracking-[.14em]">0{i + 1}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
             </div>
 
             <div className="min-w-0">
-              <div className="mb-4 flex items-center gap-2">
+              <div className="mb-4 flex items-center gap-3">
                 {features.map(({ icon: Icon, title }, i) => (
                   <motion.button
                     key={title}
@@ -955,19 +935,53 @@ export default function Home() {
                     className={`group relative flex h-12 w-12 cursor-pointer items-center justify-center border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9A3038] ${activeFeature === i ? "border-[#262522] bg-[#262522] text-[#F4EEDF] shadow-[0_8px_18px_rgba(38,37,34,.10)]" : "border-[#B8AB95] bg-[#F4EEDF]/65 text-[#665F56] hover:border-[#665F56] hover:bg-[#F7F2E8]"}`}
                   >
                     <Icon size={17} strokeWidth={1.5} className={`transition-transform duration-300 ${activeFeature === i ? "scale-110 text-[#F4EEDF]" : "group-hover:scale-110 group-hover:text-[#9A3038]"}`} />
-                    <span className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 bg-[#F4EEDF] px-1.5 font-mono text-[8px] leading-none tracking-[.14em] text-[#665F56]">
-                      0{i + 1}
-                    </span>
                     <span className={`absolute inset-x-0 bottom-0 h-[2px] origin-center bg-[#9A3038] transition-transform duration-300 ${activeFeature === i ? "scale-x-100" : "scale-x-0"}`} />
                   </motion.button>
                 ))}
-                <span className="ml-2 text-[9px] uppercase tracking-[.18em] text-[#9D9180]">Select a feature</span>
+                <span className="ml-1 text-[9px] uppercase tracking-[.18em] text-[#9D9180]">Select a signal</span>
+              </div>
+
+              <div className="relative mb-3 flex h-8 items-center" aria-hidden="true">
+                <span className="font-mono text-[8px] tracking-[.18em] text-[#665F56]">0{activeFeature + 1}</span>
+                <motion.div
+                  className="mx-3 h-px flex-1 bg-[#B8AB95]/80"
+                  initial={false}
+                  animate={{ opacity: isListening ? [0.28, 0.72, 0.28] : 0.3 }}
+                  transition={{ duration: 1.4, repeat: isListening ? Infinity : 0, ease: "easeInOut" }}
+                />
+                <div className="flex h-8 items-center gap-[3px]">
+                  {Array.from({ length: 13 }).map((_, i) => (
+                    <motion.span
+                      key={i}
+                      className="w-px rounded-full bg-[#9A3038]"
+                      animate={{
+                        height: isListening
+                          ? [3 + ((i * 7) % 8), 7 + ((i * 11) % 17), 3 + ((i * 5) % 7)]
+                          : 3,
+                        opacity: isListening ? [0.28, 0.9, 0.28] : 0.2,
+                      }}
+                      transition={{
+                        duration: 0.72 + (i % 4) * 0.08,
+                        repeat: isListening ? Infinity : 0,
+                        delay: i * 0.045,
+                        ease: "easeInOut",
+                      }}
+                    />
+                  ))}
+                </div>
+                <motion.div
+                  className="mx-3 h-px flex-1 bg-[#B8AB95]/80"
+                  initial={false}
+                  animate={{ opacity: isListening ? [0.28, 0.72, 0.28] : 0.3 }}
+                  transition={{ duration: 1.4, repeat: isListening ? Infinity : 0, ease: "easeInOut" }}
+                />
+                <span className="font-mono text-[8px] tracking-[.18em] text-[#665F56]">0{activeFeature + 1}</span>
               </div>
 
               <div className="relative overflow-hidden border border-[#262522]/15 bg-[#F4EEDF] shadow-[0_16px_35px_rgba(38,37,34,.07)]">
                 <div className="flex items-center justify-between border-b border-dashed border-[#B8AB95] px-5 py-3 text-[9px] uppercase tracking-[.18em] text-[#665F56]">
                   <span>Tellme / interaction study</span>
-                  <span>0{activeFeature + 1} / 03</span>
+                  <span>Signal / live</span>
                 </div>
 
                 <div className="relative h-[310px] sm:h-[390px]">
@@ -997,8 +1011,13 @@ export default function Home() {
                     >
                       <div>
                         <div className="flex items-center gap-3 text-[9px] uppercase tracking-[.18em] text-[#9A3038]">
-                          <span>0{activeFeature + 1}</span>
-                          <span className="h-px w-8 bg-[#9A3038]/50" />
+                          <span className="font-mono text-[#665F56]">0{activeFeature + 1}</span>
+                          <motion.span
+                            className="h-px w-8 bg-[#9A3038]/55"
+                            animate={{ scaleX: isListening ? [0.5, 1, 0.5] : 0.6 }}
+                            transition={{ duration: 1.2, repeat: isListening ? Infinity : 0, ease: "easeInOut" }}
+                            style={{ transformOrigin: "left" }}
+                          />
                           <span>{["A hands-free layer", "A clearer thread", "A better question"][activeFeature]}</span>
                         </div>
                         <h3 className="vintage-serif mt-3 text-3xl leading-none sm:text-4xl">
