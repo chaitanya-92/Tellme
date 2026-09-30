@@ -1560,9 +1560,7 @@ export default function Home() {
               <span className="vintage-serif text-lg">tellme.</span>
             </div>
 
-            <div className="flex flex-wrap items-center gap-5 text-[10px] uppercase tracking-[.15em] text-[#665F56]">
-              <a href="#" className="transition-colors hover:text-[#9A3038]">Privacy</a>
-              <a href="#" className="transition-colors hover:text-[#9A3038]">Terms</a>
+            <div className="flex items-center text-[10px] uppercase tracking-[.15em] text-[#665F56]">
               <a
                 href="https://github.com/chaitanya-92/Tellme"
                 target="_blank"
