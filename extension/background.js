@@ -1,13 +1,15 @@
-const TELLME_URL = "http://localhost:3000/";
-const MAX_REDDIT_COMMENTS = 60;
-
+const MAX_REDDIT_COMMENTS = 500;
 const DEFAULT_STATE = {
   queue: [],
   index: 0,
   status: "idle",
   sourceTitle: "",
-  sourceUrl: ""
+  sourceUrl: "",
+  contentType: "",
+  voiceName: ""
 };
+
+let offscreenCreating = null;
 
 async function readState() {
   const stored = await chrome.storage.local.get("tellmeReader");
@@ -16,7 +18,61 @@ async function readState() {
 
 async function writeState(state) {
   await chrome.storage.local.set({ tellmeReader: state });
+
+  const reading = state.status === "reading";
+  await chrome.action.setBadgeText({ text: reading ? "▶" : "" });
+  await chrome.action.setBadgeBackgroundColor({ color: "#9A3038" });
+
   chrome.runtime.sendMessage({ type: "tellme-reader-updated", state }).catch(() => {});
+}
+
+async function ensureOffscreen() {
+  const offscreenUrl = chrome.runtime.getURL("offscreen.html");
+
+  if (chrome.runtime.getContexts) {
+    const contexts = await chrome.runtime.getContexts({
+      contextTypes: ["OFFSCREEN_DOCUMENT"],
+      documentUrls: [offscreenUrl]
+    });
+
+    if (contexts.length) return;
+  }
+
+  if (offscreenCreating) {
+    await offscreenCreating;
+    return;
+  }
+
+  offscreenCreating = chrome.offscreen.createDocument({
+    url: "offscreen.html",
+    reasons: ["AUDIO_PLAYBACK"],
+    justification: "Keep Tellme voice narration running while the user changes browser tabs."
+  });
+
+  try {
+    await offscreenCreating;
+  } finally {
+    offscreenCreating = null;
+  }
+}
+
+async function sendSpeech(message) {
+  await ensureOffscreen();
+  return new Promise((resolve, reject) => {
+    chrome.runtime.sendMessage(message, (response) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message));
+        return;
+      }
+
+      if (!response?.ok) {
+        reject(new Error(response?.error || "Speech engine error"));
+        return;
+      }
+
+      resolve(response);
+    });
+  });
 }
 
 chrome.runtime.onInstalled.addListener(() => {
@@ -26,49 +82,105 @@ chrome.runtime.onInstalled.addListener(() => {
       title: "Tellme this page",
       contexts: ["page"]
     });
+
     chrome.contextMenus.create({
       id: "tellme-selection",
       title: "Tellme this selection",
       contexts: ["selection"]
     });
   });
+
+  chrome.storage.local.set({ tellmeReader: DEFAULT_STATE });
 });
 
-async function getPagePayload(tabId, selectionOverride) {
+function cleanText(value) {
+  return (value || "")
+    .replace(/\u00a0/g, " ")
+    .replace(/[ \t]+/g, " ")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+async function getPagePayload(tabId, selectionOverride = "") {
   const results = await chrome.scripting.executeScript({
     target: { tabId },
-    func: (selectedText, maxRedditComments) => {
+    func: async (selectedText, maxComments) => {
+      const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
       const clean = (value) => (value || "")
         .replace(/\u00a0/g, " ")
         .replace(/[ \t]+/g, " ")
         .replace(/\n{3,}/g, "\n\n")
         .trim();
 
-      const makeSegment = (kind, text, extra) => ({
+      const makeSegment = (kind, text, extra = {}) => ({
         id: crypto.randomUUID(),
         kind,
         text: clean(text),
-        ...(extra || {})
+        ...extra
       });
 
       const isReddit =
         location.hostname === "reddit.com" ||
         location.hostname.endsWith(".reddit.com");
 
-      const segments = [];
-
       if (isReddit) {
+        const originalScroll = window.scrollY;
+
+        // Reddit progressively renders comments. Visit the lower part of the
+        // thread to give lazy-loaded comments/replies a chance to materialize,
+        // then restore exactly where the user was reading.
+        const clickMoreButtons = async () => {
+          for (let pass = 0; pass < 4; pass += 1) {
+            const buttons = Array.from(document.querySelectorAll("button, a"))
+              .filter((element) => {
+                const text = clean(element.textContent).toLowerCase();
+                const label = clean(element.getAttribute("aria-label")).toLowerCase();
+                return (
+                  /more replies|view more replies|load more comments|more comments|view more/.test(text) ||
+                  /more replies|view more replies|load more comments|more comments|view more/.test(label)
+                );
+              })
+              .slice(0, 40);
+
+            if (!buttons.length) break;
+
+            buttons.forEach((button) => {
+              try { button.click(); } catch {}
+            });
+
+            await sleep(350);
+          }
+        };
+
+        for (let pass = 0; pass < 8; pass += 1) {
+          await clickMoreButtons();
+
+          const heightBefore = document.documentElement.scrollHeight;
+          window.scrollTo(0, Math.max(0, heightBefore - window.innerHeight - 120));
+          await sleep(450);
+
+          const heightAfter = document.documentElement.scrollHeight;
+          if (heightAfter === heightBefore && window.scrollY > heightAfter - window.innerHeight - 180) {
+            break;
+          }
+        }
+
+        window.scrollTo(0, document.documentElement.scrollHeight);
+        await sleep(650);
+        await clickMoreButtons();
+        window.scrollTo(0, originalScroll);
+        await sleep(250);
+
         const post =
           document.querySelector("shreddit-post") ||
           document.querySelector("[data-testid='post-container']") ||
           document.querySelector("article");
 
         const subreddit =
-          clean(
-            post?.querySelector(
-              "a[href*='/r/'], [slot='subredditName'], [data-testid='subreddit-name']"
-            )?.textContent
-          ) ||
+          clean(post?.querySelector(
+            "a[href*='/r/'], [slot='subredditName'], [data-testid='subreddit-name']"
+          )?.textContent) ||
           clean(document.querySelector("a[href*='/r/']")?.textContent);
 
         const title =
@@ -76,13 +188,13 @@ async function getPagePayload(tabId, selectionOverride) {
           clean(document.querySelector("h1")?.textContent) ||
           clean(document.title);
 
+        const segments = [];
+
         if (title) {
-          segments.push(
-            makeSegment("post-title", title, {
-              label: "Post title",
-              source: subreddit || "Reddit"
-            })
-          );
+          segments.push(makeSegment("post-title", title, {
+            label: "Post title",
+            source: subreddit || "Reddit"
+          }));
         }
 
         const bodyNode =
@@ -91,71 +203,79 @@ async function getPagePayload(tabId, selectionOverride) {
           ) ||
           post?.querySelector("div[class*='RichText'], div[class*='md']");
 
-        const body = clean(bodyNode?.innerText);
-        if (body && body !== title) {
-          segments.push(
-            makeSegment("post-body", body, {
-              label: "Post description",
-              source: subreddit || "Reddit"
-            })
-          );
+        const postBody = clean(bodyNode?.innerText);
+
+        if (postBody && postBody !== title) {
+          segments.push(makeSegment("post-body", postBody, {
+            label: "Post description",
+            source: subreddit || "Reddit"
+          }));
         }
 
         const commentNodes = Array.from(
           document.querySelectorAll("shreddit-comment")
-        )
-          .filter((node) => node instanceof HTMLElement)
-          .slice(0, maxRedditComments);
+        ).filter((node) => node instanceof HTMLElement);
 
-        const seenNodes = new Set();
+        const ordered = commentNodes
+          .map((node, documentIndex) => {
+            const author =
+              clean(node.getAttribute("author")) ||
+              clean(node.querySelector(
+                "[slot='authorName'], [data-testid='comment_author_link'], a[href*='/user/']"
+              )?.textContent) ||
+              "Commenter";
 
-        const readComment = (node, depth) => {
-          if (seenNodes.has(node)) return;
-          seenNodes.add(node);
+            const body =
+              clean(node.querySelector("[slot='comment']")?.innerText) ||
+              clean(node.querySelector("[data-testid='comment']")?.innerText) ||
+              clean(node.querySelector("[data-testid='comment-body']")?.innerText) ||
+              clean(Array.from(node.querySelectorAll("p")).map((p) => p.innerText).join(" "));
 
-          const author =
-            clean(node.getAttribute("author")) ||
-            clean(
-              node.querySelector(
-                "[slot='authorName'], [data-testid='comment_author_link']"
-              )?.textContent
-            ) ||
-            "Commenter";
+            const parentComment =
+              node.parentElement?.closest("shreddit-comment") || null;
 
-          const body =
-            clean(node.querySelector("[slot='comment']")?.innerText) ||
-            clean(node.querySelector("[data-testid='comment']")?.innerText) ||
-            clean(
-              Array.from(node.querySelectorAll("p"))
-                .map((p) => p.innerText)
-                .join(" ")
-            );
+            let depth = 0;
+            let cursor = parentComment;
 
-          if (body) {
-            segments.push(
-              makeSegment(depth === 0 ? "comment" : "reply", body, {
-                label: depth === 0 ? "Comment" : "Reply",
-                author,
-                depth
-              })
-            );
-          }
+            while (cursor) {
+              depth += 1;
+              cursor = cursor.parentElement?.closest("shreddit-comment") || null;
+            }
 
-          node
-            .querySelectorAll(":scope shreddit-comment, :scope .shreddit-comment")
-            .forEach((reply) => readComment(reply, depth + 1));
-        };
+            return {
+              node,
+              body,
+              author,
+              depth,
+              documentIndex
+            };
+          })
+          .filter((item) => {
+            if (!item.body) return false;
+            const lower = item.body.toLowerCase();
+            return lower !== "[deleted]" && lower !== "[removed]";
+          })
+          .sort((a, b) => a.documentIndex - b.documentIndex);
 
-        commentNodes.forEach((node) => readComment(node, 0));
+        const seen = new Set();
 
-        const unique = [];
-        const seenText = new Set();
+        for (const item of ordered) {
+          if (segments.length >= maxComments + 2) break;
 
-        for (const segment of segments) {
-          const normalized = segment.text.toLowerCase();
-          if (!normalized || seenText.has(normalized)) continue;
-          seenText.add(normalized);
-          unique.push(segment);
+          const normalized = item.body.toLowerCase().replace(/\s+/g, " ");
+          if (seen.has(normalized)) continue;
+          seen.add(normalized);
+
+          segments.push(makeSegment(
+            item.depth > 0 ? "reply" : "comment",
+            item.body,
+            {
+              label: item.depth > 0 ? "Reply" : "Comment",
+              author: item.author,
+              depth: item.depth,
+              source: subreddit || "Reddit"
+            }
+          ));
         }
 
         return {
@@ -163,11 +283,11 @@ async function getPagePayload(tabId, selectionOverride) {
           title: title || "Reddit discussion",
           url: location.href,
           selection: clean(selectedText || window.getSelection()?.toString() || ""),
-          text: unique.map((segment) => {
+          text: segments.map((segment) => {
             const author = segment.author ? segment.author + ": " : "";
             return author + segment.text;
-          }).join("\n\n").slice(0, 120000),
-          segments: unique.slice(0, maxRedditComments + 2)
+          }).join("\n\n").slice(0, 180000),
+          segments
         };
       }
 
@@ -177,7 +297,7 @@ async function getPagePayload(tabId, selectionOverride) {
 
       const description = clean(
         document.querySelector("meta[name='description']")?.getAttribute("content") ||
-        document.querySelector("main p, article p")?.textContent
+        document.querySelector("main > p, article > p")?.textContent
       );
 
       const main =
@@ -188,34 +308,31 @@ async function getPagePayload(tabId, selectionOverride) {
 
       const clone = main?.cloneNode(true);
       if (clone) {
-        clone
-          .querySelectorAll(
-            "script, style, noscript, svg, nav, footer, header, aside, form, [aria-hidden='true']"
-          )
-          .forEach((node) => node.remove());
+        clone.querySelectorAll(
+          "script, style, noscript, svg, nav, footer, header, aside, form, [aria-hidden='true']"
+        ).forEach((node) => node.remove());
       }
 
       const text = clean(clone?.innerText || document.body?.innerText || "");
-      const generic = [];
+      const segments = [];
 
       if (title) {
-        generic.push(makeSegment("page-title", title, { label: "Page title" }));
+        segments.push(makeSegment("page-title", title, { label: "Page title" }));
       }
 
       if (description && description !== title) {
-        generic.push(
-          makeSegment("description", description, { label: "Description" })
-        );
+        segments.push(makeSegment("description", description, { label: "Description" }));
       }
 
       text
         .split(/\n+/)
         .map(clean)
         .filter((line) => line.length > 30)
-        .slice(0, 35)
+        .slice(0, 80)
         .forEach((line) => {
-          if (line === title || line === description) return;
-          generic.push(makeSegment("content", line, { label: "Page content" }));
+          if (line !== title && line !== description) {
+            segments.push(makeSegment("content", line, { label: "Page content" }));
+          }
         });
 
       return {
@@ -223,8 +340,8 @@ async function getPagePayload(tabId, selectionOverride) {
         title: title || "Untitled page",
         url: location.href,
         selection: clean(selectedText || window.getSelection()?.toString() || ""),
-        text: generic.map((segment) => segment.text).join("\n\n").slice(0, 120000),
-        segments: generic
+        text: segments.map((segment) => segment.text).join("\n\n").slice(0, 180000),
+        segments
       };
     },
     args: [selectionOverride || "", MAX_REDDIT_COMMENTS]
@@ -240,44 +357,28 @@ async function getPagePayload(tabId, selectionOverride) {
   };
 }
 
-async function ingest(payload) {
-  const response = await fetch(TELLME_URL + "api/extension/ingest", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
+async function chooseVoice() {
+  await ensureOffscreen();
 
-  if (!response.ok) throw new Error("Tellme server rejected the page");
+  const response = await sendSpeech({ type: "tellme-list-voices" });
+  const voices = response.voices || [];
 
-  const data = await response.json();
-  if (!data.token) throw new Error("Tellme did not return a handoff token");
-  return data.token;
-}
+  const preferred = [
+    "Samantha",
+    "Ava",
+    "Karen",
+    "Google US English",
+    "Daniel",
+    "Alex"
+  ];
 
-async function speakCurrent() {
-  const state = await readState();
-  const current = state.queue[state.index];
-
-  if (!current) {
-    await chrome.tts.stop();
-    await writeState({ ...state, status: "complete" });
-    return;
+  for (const name of preferred) {
+    const match = voices.find((voice) => voice.name?.toLowerCase().includes(name.toLowerCase()));
+    if (match) return match.name;
   }
 
-  chrome.tts.stop();
-
-  await writeState({
-    ...state,
-    status: "reading"
-  });
-
-  // Chrome generates its own utterance ID for tts events. Do not pass a
-  // custom utteranceId here: it is not a supported tts.speak option.
-  chrome.tts.speak(current.text, {
-    rate: 1.02,
-    pitch: 1,
-    enqueue: false
-  });
+  const english = voices.filter((voice) => (voice.lang || "").toLowerCase().startsWith("en"));
+  return english[0]?.name || voices[0]?.name || "";
 }
 
 async function startReader(payload) {
@@ -304,66 +405,41 @@ async function startReader(payload) {
     });
   }
 
+  const voiceName = await chooseVoice();
+
   const state = {
     ...DEFAULT_STATE,
     queue,
     index: 0,
     status: queue.length ? "reading" : "empty",
     sourceTitle: payload.title || "",
-    sourceUrl: payload.url || ""
+    sourceUrl: payload.url || "",
+    contentType: payload.contentType || "webpage",
+    voiceName
   };
 
   await writeState(state);
 
-  if (queue.length) await speakCurrent();
+  if (queue.length) {
+    await sendSpeech({
+      type: "tellme-speak",
+      text: queue[0].text,
+      voiceName,
+      rate: 0.97,
+      pitch: 1
+    });
+  }
 }
 
-async function sendTabToTellme(tab, selectionOverride) {
+async function sendTabToTellme(tab, selectionOverride = "") {
   if (!tab?.id) throw new Error("No active tab");
 
-  const payload = await getPagePayload(tab.id, selectionOverride || "");
+  const payload = await getPagePayload(tab.id, selectionOverride);
+  await chrome.storage.local.set({ tellmeSource: payload });
   await startReader(payload);
-
-  const token = await ingest(payload);
-
-  await chrome.storage.local.set({
-    tellmeSource: payload,
-    tellmeLastToken: token
-  });
-
-  const query = new URLSearchParams({
-    source: "extension",
-    token,
-    title: payload.title,
-    url: payload.url
-  });
-
-  await chrome.tabs.create({
-    url: TELLME_URL + "?" + query.toString()
-  });
 
   return payload;
 }
-
-chrome.tts.onEvent.addListener(async (event) => {
-  const state = await readState();
-
-  if (event.type === "end" && state.status === "reading") {
-    const nextIndex = state.index + 1;
-
-    if (nextIndex >= state.queue.length) {
-      await writeState({ ...state, status: "complete", utteranceId: "" });
-      return;
-    }
-
-    await writeState({ ...state, index: nextIndex });
-    await speakCurrent();
-  }
-
-  if (event.type === "error") {
-    await writeState({ ...state, status: "error" });
-  }
-});
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   (async () => {
@@ -372,7 +448,8 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         active: true,
         lastFocusedWindow: true
       });
-      const payload = await sendTabToTellme(tab, "");
+
+      const payload = await sendTabToTellme(tab);
       sendResponse({ ok: true, payload });
       return;
     }
@@ -381,29 +458,33 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       const state = await readState();
 
       if (message.command === "pause") {
-        chrome.tts.pause();
+        await sendSpeech({ type: "tellme-pause" });
         await writeState({ ...state, status: "paused" });
       } else if (message.command === "resume") {
-        chrome.tts.resume();
+        await sendSpeech({ type: "tellme-resume" });
         await writeState({ ...state, status: "reading" });
       } else if (message.command === "stop") {
-        chrome.tts.stop();
+        await sendSpeech({ type: "tellme-stop" });
         await writeState({ ...state, status: "stopped" });
       } else if (message.command === "next") {
-        chrome.tts.stop();
+        const nextIndex = state.index + 1;
 
-        if (state.index + 1 < state.queue.length) {
+        if (nextIndex < state.queue.length) {
+          await sendSpeech({ type: "tellme-stop" });
           await writeState({
             ...state,
-            index: state.index + 1,
+            index: nextIndex,
             status: "reading"
           });
-          await speakCurrent();
-        } else {
-          await writeState({
-            ...state,
-            status: "complete"
+          await sendSpeech({
+            type: "tellme-speak",
+            text: state.queue[nextIndex].text,
+            voiceName: state.voiceName,
+            rate: 0.97,
+            pitch: 1
           });
+        } else {
+          await writeState({ ...state, status: "complete" });
         }
       }
 
@@ -413,6 +494,45 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
     if (message?.type === "tellme-reader-state") {
       sendResponse({ ok: true, state: await readState() });
+      return;
+    }
+
+    if (message?.type === "tellme-speech-ended") {
+      const state = await readState();
+
+      if (state.status !== "reading") {
+        sendResponse({ ok: true });
+        return;
+      }
+
+      const nextIndex = state.index + 1;
+
+      if (nextIndex >= state.queue.length) {
+        await writeState({ ...state, status: "complete" });
+        sendResponse({ ok: true });
+        return;
+      }
+
+      await writeState({
+        ...state,
+        index: nextIndex
+      });
+
+      await sendSpeech({
+        type: "tellme-speak",
+        text: state.queue[nextIndex].text,
+        voiceName: state.voiceName,
+        rate: 0.97,
+        pitch: 1
+      });
+
+      sendResponse({ ok: true });
+      return;
+    }
+
+    if (message?.type === "tellme-list-voices") {
+      const response = await sendSpeech({ type: "tellme-list-voices" });
+      sendResponse({ ok: true, voices: response.voices || [] });
       return;
     }
 
@@ -428,24 +548,10 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   return true;
 });
 
-chrome.commands.onCommand.addListener(async (command) => {
-  if (command !== "send-page-to-tellme") return;
-
-  try {
-    const [tab] = await chrome.tabs.query({
-      active: true,
-      lastFocusedWindow: true
-    });
-    await sendTabToTellme(tab, "");
-  } catch (error) {
-    console.error("Tellme shortcut error:", error);
-  }
-});
-
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   try {
     if (info.menuItemId === "tellme-page") {
-      await sendTabToTellme(tab, "");
+      await sendTabToTellme(tab);
     }
 
     if (info.menuItemId === "tellme-selection") {
@@ -456,6 +562,16 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 });
 
-function cleanText(value) {
-  return (value || "").replace(/\u00a0/g, " ").replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
-}
+chrome.commands.onCommand.addListener(async (command) => {
+  if (command !== "send-page-to-tellme") return;
+
+  try {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      lastFocusedWindow: true
+    });
+    await sendTabToTellme(tab);
+  } catch (error) {
+    console.error("Tellme shortcut error:", error);
+  }
+});
