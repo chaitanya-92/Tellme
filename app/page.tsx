@@ -457,34 +457,27 @@ export default function Home() {
                   <span>Illustration · 02</span>
                   <span>Keep moving</span>
                 </div>
-                <div className="relative mt-4 h-52 overflow-hidden border border-[#262522]/20 bg-[#E7DED0]">
-                  <motion.div
-                    animate={{ y: [0, -4, 0], rotate: [0, -0.5, 0.3, 0] }}
-                    transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute inset-0"
-                  >
-                    <svg viewBox="0 0 420 220" className="h-full w-full" aria-label="Editorial illustration of listening while working">
-                      <rect width="420" height="220" fill="#E7DED0" />
-                      <path d="M18 28H402M18 192H402" stroke="#262522" strokeWidth="2" />
-                      <rect x="28" y="52" width="95" height="78" fill="#D2C1A5" stroke="#262522" strokeWidth="3" />
-                      <path d="M40 70h70M40 84h54M40 98h66M40 112h44" stroke="#665F56" strokeWidth="3" />
-                      <path d="M118 176h235l-15 20H133Z" fill="#51483F" stroke="#262522" strokeWidth="3" />
-                      <path d="M190 154c-4-44 13-74 48-78 29-3 50 18 49 48-1 28-20 45-44 56Z" fill="#C69B72" stroke="#262522" strokeWidth="4" />
-                      <path d="M190 120c-2-42 25-65 53-58 25 6 39 28 31 54-16-14-31-20-51-22-7 15-18 25-33 26Z" fill="#262522" />
-                      <path d="M247 117c-12 7-22 6-31-1M244 132c-9 6-18 6-27 2" fill="none" stroke="#262522" strokeWidth="3" strokeLinecap="round" />
-                      <path d="M245 151c35-3 68 5 101 28l-16 17c-34-16-58-21-88-19Z" fill="#C69B72" stroke="#262522" strokeWidth="4" />
-                      <path d="M272 64c-6 9-7 20-4 30M278 65c8 7 13 16 14 26" fill="none" stroke="#9A3038" strokeWidth="3" strokeLinecap="round" />
-                      <rect x="291" y="42" width="100" height="75" rx="2" fill="#F4EEDF" stroke="#262522" strokeWidth="4" transform="rotate(-4 291 42)" />
-                      <path d="M306 61h65M306 72h50M306 83h70M306 94h42" stroke="#665F56" strokeWidth="3" />
-                      <g fill="none" stroke="#9A3038" strokeWidth="3">
-                        <path d="M267 102h9v-12h8v25h8v-18h8v10h8v-21h8v29h8v-17h8v8h8" />
-                      </g>
-                      <circle cx="378" cy="26" r="13" fill="#9A3038" opacity=".9" />
-                    </svg>
-                  </motion.div>
-                </div>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{
+                    opacity: { duration: 0.5 },
+                    scale: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+                    y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+                  }}
+                  className="relative mt-4 overflow-hidden border border-[#262522]/20 bg-[#E7DED0]"
+                >
+                  <img
+                    src="/editorial-listening.svg"
+                    alt="Editorial illustration of listening while working"
+                    className="block h-auto w-full"
+                  />
+                </motion.div>
                 <div className="mt-2 flex justify-between text-[9px] uppercase tracking-[.14em] text-[#665F56]">
-                  <span>Earbuds on</span><span>Attention elsewhere</span>
+                  <span>Earbuds on</span>
+                  <span>Attention elsewhere</span>
                 </div>
               </motion.div>
             </motion.div>
