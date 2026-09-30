@@ -57,6 +57,67 @@ const features = [
   },
 ];
 
+function TypewriterText({
+  text,
+  speed = 42,
+  delay = 0,
+  className = "",
+}: {
+  text: string;
+  speed?: number;
+  delay?: number;
+  className?: string;
+}) {
+  const [visible, setVisible] = useState("");
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    const startTimer = window.setTimeout(() => setStarted(true), delay);
+    return () => window.clearTimeout(startTimer);
+  }, [delay]);
+
+  useEffect(() => {
+    if (!started) return;
+
+    let index = 0;
+    const timer = window.setInterval(() => {
+      index += 1;
+      setVisible(text.slice(0, index));
+      if (index >= text.length) window.clearInterval(timer);
+    }, speed);
+
+    return () => window.clearInterval(timer);
+  }, [started, speed, text]);
+
+  return (
+    <span className={className}>
+      {visible}
+      <span
+        aria-hidden="true"
+        className="ml-0.5 inline-block h-[0.9em] w-px translate-y-[2px] bg-current motion-safe:animate-pulse"
+      />
+    </span>
+  );
+}
+
+function useListeningClock(initialSeconds: number, playing: boolean) {
+  const [seconds, setSeconds] = useState(initialSeconds);
+
+  useEffect(() => {
+    if (!playing) return;
+
+    const timer = window.setInterval(() => {
+      setSeconds((value) => (value < initialSeconds + 45 ? value + 1 : initialSeconds));
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [initialSeconds, playing]);
+
+  const minutes = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const remainder = (seconds % 60).toString().padStart(2, "0");
+  return `${minutes}:${remainder}`;
+}
+
 function FeatureIllustration({ index }: { index: number }) {
   return (
     <div className="relative h-full w-full overflow-hidden">
@@ -214,6 +275,8 @@ export default function Home() {
   const [orbOffset, setOrbOffset] = useState({ x: 0, y: 0 });
   const [showConversation, setShowConversation] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
+  const [isListening, setIsListening] = useState(true);
+  const listeningTime = useListeningClock(161, isListening);
   const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
   const [missionPhase, setMissionPhase] = useState<"board" | "pinned" | "released">("board");
   const [missionColorProgress, setMissionColorProgress] = useState(0);
@@ -968,32 +1031,123 @@ export default function Home() {
               <div className="border-y-2 border-[#262522] py-5">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-semibold">Tellme is listening</p>
-                    <p className="text-[10px] uppercase tracking-[.16em] text-[#665F56]">Reddit thread · 14 min read</p>
+                    <p className="min-h-[1.25rem] text-sm font-semibold">
+                      <TypewriterText text="Tellme is listening" speed={55} />
+                    </p>
+                    <motion.p
+                      initial={{ opacity: 0, y: 5 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: .45, delay: .95 }}
+                      className="text-[10px] uppercase tracking-[.16em] text-[#665F56]"
+                    >
+                      Reddit thread · 14 min read
+                    </motion.p>
                   </div>
-                  <span className="text-xs text-[#9A3038]">02:41</span>
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: .4, delay: 1.1 }}
+                    className="text-xs text-[#9A3038]"
+                  >
+                    {listeningTime}
+                  </motion.span>
                 </div>
+
                 <div className="py-10">
                   <div className="mx-auto flex h-28 items-center justify-center gap-1">
-                    {Array.from({ length: 42 }).map((_, i) => (
-                      <div key={i} className="w-1 bg-[#9A3038]/65" style={{ height: `${waveformHeights[i]}px` }} />
+                    {waveformHeights.map((height, i) => (
+                      <motion.div
+                        key={i}
+                        className="w-1 origin-center rounded-full bg-[#9A3038]/65"
+                        initial={{ height: Math.max(9, height * 0.45) }}
+                        whileInView={{
+                          height: isListening
+                            ? [
+                                Math.max(9, height * 0.5),
+                                Math.min(80, height + (i % 4) * 3),
+                                Math.max(9, height * 0.6),
+                              ]
+                            : Math.max(8, height * 0.32),
+                          opacity: isListening ? [0.42, 0.9, 0.52] : 0.3,
+                        }}
+                        viewport={{ once: true }}
+                        transition={{
+                          duration: isListening ? 1.35 + (i % 5) * 0.08 : 0.25,
+                          repeat: isListening ? Infinity : 0,
+                          delay: i * 0.025,
+                          ease: "easeInOut",
+                        }}
+                      />
                     ))}
                   </div>
-                  <p className="vintage-serif mx-auto max-w-md text-center text-2xl leading-8 text-[#262522]">
-                    &quot;Most commenters agree on the outcome — they disagree on why it works.&quot;
+
+                  <div className="mx-auto mb-4 flex max-w-md items-center justify-center gap-2 text-[9px] uppercase tracking-[.2em] text-[#9A3038]">
+                    <span className="h-px w-5 bg-[#9A3038]/45" />
+                    <span>{isListening ? "LIVE TRANSCRIPT" : "PAUSED"}</span>
+                    <span className={`h-1.5 w-1.5 rounded-full ${isListening ? "bg-[#9A3038] motion-safe:animate-pulse" : "bg-[#665F56]/35"}`} />
+                    <span className="h-px w-5 bg-[#9A3038]/45" />
+                  </div>
+
+                  <p className="vintage-serif mx-auto min-h-[64px] max-w-md text-center text-2xl leading-8 text-[#262522]">
+                    <TypewriterText
+                      text="Most commenters agree on the outcome — they disagree on why it works."
+                      speed={30}
+                      delay={1350}
+                    />
                   </p>
                 </div>
+
                 <div className="flex items-center justify-between border-t border-dashed border-[#B8AB95] pt-4">
                   <span className="text-xs text-[#665F56]">1.5×</span>
                   <div className="flex items-center gap-3">
-                    <button className="text-xs text-[#665F56]">↶</button>
-                    <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[#9A3038] text-white"><Play size={14} fill="currentColor" /></button>
-                    <button className="text-xs text-[#665F56]">↷</button>
+                    <button type="button" className="cursor-pointer text-xs text-[#665F56] transition-transform duration-200 hover:scale-110" aria-label="Rewind 10 seconds">↶</button>
+                    <button
+                      type="button"
+                      onClick={() => setIsListening((value) => !value)}
+                      aria-label={isListening ? "Pause listening" : "Resume listening"}
+                      className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-[#9A3038] text-white shadow-[0_8px_18px_rgba(154,48,56,.18)] transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_22px_rgba(154,48,56,.24)]"
+                    >
+                      <AnimatePresence mode="wait" initial={false}>
+                        {isListening ? (
+                          <motion.span
+                            key="pause"
+                            initial={{ opacity: 0, scale: .7 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: .7 }}
+                          >
+                            <span className="flex items-center gap-[3px]">
+                              <span className="h-3.5 w-1 rounded-full bg-white" />
+                              <span className="h-3.5 w-1 rounded-full bg-white" />
+                            </span>
+                          </motion.span>
+                        ) : (
+                          <motion.span
+                            key="play"
+                            initial={{ opacity: 0, scale: .7 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: .7 }}
+                          >
+                            <Play size={14} fill="currentColor" />
+                          </motion.span>
+                        )}
+                      </AnimatePresence>
+                    </button>
+                    <button type="button" className="cursor-pointer text-xs text-[#665F56] transition-transform duration-200 hover:scale-110" aria-label="Forward 10 seconds">↷</button>
                   </div>
-                  <span className="text-xs text-[#665F56]">Ask ↗</span>
+                  <button type="button" className="cursor-pointer text-xs text-[#665F56] transition-colors duration-200 hover:text-[#9A3038]">Ask ↗</button>
                 </div>
               </div>
-              <p className="magazine-caption mt-3 text-[#665F56]">A listening desk for the pages you never have time to finish.</p>
+              <motion.p
+                initial={{ opacity: 0, y: 6 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: .5, delay: 2.2 }}
+                className="magazine-caption mt-3 text-[#665F56]"
+              >
+                A listening desk for the pages you never have time to finish.
+              </motion.p>
             </div>
           </div>
         </div>
