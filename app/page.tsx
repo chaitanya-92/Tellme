@@ -229,12 +229,12 @@ export default function Home() {
             <motion.div
               animate={{ x: orbOffset.x, y: orbOffset.y }}
               transition={{ type: "spring", stiffness: 170, damping: 18, mass: 0.55 }}
-              className="paper-card absolute right-10 top-1/2 flex h-[210px] w-[210px] -translate-y-1/2 flex-col items-center justify-center rounded-full bg-[#1F3044] text-center text-white will-change-transform"
+              className="absolute right-10 top-1/2 flex h-[210px] w-[210px] -translate-y-1/2 flex-col items-center justify-center rounded-full bg-[#1F3044] text-center text-[#F3EBDD] shadow-[0_24px_50px_rgba(24,37,53,.18)] will-change-transform"
             >
               <motion.span
                 animate={{ x: orbOffset.x * 0.18, y: orbOffset.y * 0.18 }}
                 transition={{ type: "spring", stiffness: 190, damping: 20 }}
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#7A263A]"
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#7A263A] text-[#F3EBDD] shadow-[0_8px_18px_rgba(122,38,58,.24)]"
               >
                 <Volume2 size={21} />
               </motion.span>
