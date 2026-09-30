@@ -60,7 +60,28 @@ export default function Home() {
     const onScroll = () => setIsScrolled(window.scrollY > 48);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+
+    const onPointerMove = (event: PointerEvent) => {
+      const orbCenterX = window.innerWidth - 10 - 135;
+      const orbCenterY = window.innerHeight * 0.5;
+      const dx = event.clientX - orbCenterX;
+      const dy = event.clientY - orbCenterY;
+      const distance = Math.hypot(dx, dy);
+      const maxDistance = 30;
+
+      if (distance <= maxDistance) {
+        setOrbOffset({ x: dx, y: dy });
+      } else {
+        const scale = maxDistance / distance;
+        setOrbOffset({ x: dx * scale, y: dy * scale });
+      }
+    };
+
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("pointermove", onPointerMove);
+    };
   }, []);
 
   return (
@@ -189,22 +210,6 @@ export default function Home() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: .25 }}
             className="relative hidden min-h-[390px] lg:block"
-            onMouseMove={(event) => {
-              const rect = event.currentTarget.getBoundingClientRect();
-              const centerX = rect.width - 175;
-              const centerY = rect.height / 2;
-              const dx = event.clientX - rect.left - centerX;
-              const dy = event.clientY - rect.top - centerY;
-              const distance = Math.hypot(dx, dy);
-              const maxOffset = 30;
-              if (distance <= maxOffset) {
-                setOrbOffset({ x: dx, y: dy });
-              } else {
-                const scale = maxOffset / distance;
-                setOrbOffset({ x: dx * scale, y: dy * scale });
-              }
-            }}
-            onMouseLeave={() => setOrbOffset({ x: 0, y: 0 })}
           >
             <div className="absolute right-0 top-1/2 h-px w-full -translate-y-1/2 dashed-path opacity-70" />
             <div className="absolute right-10 top-1/2 h-[270px] w-[270px] -translate-y-1/2 rounded-full border border-dashed border-[#b99a7a]" />
