@@ -568,27 +568,31 @@ export default function Home() {
               {steps.map((step, i) => {
                 const isOpen = openStep === i;
                 return (
-                  <motion.div
-                    key={step.num}
-                    initial={{ opacity: 0, y: 18 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, amount: 0.2 }}
-                    transition={{ duration: 0.5, delay: i * 0.1 }}
-                    className="border-b border-dashed border-[#B8AB95] last:border-b-0"
-                  >
-                    <button type="button" onClick={() => setOpenStep(isOpen ? -1 : i)} aria-expanded={isOpen}
-                      className="group flex w-full items-center gap-5 py-7 text-left transition-colors">
+                  <motion.div key={step.num} className="border-b border-dashed border-[#B8AB95] last:border-b-0">
+                    <button
+                      type="button"
+                      onClick={() => setOpenStep(isOpen ? -1 : i)}
+                      aria-expanded={isOpen}
+                      className="group flex w-full items-center gap-5 py-7 text-left transition-colors"
+                    >
                       <span className="font-mono text-[10px] text-[#9A3038]">{step.num}</span>
                       <span className="vintage-serif flex-1 text-2xl sm:text-3xl">{step.title}</span>
-                      <ChevronDown size={18} className={`text-[#665F56] transition-transform duration-300 ${isOpen ? "rotate-180 text-[#9A3038]" : "group-hover:translate-y-0.5"}`} />
+                      <ChevronDown
+                        size={18}
+                        className={`text-[#665F56] transition-transform duration-300 ${isOpen ? "rotate-180 text-[#9A3038]" : "group-hover:translate-y-0.5"}`}
+                      />
                     </button>
-                    <motion.div initial={false} animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }} transition={{ duration: .28, ease: "easeOut" }} className="overflow-hidden">
-                      <p className="pb-7 pl-10 max-w-xl text-sm leading-6 text-[#665F56]">{step.text}</p>
+                    <motion.div
+                      initial={false}
+                      animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
+                      transition={{ duration: 0.28, ease: "easeOut" }}
+                      className="overflow-hidden"
+                    >
+                      <p className="max-w-xl pb-7 pl-10 text-sm leading-6 text-[#665F56]">{step.text}</p>
                     </motion.div>
-                  </div>
+                  </motion.div>
                 );
-              })}
-            </div>
+              })}          </div>
           </div>
         </div>
       </section>
