@@ -58,34 +58,33 @@ export default function Home() {
   const orbGuideRef = useRef<HTMLDivElement>(null);
 
   const marqueeRef = useRef<HTMLDivElement>(null);
-  const marqueeVelocity = useRef(0.75);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
-    let position = -50;
-    let frame = 0;
+    let marqueePosition = 0;
 
     const onScroll = () => {
       const currentScrollY = window.scrollY;
-      if (currentScrollY > lastScrollY) marqueeVelocity.current = -0.75;
-      else if (currentScrollY < lastScrollY) marqueeVelocity.current = 0.75;
+      const delta = currentScrollY - lastScrollY;
+
+      if (delta !== 0 && marqueeRef.current) {
+        const loopWidth = marqueeRef.current.scrollWidth / 2;
+        marqueePosition -= delta * 0.42;
+
+        if (loopWidth > 0) {
+          marqueePosition %= loopWidth;
+          if (marqueePosition > 0) marqueePosition -= loopWidth;
+        }
+
+        marqueeRef.current.style.transform = `translate3d(${marqueePosition}px, 0, 0)`;
+      }
+
       lastScrollY = currentScrollY;
       setIsScrolled(currentScrollY > 48);
     };
 
-    const animateMarquee = () => {
-      position += marqueeVelocity.current;
-      if (position <= -50) position += 50;
-      if (position >= 0) position -= 50;
-      if (marqueeRef.current) {
-        marqueeRef.current.style.transform = `translate3d(${position}%, 0, 0)`;
-      }
-      frame = requestAnimationFrame(animateMarquee);
-    };
-
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    frame = requestAnimationFrame(animateMarquee);
 
     const onPointerMove = (event: PointerEvent) => {
       const guide = orbGuideRef.current;
