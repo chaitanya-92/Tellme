@@ -659,8 +659,10 @@ export default function Home() {
               <Button size="lg" onClick={() => setShowExtensionInstall(true)}>
                 Add to Chrome <ArrowRight size={17} className="ml-2" />
               </Button>
-              <Button size="lg" variant="secondary">
-                <Play size={15} className="mr-2 fill-current" /> See how it works
+              <Button size="lg" variant="secondary" asChild>
+                <a href="#features">
+                  <Play size={15} className="mr-2 fill-current" /> See how it works
+                </a>
               </Button>
             </motion.div>
           </div>
