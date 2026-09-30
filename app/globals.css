@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #fff8f0;
-  --paper-deep: #e0dfb1;
-  --ink: #4b2e2b;
-  --ink-soft: #6f5a4a;
+  --paper: #F3EBDD;
+  --paper-deep: #CFC2AE;
+  --ink: #1F3044;
+  --ink-soft: #70685E;
   --muted: #765640;
-  --line: #c9ad91;
-  --orange: #b77945;
+  --line: #CFC2AE;
+  --orange: #7A263A;
   --coral: #765640;
-  --charcoal: #4b2e2b;
-  --camel-light: #e0dfb1;
-  --ivory: #fff8f0;
-  --espresso-deep: #3b2421;
+  --charcoal: #1F3044;
+  --camel-light: #CFC2AE;
+  --ivory: #F3EBDD;
+  --espresso-deep: #182535;
 }
 
 * { box-sizing: border-box; }
@@ -25,7 +25,7 @@ html {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at 50% 0%, rgba(255,248,240,.82), transparent 35%),
+    radial-gradient(circle at 50% 0%, rgba(243,235,221,.88), transparent 35%),
     var(--paper);
   color: var(--ink);
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -54,8 +54,8 @@ a {
 .vintage-paper {
   background-color: var(--paper);
   background-image:
-    linear-gradient(rgba(75,46,43,.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(75,46,43,.022) 1px, transparent 1px);
+    linear-gradient(rgba(31,48,68,.022) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(31,48,68,.022) 1px, transparent 1px);
   background-size: 52px 52px;
 }
 
@@ -82,9 +82,9 @@ a {
 }
 
 .paper-card {
-  background: rgba(255,248,240,.78);
-  border: 1px solid rgba(75,46,43,.11);
-  box-shadow: 0 14px 35px rgba(75,46,43,.09);
+  background: rgba(243,235,221,.82);
+  border: 1px solid rgba(31,48,68,.11);
+  box-shadow: 0 14px 35px rgba(31,48,68,.09);
 }
 
 .orange-shadow {
