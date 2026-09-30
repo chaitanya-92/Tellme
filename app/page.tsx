@@ -63,7 +63,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="vintage-paper min-h-screen overflow-hidden text-[#25252a]">
+    <main className="vintage-paper min-h-screen overflow-hidden text-[#4b2e2b]">
       <div className="pointer-events-none fixed left-0 top-[47%] z-0 h-px w-[43%] dashed-path opacity-80" />
       <div className="pointer-events-none fixed right-0 top-[59%] z-0 h-px w-[31%] dashed-path opacity-80" />
       <div className="pointer-events-none fixed bottom-0 left-[50%] z-0 h-48 dashed-path-vertical opacity-70" />
@@ -95,13 +95,13 @@ export default function Home() {
             borderRadius: isScrolled ? 18 : 0,
             boxShadow: isScrolled
               ? [
-                  "0 0 0 rgba(37,37,42,0)",
-                  "0 22px 45px rgba(37,37,42,.18)",
-                  "0 8px 24px rgba(37,37,42,.12)",
-                  "0 12px 34px rgba(37,37,42,.12)",
+                  "0 0 0 .replace,0)",
+                  "0 22px 45px .replace,.18)",
+                  "0 8px 24px .replace,.12)",
+                  "0 12px 34px .replace,.12)",
                 ]
-              : "0 0 0 rgba(37,37,42,0)",
-            backgroundColor: isScrolled ? "rgba(255,255,255,.86)" : "rgba(243,240,233,0)",
+              : "0 0 0 .replace,0)",
+            backgroundColor: isScrolled ? "rgba(255,248,240,.92)" : "rgba(255,248,240,0)",
           }}
           transition={{
             height: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
@@ -109,23 +109,23 @@ export default function Home() {
             boxShadow: { duration: 0.68, ease: [0.16, 1, 0.3, 1] },
             backgroundColor: { duration: 0.35, ease: "easeOut" },
           }}
-          className="mx-auto overflow-hidden border border-[#25252a]/[0.08] backdrop-blur-xl"
+          className="mx-auto overflow-hidden border border-[#4b2e2b]/[0.08] backdrop-blur-xl"
         >
           <div className="mx-auto grid h-full max-w-[1180px] grid-cols-[1fr_auto] items-center px-5 sm:px-7 md:grid-cols-[1fr_1fr]">
             <a href="#" className="flex items-center gap-3">
-              <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#25252a]">
-                <span className="absolute top-[8px] h-px w-6 bg-[#f3f0e9]" />
-                <span className="absolute top-[13px] h-px w-6 bg-[#f3f0e9]" />
-                <span className="absolute top-[18px] h-px w-6 bg-[#f3f0e9]" />
-                <span className="absolute top-[23px] h-px w-6 bg-[#f3f0e9]" />
+              <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#4b2e2b]">
+                <span className="absolute top-[8px] h-px w-6 bg-[#fff8f0]" />
+                <span className="absolute top-[13px] h-px w-6 bg-[#fff8f0]" />
+                <span className="absolute top-[18px] h-px w-6 bg-[#fff8f0]" />
+                <span className="absolute top-[23px] h-px w-6 bg-[#fff8f0]" />
               </span>
               <span className="vintage-serif text-[21px]">tellme.</span>
             </a>
 
-            <div className="flex h-full items-center justify-end gap-7 text-[13px] text-[#6f6c68] sm:gap-9">
-              <a href="#how" className="transition-colors hover:text-[#25252a]">how it works</a>
-              <a href="#features" className="transition-colors hover:text-[#25252a]">features</a>
-              <a href="#use-cases" className="transition-colors hover:text-[#25252a]">use cases</a>
+            <div className="flex h-full items-center justify-end gap-7 text-[13px] text-[#795744] sm:gap-9">
+              <a href="#how" className="transition-colors hover:text-[#4b2e2b]">how it works</a>
+              <a href="#features" className="transition-colors hover:text-[#4b2e2b]">features</a>
+              <a href="#use-cases" className="transition-colors hover:text-[#4b2e2b]">use cases</a>
               <Button size="sm" className="ml-2 hidden sm:inline-flex">
                 Get Tellme <ArrowRight size={15} className="ml-2" />
               </Button>
@@ -142,7 +142,7 @@ export default function Home() {
               transition={{ duration: .7 }}
               className="mb-7 flex items-center gap-3 text-xs uppercase tracking-[.18em] text-[#77736e]"
             >
-              <span className="h-2 w-2 rounded-full bg-[#ff5a00]" />
+              <span className="h-2 w-2 rounded-full bg-[#c08552]" />
               the web, spoken
             </motion.div>
 
@@ -154,7 +154,7 @@ export default function Home() {
             >
               You found something
               <span className="relative block">
-                interesting<span className="absolute -bottom-2 ml-1 text-[#ef4a4a]">.</span>
+                interesting<span className="absolute -bottom-2 ml-1 text-[#8c5a3c]">.</span>
               </span>
               <span className="mt-5 block text-[#77736e]">You don't have to read it.</span>
             </motion.h1>
@@ -190,12 +190,12 @@ export default function Home() {
             className="relative hidden min-h-[390px] lg:block"
           >
             <div className="absolute right-0 top-1/2 h-px w-full -translate-y-1/2 dashed-path opacity-70" />
-            <div className="absolute right-10 top-1/2 h-[270px] w-[270px] -translate-y-1/2 rounded-full border border-dashed border-[#aaa39a]" />
-            <div className="absolute right-[135px] top-[calc(50%-135px)] h-[270px] w-px bg-[#b9b2a8]" />
-            <div className="absolute right-[135px] top-1/2 h-px w-[270px] bg-[#b9b2a8]" />
+            <div className="absolute right-10 top-1/2 h-[270px] w-[270px] -translate-y-1/2 rounded-full border border-dashed border-[#b99a7a]" />
+            <div className="absolute right-[135px] top-[calc(50%-135px)] h-[270px] w-px bg-[#c9ad91]" />
+            <div className="absolute right-[135px] top-1/2 h-px w-[270px] bg-[#c9ad91]" />
 
-            <div className="paper-card absolute right-10 top-1/2 flex h-[210px] w-[210px] -translate-y-1/2 flex-col items-center justify-center rounded-full bg-[#30313a] text-center text-white">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#ff5a00]">
+            <div className="paper-card absolute right-10 top-1/2 flex h-[210px] w-[210px] -translate-y-1/2 flex-col items-center justify-center rounded-full bg-[#4b2e2b] text-center text-white">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#c08552]">
                 <Volume2 size={21} />
               </span>
               <p className="vintage-serif mt-4 text-2xl">listen.</p>
@@ -211,19 +211,19 @@ export default function Home() {
           className="relative mx-auto mt-20 max-w-6xl"
         >
           <div className="paper-card overflow-hidden rounded-[24px]">
-            <div className="flex h-11 items-center gap-2 border-b border-[#25252a]/10 px-4">
-              <span className="h-2.5 w-2.5 rounded-full bg-[#25252a]/20" />
-              <span className="h-2.5 w-2.5 rounded-full bg-[#25252a]/20" />
-              <span className="h-2.5 w-2.5 rounded-full bg-[#25252a]/20" />
-              <div className="mx-auto flex h-7 w-1/2 items-center rounded-md border border-[#25252a]/10 bg-[#e9e4dc] px-3 text-[10px] text-[#85817b]">
+            <div className="flex h-11 items-center gap-2 border-b border-[#4b2e2b]/10 px-4">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#4b2e2b]/20" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#4b2e2b]/20" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#4b2e2b]/20" />
+              <div className="mx-auto flex h-7 w-1/2 items-center rounded-md border border-[#4b2e2b]/10 bg-[#e0dfb1] px-3 text-[10px] text-[#8c5a3c]">
                 reddit.com/r/...
               </div>
             </div>
 
             <div className="grid min-h-[390px] md:grid-cols-[1fr_340px]">
-              <div className="p-7 md:border-r md:border-[#25252a]/10 md:p-10">
-                <div className="mb-6 flex items-center gap-2 text-[10px] uppercase tracking-[.18em] text-[#85817b]">
-                  <span className="h-2 w-2 rounded-full bg-[#ff5a00]" /> Reddit · Discussion
+              <div className="p-7 md:border-r md:border-[#4b2e2b]/10 md:p-10">
+                <div className="mb-6 flex items-center gap-2 text-[10px] uppercase tracking-[.18em] text-[#8c5a3c]">
+                  <span className="h-2 w-2 rounded-full bg-[#c08552]" /> Reddit · Discussion
                 </div>
                 <h3 className="vintage-serif max-w-xl text-3xl leading-tight sm:text-4xl">
                   What's something you learned way too late?
@@ -239,20 +239,20 @@ export default function Home() {
                   ].map((x, i) => (
                     <div
                       key={x}
-                      className="flex items-center gap-3 rounded-xl border border-[#25252a]/10 bg-white/45 px-4 py-3 text-xs text-[#6f6c68]"
+                      className="flex items-center gap-3 rounded-xl border border-[#4b2e2b]/10 bg-white/45 px-4 py-3 text-xs text-[#795744]"
                     >
-                      <span className="text-[#25252a]/35">0{i + 1}</span>
+                      <span className="text-[#4b2e2b]/35">0{i + 1}</span>
                       {x}
                     </div>
                   ))}
                 </div>
               </div>
 
-              <div className="flex flex-col justify-between bg-[#30313a] p-6 text-white sm:p-7">
+              <div className="flex flex-col justify-between bg-[#4b2e2b] p-6 text-white sm:p-7">
                 <div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-sm font-medium">
-                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#ff5a00]">
+                      <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#c08552]">
                         <Volume2 size={14} />
                       </span>
                       Tellme
@@ -267,7 +267,7 @@ export default function Home() {
                     {Array.from({ length: 34 }).map((_, i) => (
                       <span
                         key={i}
-                        className="h-8 w-[3px] origin-center rounded-full bg-[#ff5a00]"
+                        className="h-8 w-[3px] origin-center rounded-full bg-[#c08552]"
                         style={{ height: 12 + ((i * 17) % 31) + "px" }}
                       />
                     ))}
@@ -282,7 +282,7 @@ export default function Home() {
                     &quot;The discussion really comes down to three ideas. First, ...&quot;
                   </p>
                   <div className="mt-4 flex items-center justify-between">
-                    <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[#ff5a00] text-white">
+                    <button className="flex h-10 w-10 items-center justify-center rounded-full bg-[#c08552] text-white">
                       <Play size={15} fill="currentColor" />
                     </button>
                     <span className="text-[11px] text-white/40">1.5× speed</span>
@@ -295,8 +295,8 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="relative z-10 border-y border-[#25252a]/10 bg-[#e9e4dc]/65">
-        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-center gap-x-14 gap-y-5 px-6 py-7 text-[11px] font-medium tracking-[.18em] text-[#85817b] lg:px-10">
+      <section className="relative z-10 border-y border-[#4b2e2b]/10 bg-[#e0dfb1]/65">
+        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-center gap-x-14 gap-y-5 px-6 py-7 text-[11px] font-medium tracking-[.18em] text-[#8c5a3c] lg:px-10">
           {["REDDIT", "QUORA", "HACKER NEWS", "MEDIUM", "ANY WEBPAGE"].map((x) => (
             <span key={x}>{x}</span>
           ))}
@@ -306,7 +306,7 @@ export default function Home() {
       <section id="how" className="relative z-10 mx-auto max-w-[1400px] px-6 py-28 lg:px-10 lg:py-36">
         <div className="grid gap-16 lg:grid-cols-[.8fr_1.2fr]">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[.2em] text-[#ff5a00]">How it works</p>
+            <p className="text-xs font-medium uppercase tracking-[.2em] text-[#c08552]">How it works</p>
             <h2 className="vintage-serif mt-5 max-w-lg text-5xl leading-[.98] sm:text-6xl">
               Stop switching between work and the web.
             </h2>
@@ -319,18 +319,18 @@ export default function Home() {
             {steps.map((step, i) => {
               const isOpen = openStep === i;
               return (
-                <div key={step.num} className="border-b border-[#25252a]/10 last:border-b-0">
+                <div key={step.num} className="border-b border-[#4b2e2b]/10 last:border-b-0">
                   <button
                     type="button"
                     onClick={() => setOpenStep(isOpen ? -1 : i)}
                     aria-expanded={isOpen}
-                    className="flex w-full items-center gap-5 px-6 py-6 text-left transition-colors hover:bg-[#e9e4dc]/70 sm:px-7"
+                    className="flex w-full items-center gap-5 px-6 py-6 text-left transition-colors hover:bg-[#e0dfb1]/70 sm:px-7"
                   >
-                    <span className="w-8 shrink-0 text-xs text-[#85817b]">{step.num}</span>
+                    <span className="w-8 shrink-0 text-xs text-[#8c5a3c]">{step.num}</span>
                     <span className="vintage-serif flex-1 text-xl sm:text-2xl">{step.title}</span>
                     <ChevronDown
                       size={19}
-                      className={`shrink-0 text-[#77736e] transition-transform duration-300 ${isOpen ? "rotate-180 text-[#ff5a00]" : ""}`}
+                      className={`shrink-0 text-[#77736e] transition-transform duration-300 ${isOpen ? "rotate-180 text-[#c08552]" : ""}`}
                     />
                   </button>
                   <motion.div
@@ -350,9 +350,9 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="features" className="relative z-10 border-y border-[#25252a]/10 bg-[#30313a] text-white">
+      <section id="features" className="relative z-10 border-y border-[#4b2e2b]/10 bg-[#4b2e2b] text-white">
         <div className="mx-auto max-w-[1400px] px-6 py-28 lg:px-10 lg:py-36">
-          <p className="text-xs font-medium uppercase tracking-[.2em] text-[#ff8a4a]">More than text-to-speech</p>
+          <p className="text-xs font-medium uppercase tracking-[.2em] text-[#d6a06b]">More than text-to-speech</p>
           <h2 className="vintage-serif mt-5 max-w-2xl text-5xl leading-[.98] sm:text-7xl">
             The useful parts, in your ears.
           </h2>
@@ -360,10 +360,10 @@ export default function Home() {
             {features.map(({ icon: Icon, title, text }, i) => (
               <motion.div
                 key={title}
-                whileHover={{ backgroundColor: "rgba(255,255,255,.055)" }}
-                className="bg-[#30313a] p-8 sm:p-10"
+                whileHover={{ backgroundColor: "rgba(255,248,240,.055)" }}
+                className="bg-[#4b2e2b] p-8 sm:p-10"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[.06] text-[#ff8a4a]">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[.06] text-[#d6a06b]">
                   <Icon size={19} />
                 </div>
                 <p className="mt-20 text-[11px] text-white/30">0{i + 1}</p>
@@ -378,7 +378,7 @@ export default function Home() {
       <section id="use-cases" className="relative z-10 mx-auto max-w-[1400px] px-6 py-28 lg:px-10 lg:py-36">
         <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
           <div>
-            <p className="text-xs font-medium uppercase tracking-[.2em] text-[#ff5a00]">Built for real life</p>
+            <p className="text-xs font-medium uppercase tracking-[.2em] text-[#c08552]">Built for real life</p>
             <h2 className="vintage-serif mt-5 text-5xl leading-[.98] sm:text-7xl">
               Keep your hands busy. Stay in the loop.
             </h2>
@@ -387,8 +387,8 @@ export default function Home() {
             </p>
             <div className="mt-8 space-y-3">
               {["Coding & building", "Research & studying", "Long Reddit & Quora threads", "Articles you saved for later"].map((x) => (
-                <div key={x} className="flex items-center gap-3 text-sm text-[#55545a]">
-                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#ff5a00]/10 text-[#ff5a00]">
+                <div key={x} className="flex items-center gap-3 text-sm text-[#6f4b3a]">
+                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#c08552]/10 text-[#c08552]">
                     <Check size={12} />
                   </span>
                   {x}
@@ -399,17 +399,17 @@ export default function Home() {
 
           <div className="relative">
             <div className="paper-card relative overflow-hidden rounded-[24px] bg-white/70 p-6">
-              <div className="flex items-center justify-between border-b border-[#25252a]/10 pb-5">
+              <div className="flex items-center justify-between border-b border-[#4b2e2b]/10 pb-5">
                 <div className="flex items-center gap-3">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#ff5a00] text-white">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#c08552] text-white">
                     <Zap size={16} fill="currentColor" />
                   </span>
                   <div>
                     <p className="text-sm font-medium">Tellme is listening</p>
-                    <p className="text-[11px] text-[#85817b]">Reddit thread · 14 min read</p>
+                    <p className="text-[11px] text-[#8c5a3c]">Reddit thread · 14 min read</p>
                   </div>
                 </div>
-                <span className="text-xs text-[#ff5a00]">02:41</span>
+                <span className="text-xs text-[#c08552]">02:41</span>
               </div>
 
               <div className="py-10">
@@ -417,26 +417,26 @@ export default function Home() {
                   {Array.from({ length: 48 }).map((_, i) => (
                     <div
                       key={i}
-                      className="w-1 rounded-full bg-[#ff5a00]/70"
+                      className="w-1 rounded-full bg-[#c08552]/70"
                       style={{ height: 18 + Math.abs(Math.sin(i * 1.7)) * 65 + "px" }}
                     />
                   ))}
                 </div>
-                <p className="vintage-serif mx-auto mt-8 max-w-md text-center text-2xl leading-8 text-[#55545a]">
+                <p className="vintage-serif mx-auto mt-8 max-w-md text-center text-2xl leading-8 text-[#6f4b3a]">
                   &quot;Most commenters agree on the outcome — they disagree on why it works.&quot;
                 </p>
               </div>
 
-              <div className="flex items-center justify-between border-t border-[#25252a]/10 pt-5">
-                <span className="text-xs text-[#85817b]">1.5×</span>
+              <div className="flex items-center justify-between border-t border-[#4b2e2b]/10 pt-5">
+                <span className="text-xs text-[#8c5a3c]">1.5×</span>
                 <div className="flex items-center gap-2">
-                  <button className="h-10 w-10 rounded-full border border-[#25252a]/10 text-[#55545a]">↶</button>
-                  <button className="flex h-11 w-11 items-center justify-center rounded-full bg-[#ff5a00] text-white">
+                  <button className="h-10 w-10 rounded-full border border-[#4b2e2b]/10 text-[#6f4b3a]">↶</button>
+                  <button className="flex h-11 w-11 items-center justify-center rounded-full bg-[#c08552] text-white">
                     <Play size={15} fill="currentColor" />
                   </button>
-                  <button className="h-10 w-10 rounded-full border border-[#25252a]/10 text-[#55545a]">↷</button>
+                  <button className="h-10 w-10 rounded-full border border-[#4b2e2b]/10 text-[#6f4b3a]">↷</button>
                 </div>
-                <span className="text-xs text-[#85817b]">Ask ↗</span>
+                <span className="text-xs text-[#8c5a3c]">Ask ↗</span>
               </div>
             </div>
           </div>
@@ -444,8 +444,8 @@ export default function Home() {
       </section>
 
       <section className="relative z-10 px-6 pb-20 lg:px-10">
-        <div className="mx-auto max-w-[1400px] overflow-hidden rounded-[30px] border border-[#25252a]/10 bg-[#30313a] px-7 py-20 text-center text-white sm:px-10 lg:py-28">
-          <p className="text-xs font-medium uppercase tracking-[.2em] text-[#ff8a4a]">Your next tab can wait</p>
+        <div className="mx-auto max-w-[1400px] overflow-hidden rounded-[30px] border border-[#4b2e2b]/10 bg-[#4b2e2b] px-7 py-20 text-center text-white sm:px-10 lg:py-28">
+          <p className="text-xs font-medium uppercase tracking-[.2em] text-[#d6a06b]">Your next tab can wait</p>
           <h2 className="vintage-serif mt-5 text-5xl leading-[.95] sm:text-7xl">
             Hear what matters.<br />
             <span className="text-white/45">Keep doing what matters.</span>
@@ -459,23 +459,23 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="relative z-10 border-t border-[#25252a]/10">
+      <footer className="relative z-10 border-t border-[#4b2e2b]/10">
         <div className="mx-auto flex max-w-[1400px] flex-col gap-8 px-6 py-10 sm:flex-row sm:items-center sm:justify-between lg:px-10">
           <div className="flex items-center gap-3">
-            <span className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#25252a]">
-              <span className="absolute top-[7px] h-px w-5 bg-[#f3f0e9]" />
-              <span className="absolute top-[12px] h-px w-5 bg-[#f3f0e9]" />
-              <span className="absolute top-[17px] h-px w-5 bg-[#f3f0e9]" />
-              <span className="absolute top-[22px] h-px w-5 bg-[#f3f0e9]" />
+            <span className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#4b2e2b]">
+              <span className="absolute top-[7px] h-px w-5 bg-[#fff8f0]" />
+              <span className="absolute top-[12px] h-px w-5 bg-[#fff8f0]" />
+              <span className="absolute top-[17px] h-px w-5 bg-[#fff8f0]" />
+              <span className="absolute top-[22px] h-px w-5 bg-[#fff8f0]" />
             </span>
             <span className="vintage-serif text-lg">tellme.</span>
           </div>
-          <div className="flex gap-6 text-xs text-[#85817b]">
-            <a href="#" className="hover:text-[#25252a]">Privacy</a>
-            <a href="#" className="hover:text-[#25252a]">Terms</a>
-            <a href="https://github.com/chaitanya-92/Tellme" className="hover:text-[#25252a]">GitHub</a>
+          <div className="flex gap-6 text-xs text-[#8c5a3c]">
+            <a href="#" className="hover:text-[#4b2e2b]">Privacy</a>
+            <a href="#" className="hover:text-[#4b2e2b]">Terms</a>
+            <a href="https://github.com/chaitanya-92/Tellme" className="hover:text-[#4b2e2b]">GitHub</a>
           </div>
-          <p className="text-xs text-[#85817b]">© 2026 Tellme. The web, spoken.</p>
+          <p className="text-xs text-[#8c5a3c]">© 2026 Tellme. The web, spoken.</p>
         </div>
       </footer>
     </main>
