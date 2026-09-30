@@ -681,11 +681,9 @@ export default function Home() {
             className="relative hidden min-h-[330px] lg:block"
           >
             <div className="absolute right-0 top-1/2 h-px w-full -translate-y-1/2 dashed-path opacity-55" />
-            <motion.div
+            <div
               ref={orbGuideRef}
-              animate={{ scale: isOrbHovered ? 0.7777778 : 1 }}
-              transition={{ duration: 0.52, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute right-10 top-1/2 h-[270px] w-[270px] -translate-y-1/2 rounded-full border border-dashed border-[#9D9180] will-change-transform"
+              className="absolute right-10 top-1/2 h-[270px] w-[270px] -translate-y-1/2 rounded-full border border-dashed border-[#9D9180]"
             />
             <div className="absolute right-[135px] top-[calc(50%-135px)] h-[270px] w-px bg-[#C8BBA5]" />
             <div className="absolute right-[135px] top-1/2 h-px w-[270px] bg-[#C8BBA5]" />
@@ -693,19 +691,24 @@ export default function Home() {
             <motion.div
               onMouseEnter={() => setIsOrbHovered(true)}
               onMouseLeave={() => setIsOrbHovered(false)}
-              style={{ x: orbX, y: orbY, scale: isOrbHovered ? 1.2857143 : 1 }}
-              transition={{ duration: 0.52, ease: [0.22, 1, 0.36, 1] }}
-              className="absolute right-10 top-1/2 flex h-[210px] w-[210px] -translate-y-1/2 flex-col items-center justify-center rounded-full bg-[#262522] text-center text-[#F4EEDF] shadow-[0_24px_50px_rgba(27,26,24,.18)] will-change-transform"
+              style={{ x: orbX, y: orbY }}
+              className="absolute right-10 top-1/2 flex h-[210px] w-[210px] -translate-y-1/2 flex-col items-center justify-center overflow-hidden rounded-full bg-[#262522] text-center text-[#F4EEDF] shadow-[0_24px_50px_rgba(27,26,24,.18)] will-change-transform"
             >
               <motion.span
-                style={{ x: orbInnerX, y: orbInnerY, scale: isOrbHovered ? 0.7777778 : 1 }}
-                transition={{ duration: 0.52, ease: [0.22, 1, 0.36, 1] }}
-                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#9A3038] text-[#F4EEDF] shadow-[0_8px_18px_rgba(154,48,56,.24)]"
+                aria-hidden="true"
+                initial={false}
+                animate={{ scale: isOrbHovered ? 1 : 0 }}
+                transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-0 rounded-full bg-[#9A3038]"
+              />
+              <motion.span
+                style={{ x: orbInnerX, y: orbInnerY }}
+                className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-[#9A3038] text-[#F4EEDF] shadow-[0_8px_18px_rgba(154,48,56,.24)]"
               >
                 <Volume2 size={21} />
               </motion.span>
-              <p className="vintage-serif mt-4 text-2xl">listen.</p>
-              <p className="mt-1 text-xs text-white/55">while you keep moving</p>
+              <p className="relative z-10 vintage-serif mt-4 text-2xl">listen.</p>
+              <p className="relative z-10 mt-1 text-xs text-white/55">while you keep moving</p>
             </motion.div>
           </motion.div>
         </div>
