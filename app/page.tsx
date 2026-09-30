@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -55,6 +55,7 @@ export default function Home() {
   const [openStep, setOpenStep] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const [orbOffset, setOrbOffset] = useState({ x: 0, y: 0 });
+  const orbGuideRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 48);
@@ -62,12 +63,16 @@ export default function Home() {
     window.addEventListener("scroll", onScroll, { passive: true });
 
     const onPointerMove = (event: PointerEvent) => {
-      const orbCenterX = window.innerWidth - 10 - 135;
-      const orbCenterY = window.innerHeight * 0.5;
+      const guide = orbGuideRef.current;
+      if (!guide) return;
+
+      const rect = guide.getBoundingClientRect();
+      const orbCenterX = rect.left + rect.width / 2;
+      const orbCenterY = rect.top + rect.height / 2;
       const dx = event.clientX - orbCenterX;
       const dy = event.clientY - orbCenterY;
       const distance = Math.hypot(dx, dy);
-      const maxDistance = 30;
+      const maxDistance = Math.max(0, rect.width / 2 - 105);
 
       if (distance <= maxDistance) {
         setOrbOffset({ x: dx, y: dy });
@@ -212,7 +217,10 @@ export default function Home() {
             className="relative hidden min-h-[390px] lg:block"
           >
             <div className="absolute right-0 top-1/2 h-px w-full -translate-y-1/2 dashed-path opacity-70" />
-            <div className="absolute right-10 top-1/2 h-[270px] w-[270px] -translate-y-1/2 rounded-full border border-dashed border-[#b99a7a]" />
+            <div
+              ref={orbGuideRef}
+              className="absolute right-10 top-1/2 h-[270px] w-[270px] -translate-y-1/2 rounded-full border border-dashed border-[#b99a7a]"
+            />
             <div className="absolute right-[135px] top-[calc(50%-135px)] h-[270px] w-px bg-[#c9ad91]" />
             <div className="absolute right-[135px] top-1/2 h-px w-[270px] bg-[#c9ad91]" />
 
