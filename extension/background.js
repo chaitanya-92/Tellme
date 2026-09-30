@@ -19,12 +19,33 @@ chrome.runtime.onInstalled.addListener(() => {
 async function getPagePayload(tabId, selectionOverride = "") {
   const results = await chrome.scripting.executeScript({
     target: { tabId },
-    func: (selectedText) => ({
-      title: document.title || "Untitled page",
-      url: location.href,
-      selection: selectedText || window.getSelection()?.toString().trim() || "",
-      text: document.body?.innerText?.slice(0, 120000) || ""
-    }),
+    func: (selectedText) => {
+      const clean = (value) =>
+        (value || "")
+          .replace(/\u00a0/g, " ")
+          .replace(/[ \t]+/g, " ")
+          .replace(/\n{3,}/g, "\n\n")
+          .trim();
+
+      const source = document.querySelector("article, [role='main'], main") || document.body;
+      const clone = source?.cloneNode(true);
+
+      if (clone) {
+        clone.querySelectorAll("script, style, noscript, svg, nav, footer, header, aside, form, [aria-hidden='true']")
+          .forEach((node) => node.remove());
+      }
+
+      const rawText = clean(clone?.innerText || document.body?.innerText || "");
+      const title = clean(document.title) || "Untitled page";
+      const selection = clean(selectedText || window.getSelection()?.toString() || "");
+
+      return {
+        title: title.slice(0, 500),
+        url: location.href.slice(0, 2000),
+        selection: selection.slice(0, 20000),
+        text: rawText.slice(0, 120000)
+      };
+    },
     args: [selectionOverride]
   });
 
@@ -71,7 +92,6 @@ async function sendTabToTellme(tab, selectionOverride = "") {
   });
 
   await chrome.tabs.create({ url: TELLME_URL + "?" + query.toString() });
-
   return payload;
 }
 
