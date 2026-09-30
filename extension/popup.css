@@ -226,3 +226,22 @@ h1 {
   .signal span, .reader-dot.active { animation: none; }
   .primary, .control { transition: none; }
 }
+.brief-button{width:100%;margin-top:8px;min-height:40px;border:1px solid var(--ink);background:rgba(248,243,232,.72);color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:space-between;padding:0 14px;font-size:10px;letter-spacing:.13em;text-transform:uppercase;transition:transform .2s ease,background .2s ease,box-shadow .2s ease}
+.brief-button:hover{transform:translateY(-1px);background:var(--green);box-shadow:0 8px 18px rgba(38,37,34,.07)}
+.brief-button:disabled{cursor:wait;opacity:.7}
+.brief-panel{margin-top:10px;border:1px solid rgba(38,37,34,.15);background:rgba(248,243,232,.94);overflow:hidden}
+.brief-head{display:flex;justify-content:space-between;gap:12px;padding:10px 13px;border-bottom:1px dashed var(--line)}
+.brief-kicker{margin:0;color:var(--red);font-size:8px;font-weight:700;letter-spacing:.17em;text-transform:uppercase}
+.brief-source{margin:4px 0 0;font:400 13px/1.1 Georgia,serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:245px}
+.brief-body{padding:12px 13px}
+.brief-label{margin:0 0 5px;color:#9d9180;font-size:8px;letter-spacing:.16em;text-transform:uppercase}
+.brief-main{margin:0;font:400 16px/1.24 Georgia,serif}
+.brief-list{list-style:none;margin:9px 0 0;padding:0}
+.brief-list li{padding:7px 0 7px 12px;border-top:1px dashed var(--line);color:var(--muted);font-size:10px;line-height:1.45;position:relative}
+.brief-list li:before{content:"";position:absolute;left:0;top:13px;width:4px;height:4px;border-radius:50%;background:var(--red)}
+.brief-topics{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.brief-topic{padding:4px 6px;border:1px solid var(--line);background:var(--green);font-size:8px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.brief-stats{display:flex;gap:14px;margin-top:9px;padding-top:9px;border-top:1px solid var(--line);font-size:8px;letter-spacing:.11em;text-transform:uppercase;color:#9d9180}
+.brief-loading{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:9px;letter-spacing:.13em;text-transform:uppercase}
+.brief-loading i{width:6px;height:6px;border-radius:50%;background:var(--red);animation:briefPulse 1s ease-in-out infinite alternate}
+@keyframes briefPulse{from{transform:scale(.7);opacity:.35}to{transform:scale(1);opacity:1}}
