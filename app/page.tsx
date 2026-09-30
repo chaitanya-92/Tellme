@@ -408,27 +408,58 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="features" className="relative z-10 border-y border-[#1F3044]/10 bg-[#1F3044] text-white">
-        <div className="mx-auto max-w-[1400px] px-6 py-28 lg:px-10 lg:py-36">
-          <p className="text-xs font-medium uppercase tracking-[.2em] text-[#B08D57]">More than text-to-speech</p>
-          <h2 className="vintage-serif mt-5 max-w-2xl text-5xl leading-[.98] sm:text-7xl">
-            The useful parts, in your ears.
-          </h2>
-          <div className="mt-16 grid gap-px overflow-hidden rounded-[22px] border border-white/10 bg-white/10 md:grid-cols-3">
-            {features.map(({ icon: Icon, title, text }, i) => (
-              <motion.div
-                key={title}
-                whileHover={{ backgroundColor: "rgba(243,235,221,.055)" }}
-                className="bg-[#1F3044] p-8 sm:p-10"
-              >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/10 bg-white/[.06] text-[#B08D57]">
-                  <Icon size={19} />
-                </div>
-                <p className="mt-20 text-[11px] text-white/30">0{i + 1}</p>
-                <h3 className="vintage-serif mt-3 text-2xl">{title}</h3>
-                <p className="mt-3 text-sm leading-6 text-white/55">{text}</p>
-              </motion.div>
-            ))}
+      <section id="features" className="relative z-10 border-y border-[#1F3044]/15 bg-[#F3EBDD] text-[#1F3044]">
+        <div className="mx-auto max-w-[1400px] px-6 py-24 lg:px-10 lg:py-32">
+          <div className="flex items-end justify-between border-b-2 border-[#1F3044] pb-5">
+            <div>
+              <p className="text-[10px] font-semibold uppercase tracking-[.24em] text-[#7A263A]">The Tellme Review</p>
+              <p className="mt-2 text-[10px] uppercase tracking-[.18em] text-[#70685E]">Audio · Attention · The web</p>
+            </div>
+            <p className="hidden text-[10px] font-semibold uppercase tracking-[.22em] text-[#70685E] sm:block">Vol. 01 — 03</p>
+          </div>
+
+          <div className="grid gap-10 py-10 lg:grid-cols-[1.05fr_1.95fr] lg:gap-14">
+            <div className="lg:border-r lg:border-dashed lg:border-[#C9BBA7] lg:pr-14">
+              <p className="text-xs font-semibold uppercase tracking-[.2em] text-[#7A263A]">More than text-to-speech</p>
+              <h2 className="vintage-serif mt-5 max-w-xl text-5xl leading-[.9] sm:text-7xl">
+                The useful parts,<br />in your ears.
+              </h2>
+              <p className="mt-7 max-w-sm text-sm leading-6 text-[#70685E]">
+                A quieter way to keep up with the internet without giving every interesting page your full attention.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3">
+              {features.map(({ icon: Icon, title, text }, i) => (
+                <motion.article
+                  key={title}
+                  whileHover={{ y: -4 }}
+                  transition={{ duration: .25, ease: "easeOut" }}
+                  className={`group relative py-2 md:px-7 lg:px-8 ${i > 0 ? "mt-8 border-t border-dashed border-[#C9BBA7] pt-8 md:mt-0 md:border-l md:border-t-0 md:pt-2" : ""}`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-semibold tracking-[.18em] text-[#70685E]">0{i + 1}</span>
+                    <span className="text-[#7A263A] transition-transform duration-300 group-hover:translate-x-1">
+                      <Icon size={18} strokeWidth={1.5} />
+                    </span>
+                  </div>
+                  <h3 className="vintage-serif mt-12 text-3xl leading-[1.02] sm:text-[2.15rem]">
+                    {title}
+                  </h3>
+                  <div className="mt-5 h-px w-12 bg-[#7A263A] transition-all duration-300 group-hover:w-20" />
+                  <p className="mt-5 text-sm leading-6 text-[#70685E]">{text}</p>
+                  <p className="mt-10 text-[9px] uppercase tracking-[.2em] text-[#AFA18D]">Tellme / 2026</p>
+                </motion.article>
+              ))}
+            </div>
+          </div>
+
+          <div className="border-t border-[#1F3044] pt-4 text-[9px] uppercase tracking-[.2em] text-[#70685E]">
+            <div className="flex items-center justify-between gap-4">
+              <span>Read less. Hear more.</span>
+              <span className="hidden sm:block">A digital publication for curious minds</span>
+              <span>Page 03</span>
+            </div>
           </div>
         </div>
       </section>
