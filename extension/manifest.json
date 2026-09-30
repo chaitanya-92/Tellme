@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Tellme — Web, Spoken",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Send the page you are reading to Tellme and turn it into a listening session.",
   "permissions": ["activeTab", "scripting", "storage", "contextMenus"],
   "host_permissions": ["http://localhost:3000/*"],
