@@ -70,7 +70,17 @@ export default function Home() {
     { x: 54, y: 22 },
     { x: 22, y: 58 },
   ]);
-  const dragRef = useRef<{ index: number; offsetX: number; offsetY: number } | null>(null);
+  const dragRef = useRef<{
+    index: number;
+    offsetX: number;
+    offsetY: number;
+    startLeft: number;
+    startTop: number;
+    boardWidth: number;
+    boardHeight: number;
+    noteWidth: number;
+    noteHeight: number;
+  } | null>(null);
 
   const marqueeRef = useRef<HTMLDivElement>(null);
 
@@ -510,13 +520,23 @@ export default function Home() {
 
                       const boardRect = board.getBoundingClientRect();
                       const noteRect = element.getBoundingClientRect();
+
                       dragRef.current = {
                         index: i,
                         offsetX: event.clientX - noteRect.left,
                         offsetY: event.clientY - noteRect.top,
+                        startLeft: noteRect.left - boardRect.left,
+                        startTop: noteRect.top - boardRect.top,
+                        boardWidth: boardRect.width,
+                        boardHeight: boardRect.height,
+                        noteWidth: noteRect.width,
+                        noteHeight: noteRect.height,
                       };
+
                       element.setPointerCapture(event.pointerId);
-                      element.style.zIndex = "30";
+                      element.style.zIndex = "40";
+                      element.style.transition = "none";
+                      element.style.translate = "0 0";
                       element.dataset.dragging = "true";
                     };
 
@@ -527,36 +547,54 @@ export default function Home() {
                       if (!drag || drag.index !== i || !board || !element) return;
 
                       const boardRect = board.getBoundingClientRect();
-                      const noteRect = element.getBoundingClientRect();
-                      const usableWidth = Math.max(1, boardRect.width - noteRect.width);
-                      const usableHeight = Math.max(1, boardRect.height - noteRect.height);
+                      const maxLeft = Math.max(0, drag.boardWidth - drag.noteWidth);
+                      const maxTop = Math.max(0, drag.boardHeight - drag.noteHeight);
                       const nextLeft = Math.min(
                         Math.max(0, event.clientX - boardRect.left - drag.offsetX),
-                        usableWidth
+                        maxLeft
                       );
                       const nextTop = Math.min(
                         Math.max(0, event.clientY - boardRect.top - drag.offsetY),
-                        usableHeight
+                        maxTop
+                      );
+
+                      element.style.translate = `${nextLeft - drag.startLeft}px ${nextTop - drag.startTop}px`;
+                    };
+
+                    const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+                      const drag = dragRef.current;
+                      const board = notesBoardRef.current;
+                      const element = noteRefs.current[i];
+                      if (!drag || drag.index !== i || !board || !element) return;
+
+                      const boardRect = board.getBoundingClientRect();
+                      const maxLeft = Math.max(0, drag.boardWidth - drag.noteWidth);
+                      const maxTop = Math.max(0, drag.boardHeight - drag.noteHeight);
+                      const finalLeft = Math.min(
+                        Math.max(0, event.clientX - boardRect.left - drag.offsetX),
+                        maxLeft
+                      );
+                      const finalTop = Math.min(
+                        Math.max(0, event.clientY - boardRect.top - drag.offsetY),
+                        maxTop
                       );
 
                       setNotePositions((current) =>
                         current.map((position, index) =>
                           index === i
                             ? {
-                                x: (nextLeft / usableWidth) * 100,
-                                y: (nextTop / usableHeight) * 100,
+                                x: (finalLeft / Math.max(1, maxLeft)) * 100,
+                                y: (finalTop / Math.max(1, maxTop)) * 100,
                               }
                             : position
                         )
                       );
-                    };
 
-                    const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
-                      const element = noteRefs.current[i];
-                      if (!element || !dragRef.current || dragRef.current.index !== i) return;
                       if (element.hasPointerCapture(event.pointerId)) {
                         element.releasePointerCapture(event.pointerId);
                       }
+                      element.style.translate = "0 0";
+                      element.style.transition = "";
                       element.style.zIndex = String(10 + i);
                       element.dataset.dragging = "false";
                       dragRef.current = null;
@@ -580,7 +618,7 @@ export default function Home() {
                         onPointerMove={handlePointerMove}
                         onPointerUp={handlePointerUp}
                         onPointerCancel={handlePointerUp}
-                        whileHover={{ y: -5, scale: 1.015 }}
+                        whileHover={{ y: -4, scale: 1.01 }}
                         className="absolute w-[68%] max-w-[300px] cursor-grab border border-[#262522]/15 px-5 pb-6 pt-7 shadow-[0_10px_20px_rgba(38,37,34,.10)] active:cursor-grabbing sm:w-[52%] sm:px-6"
                         style={{
                           left: `${notePositions[i].x}%`,
@@ -605,7 +643,6 @@ export default function Home() {
                       </motion.div>
                     );
                   })}
-                </div>
 
                 <div className="pointer-events-none absolute bottom-4 right-4 flex items-center gap-2 rounded-full border border-[#262522]/10 bg-[#F4EEDF]/80 px-3 py-2 text-[8px] uppercase tracking-[.14em] text-[#665F56] shadow-sm">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#9A3038]" />
