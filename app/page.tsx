@@ -802,17 +802,7 @@ export default function Home() {
         </motion.div>
       )}
 
-      {cookieChoice !== "unset" && (
-        <button
-          type="button"
-          onClick={() => setCookieChoice("unset")}
-          className="fixed bottom-5 right-5 z-[60] flex h-12 w-12 items-center justify-center rounded-full bg-[#172131] text-white shadow-[0_10px_30px_rgba(23,33,49,.22)] transition hover:-translate-y-1"
-          aria-label="Cookie settings"
-        >
-          <Cookie size={18} />
-        </button>
-      )}
-\n      <footer className="relative z-10 border-t-2 border-[#262522]">
+      <footer className="relative z-10 border-t-2 border-[#262522]">
         <div className="mx-auto grid max-w-[1080px] gap-8 px-6 py-10 sm:grid-cols-3 sm:items-center lg:px-8">
           <div className="flex items-center gap-3">
             <span className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full bg-[#262522]">
