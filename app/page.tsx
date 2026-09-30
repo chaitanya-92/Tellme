@@ -1430,7 +1430,7 @@ export default function Home() {
             <div className="border-t border-dashed border-white/15 pt-6 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
               <p className="text-[9px] font-semibold uppercase tracking-[.2em] text-white/40">Browser extension</p>
               <p className="mt-3 text-sm leading-6 text-white/65">
-                The Chrome Web Store release is the direct-install version of Tellme.
+                Download the Tellme extension and add it to Chrome in a minute.
               </p>
               <Button
                 size="lg"
@@ -1440,7 +1440,7 @@ export default function Home() {
                 Add to Chrome <ArrowRight size={17} className="ml-2" />
               </Button>
               <p className="mt-3 text-[9px] uppercase tracking-[.16em] text-white/30">
-                Web Store install · v0.6
+                Manual Chrome install · v0.6.1
               </p>
             </div>
           </div>
@@ -1487,49 +1487,51 @@ export default function Home() {
               <div className="grid gap-7 px-6 py-6 sm:px-7 sm:py-7 lg:grid-cols-[.9fr_1.1fr]">
                 <div>
                   <p className="text-sm leading-6 text-[#665F56]">
-                    Tellme reads the useful parts of the page you are on — including Reddit posts, comments, and replies — and turns them into a listening queue.
+                    Download the current Tellme package, unzip it, then load the extension folder into Chrome. No Web Store account is needed for this install method.
                   </p>
-                  <div className="mt-6 flex items-center gap-3 border-y border-dashed border-[#B8AB95] py-4">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#262522] text-[#F4EEDF]">
-                      <Headphones size={16} />
+
+                  <a
+                    href="https://github.com/chaitanya-92/Tellme/raw/refs/heads/main/store/tellme-0.6.1.zip"
+                    className="mt-6 flex items-center gap-3 border-y border-dashed border-[#B8AB95] px-1 py-4 transition-colors hover:bg-[#F7F2E8]/70"
+                  >
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#262522] text-[#F4EEDF]">
+                      <ArrowDownToLine size={16} />
                     </span>
-                    <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-[.16em]">Chrome / Chromium</p>
-                      <p className="mt-1 text-[10px] text-[#665F56]">Developer build · v0.4</p>
-                    </div>
-                  </div>
+                    <span className="min-w-0">
+                      <span className="block text-[10px] font-semibold uppercase tracking-[.16em] text-[#262522]">Download Tellme</span>
+                      <span className="mt-1 block truncate text-[10px] text-[#665F56]">tellme-0.6.1.zip · GitHub</span>
+                    </span>
+                    <ArrowRight size={14} className="ml-auto shrink-0 text-[#9A3038]" />
+                  </a>
                 </div>
 
                 <div className="border-l border-dashed border-[#B8AB95] pl-6">
-                  <p className="text-[9px] font-semibold uppercase tracking-[.2em] text-[#9A3038]">Install locally</p>
+                  <p className="text-[9px] font-semibold uppercase tracking-[.2em] text-[#9A3038]">Add it to Chrome</p>
                   <ol className="mt-4 space-y-4 text-sm text-[#665F56]">
                     <li className="flex gap-3">
                       <span className="font-mono text-[9px] text-[#9A3038]">01</span>
-                      <span>Open <strong className="font-medium text-[#262522]">chrome://extensions</strong>.</span>
+                      <span>Download the ZIP above and <strong className="font-medium text-[#262522]">unzip</strong> it.</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-mono text-[9px] text-[#9A3038]">02</span>
-                      <span>Turn on <strong className="font-medium text-[#262522]">Developer mode</strong>.</span>
+                      <span>Open <strong className="font-medium text-[#262522]">chrome://extensions</strong> and turn on <strong className="font-medium text-[#262522]">Developer mode</strong>.</span>
                     </li>
                     <li className="flex gap-3">
                       <span className="font-mono text-[9px] text-[#9A3038]">03</span>
-                      <span>Click <strong className="font-medium text-[#262522]">Load unpacked</strong> and choose the Tellme <strong className="font-medium text-[#262522]">extension/</strong> folder.</span>
+                      <span>Click <strong className="font-medium text-[#262522]">Load unpacked</strong> and select the extracted <strong className="font-medium text-[#262522]">extension</strong> folder.</span>
                     </li>
                   </ol>
 
-                  <div className="mt-6 flex items-center gap-3 border border-dashed border-[#B8AB95] bg-[#F7F2E8]/55 px-4 py-3">
-                    <span className="h-2 w-2 rounded-full bg-[#9D9180]" />
-                    <div>
-                      <p className="text-[9px] font-semibold uppercase tracking-[.16em] text-[#262522]">Chrome Web Store listing</p>
-                      <p className="mt-1 text-[9px] leading-4 text-[#665F56]">Coming with the public release. Local development is available now.</p>
-                    </div>
+                  <div className="mt-6 border border-dashed border-[#B8AB95] bg-[#F7F2E8]/55 px-4 py-3">
+                    <p className="text-[9px] font-semibold uppercase tracking-[.16em] text-[#262522]">After install</p>
+                    <p className="mt-1 text-[9px] leading-4 text-[#665F56]">Pin Tellme from Chrome's Extensions menu, then click the Tellme icon on any page.</p>
                   </div>
                 </div>
               </div>
 
               <div className="flex flex-col gap-2 border-t border-dashed border-[#B8AB95] px-6 py-4 text-[9px] uppercase tracking-[.14em] text-[#9D9180] sm:flex-row sm:items-center sm:justify-between sm:px-7">
-                <span>Chrome Web Store install after publication</span>
-                <span>Tellme / Browser reader</span>
+                <span>Manual Chrome install · no Web Store</span>
+                <span>Tellme / Browser reader · v0.6.1</span>
               </div>
             </motion.div>
           </motion.div>
