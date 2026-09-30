@@ -544,7 +544,7 @@ export default function Home() {
           left: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
           right: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
         }}
-        className={`fixed z-50 ${isScrolled ? "mx-auto max-w-[1040px]" : "w-full"}`}
+        className={`fixed z-50 ${isScrolled ? "mx-auto max-w-[1040px]" : "w-full"} max-sm:left-3 max-sm:right-3`}
       >
         <motion.div
           animate={{
@@ -563,9 +563,9 @@ export default function Home() {
             backgroundColor: { duration: 0.35, ease: "easeOut" },
             borderColor: { duration: 0.35, ease: "easeOut" },
           }}
-          className="mx-auto overflow-hidden border backdrop-blur-xl"
+          className="mx-auto overflow-hidden border backdrop-blur-xl max-sm:rounded-2xl max-sm:border-[#262522]/10 max-sm:bg-[#F4EEDF]/95 max-sm:shadow-[0_10px_26px_rgba(38,37,34,.08)]"
         >
-          <div className="mx-auto grid h-full max-w-[1040px] grid-cols-[1fr_auto] items-center px-5 sm:px-7 md:grid-cols-[1fr_1fr]">
+          <div className="mx-auto grid h-full w-full max-w-[1040px] grid-cols-[1fr_auto] items-center px-4 sm:px-7 md:grid-cols-[1fr_1fr]">
             <a href="#" className="flex items-center gap-3">
               <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#262522]">
                 <span className="absolute top-[8px] h-px w-6 bg-[#F4EEDF]" />
@@ -579,7 +579,7 @@ export default function Home() {
             <div className="flex h-full items-center justify-end">
               <Button
                 size="sm"
-                className="hidden sm:inline-flex"
+                className="inline-flex max-sm:px-3 max-sm:text-[10px]"
                 onClick={() => setShowExtensionInstall(true)}
               >
                 Add to Chrome <ArrowRight size={15} className="ml-2" />
@@ -617,7 +617,7 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
-      <section className="relative z-10 mx-auto min-h-[650px] max-w-[1080px] px-6 pb-16 pt-32 lg:px-8 lg:pt-36">
+      <section className="relative z-10 mx-auto min-h-[650px] w-full max-w-[1080px] px-4 pb-12 pt-28 sm:px-6 sm:pb-16 sm:pt-32 lg:px-8 lg:pt-36">
         <div className="grid items-center gap-8 lg:grid-cols-[1.08fr_.72fr]">
           <div className="max-w-3xl">
             <motion.div
@@ -635,7 +635,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: .8 }}
-              className="vintage-serif max-w-[720px] text-balance text-[54px] leading-[.9] sm:text-[68px] lg:text-[82px]"
+              className="vintage-serif w-full max-w-[720px] text-balance text-[45px] leading-[.91] sm:text-[68px] lg:text-[82px]"
             >
               You found something interesting<span className="text-[#9A3038]">.</span>
               <span className="mt-3 block text-[#665F56]">Let Tellme read it.</span>
@@ -701,7 +701,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: .8, delay: .35 }}
-          className="relative mx-auto mt-20 max-w-[1000px]"
+          className="relative mx-auto mt-14 w-full max-w-[1000px] sm:mt-20"
         >
           <div className="overflow-hidden border-y border-[#262522]/20 bg-transparent">
             <div className="flex h-11 items-center gap-2 border-b border-[#262522]/10 px-4">
@@ -713,7 +713,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="grid min-h-[390px] md:grid-cols-[1fr_340px]">
+            <div className="grid min-h-[390px] grid-cols-1 md:grid-cols-[1fr_340px]">
               <div className="p-7 md:border-r md:border-dashed md:border-[#B8AB95] md:p-10">
                 <div className="mb-6 flex items-center gap-2 text-[10px] uppercase tracking-[.18em] text-[#665F56]">
                   <span className="h-2 w-2 rounded-full bg-[#9A3038]" /> Reddit · Discussion
