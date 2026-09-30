@@ -184,7 +184,7 @@
       font:500 8px/1.35 Arial,sans-serif;
       color:#9a8a79;
     }
-    .toggle {
+    .toggle,.exit {
       width:26px;
       height:26px;
       border-radius:8px;
@@ -194,6 +194,8 @@
       line-height:1;
     }
     .toggle:hover { background:rgba(75,46,43,.07); }
+    .exit { color:#9a3038; font-size:19px; }
+    .exit:hover { background:rgba(154,48,56,.09); }
   `;
   shadow.appendChild(style);
 
@@ -211,7 +213,8 @@
           </div>
         </div>
         <span class="status-tag" id="status-tag">IDLE</span>
-        <button class="toggle" id="toggle" aria-label="Hide Tellme">−</button>
+        <button class="toggle" id="toggle" aria-label="Collapse Tellme">−</button>
+        <button class="exit" id="exit" aria-label="Exit Tellme">×</button>
       </div>
 
       <div class="body" id="body">
@@ -249,6 +252,7 @@
   const briefBox = $("brief-box");
   const body = $("body");
   const toggle = $("toggle");
+  const exit = $("exit");
 
   let hidden = false;
   let busy = false;
@@ -384,7 +388,19 @@
     hidden = !hidden;
     body.hidden = hidden;
     toggle.textContent = hidden ? "+" : "−";
-    toggle.setAttribute("aria-label", hidden ? "Show Tellme" : "Hide Tellme");
+    toggle.setAttribute("aria-label", hidden ? "Show Tellme" : "Collapse Tellme");
+  });
+
+  exit.addEventListener("click", async () => {
+    if (busy) {
+      await send("tellme-reader-command", { command: "stop" });
+    } else {
+      const state = await send("tellme-reader-state");
+      if (state.ok && ["reading", "paused", "analyzing"].includes(state.state.status)) {
+        await send("tellme-reader-command", { command: "stop" });
+      }
+    }
+    host.remove();
   });
 
   chrome.runtime.onMessage.addListener((message) => {
