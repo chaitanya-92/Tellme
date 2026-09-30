@@ -64,25 +64,41 @@ export default function Home() {
   const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
   const orbGuideRef = useRef<HTMLDivElement>(null);
   const marqueeRef = useRef<HTMLDivElement>(null);
+  const marqueeTargetRef = useRef(0);
+  const marqueePositionRef = useRef(0);
+  const marqueeFrameRef = useRef<number | null>(null);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
-    let marqueePosition = 0;
+
+    const animateMarquee = () => {
+      const element = marqueeRef.current;
+      if (element) {
+        const loopWidth = element.scrollWidth / 2;
+
+        if (loopWidth > 0) {
+          const target = marqueeTargetRef.current;
+          const current = marqueePositionRef.current;
+          const next = current + (target - current) * 0.12;
+
+          marqueePositionRef.current = Math.abs(target - next) < 0.08 ? target : next;
+          const wrapped = ((marqueePositionRef.current % loopWidth) + loopWidth) % loopWidth;
+
+          element.style.transform = `translate3d(${-wrapped}px, 0, 0)`;
+        }
+      }
+
+      marqueeFrameRef.current = window.requestAnimationFrame(animateMarquee);
+    };
+
+    marqueeFrameRef.current = window.requestAnimationFrame(animateMarquee);
 
     const onScroll = () => {
       const currentScrollY = window.scrollY;
       const delta = currentScrollY - lastScrollY;
 
-      if (delta !== 0 && marqueeRef.current) {
-        const loopWidth = marqueeRef.current.scrollWidth / 2;
-        marqueePosition -= delta * 0.42;
-
-        if (loopWidth > 0) {
-          marqueePosition %= loopWidth;
-          if (marqueePosition > 0) marqueePosition -= loopWidth;
-        }
-
-        marqueeRef.current.style.transform = `translate3d(${marqueePosition}px, 0, 0)`;
+      if (delta !== 0) {
+        marqueeTargetRef.current -= delta * 0.34;
       }
 
       lastScrollY = currentScrollY;
@@ -116,6 +132,9 @@ export default function Home() {
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("pointermove", onPointerMove);
+      if (marqueeFrameRef.current !== null) {
+        window.cancelAnimationFrame(marqueeFrameRef.current);
+      }
     };
   }, []);
 
