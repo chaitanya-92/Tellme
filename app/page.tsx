@@ -62,7 +62,7 @@ export default function Home() {
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
-    let position = 0;
+    let position = -50;
     let frame = 0;
 
     const onScroll = () => {
