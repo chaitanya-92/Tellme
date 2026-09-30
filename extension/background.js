@@ -1,4 +1,5 @@
 const MAX_REDDIT_COMMENTS = 1000;
+
 const DEFAULT_STATE = {
   queue: [],
   index: 0,
@@ -58,6 +59,7 @@ async function ensureOffscreen() {
 
 async function sendSpeech(message) {
   await ensureOffscreen();
+
   return new Promise((resolve, reject) => {
     chrome.runtime.sendMessage(message, (response) => {
       if (chrome.runtime.lastError) {
@@ -93,8 +95,24 @@ chrome.runtime.onInstalled.addListener(() => {
   chrome.storage.local.set({ tellmeReader: DEFAULT_STATE });
 });
 
+function stripEmoji(value) {
+  return Array.from(value || "")
+    .filter((char) => {
+      const code = char.codePointAt(0) || 0;
+      return !(
+        (code >= 0x1f000 && code <= 0x1faff) ||
+        (code >= 0x1fc00 && code <= 0x1ffff) ||
+        (code >= 0x2600 && code <= 0x27bf) ||
+        (code >= 0xfe00 && code <= 0xfe0f) ||
+        code === 0x200d ||
+        (code >= 0x1f3fb && code <= 0x1f3ff)
+      );
+    })
+    .join("");
+}
+
 function cleanText(value) {
-  return (value || "")
+  return stripEmoji(value)
     .replace(/\u00a0/g, " ")
     .replace(/[ \t]+/g, " ")
     .replace(/\n{3,}/g, "\n\n")
@@ -107,7 +125,21 @@ async function getPagePayload(tabId, selectionOverride = "") {
     func: async (selectedText, maxComments) => {
       const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-      const clean = (value) => (value || "")
+      const stripEmoji = (value) => Array.from(value || "")
+        .filter((char) => {
+          const code = char.codePointAt(0) || 0;
+          return !(
+            (code >= 0x1f000 && code <= 0x1faff) ||
+            (code >= 0x1fc00 && code <= 0x1ffff) ||
+            (code >= 0x2600 && code <= 0x27bf) ||
+            (code >= 0xfe00 && code <= 0xfe0f) ||
+            code === 0x200d ||
+            (code >= 0x1f3fb && code <= 0x1f3ff)
+          );
+        })
+        .join("");
+
+      const clean = (value) => stripEmoji(value)
         .replace(/\u00a0/g, " ")
         .replace(/[ \t]+/g, " ")
         .replace(/\n{3,}/g, "\n\n")
@@ -127,21 +159,19 @@ async function getPagePayload(tabId, selectionOverride = "") {
       if (isReddit) {
         const originalScroll = window.scrollY;
 
-        // Reddit progressively renders comments. Visit the lower part of the
-        // thread to give lazy-loaded comments/replies a chance to materialize,
-        // then restore exactly where the user was reading.
         const clickMoreButtons = async () => {
           for (let pass = 0; pass < 4; pass += 1) {
             const buttons = Array.from(document.querySelectorAll("button, a"))
               .filter((element) => {
                 const text = clean(element.textContent).toLowerCase();
                 const label = clean(element.getAttribute("aria-label")).toLowerCase();
+
                 return (
                   /more replies|view more replies|load more comments|more comments|view more/.test(text) ||
                   /more replies|view more replies|load more comments|more comments|view more/.test(label)
                 );
               })
-              .slice(0, 40);
+              .slice(0, 80);
 
             if (!buttons.length) break;
 
@@ -149,28 +179,28 @@ async function getPagePayload(tabId, selectionOverride = "") {
               try { button.click(); } catch {}
             });
 
-            await sleep(350);
+            await sleep(400);
           }
         };
 
-        for (let pass = 0; pass < 8; pass += 1) {
+        for (let pass = 0; pass < 10; pass += 1) {
           await clickMoreButtons();
 
-          const heightBefore = document.documentElement.scrollHeight;
-          window.scrollTo(0, Math.max(0, heightBefore - window.innerHeight - 120));
-          await sleep(450);
+          const before = document.documentElement.scrollHeight;
+          window.scrollTo(0, Math.max(0, before - window.innerHeight - 140));
+          await sleep(500);
 
-          const heightAfter = document.documentElement.scrollHeight;
-          if (heightAfter === heightBefore && window.scrollY > heightAfter - window.innerHeight - 180) {
+          const after = document.documentElement.scrollHeight;
+          if (after === before && window.scrollY >= Math.max(0, after - window.innerHeight - 220)) {
             break;
           }
         }
 
         window.scrollTo(0, document.documentElement.scrollHeight);
-        await sleep(650);
+        await sleep(750);
         await clickMoreButtons();
         window.scrollTo(0, originalScroll);
-        await sleep(250);
+        await sleep(300);
 
         const post =
           document.querySelector("shreddit-post") ||
@@ -191,10 +221,12 @@ async function getPagePayload(tabId, selectionOverride = "") {
         const segments = [];
 
         if (title) {
-          segments.push(makeSegment("post-title", title, {
-            label: "Post title",
-            source: subreddit || "Reddit"
-          }));
+          segments.push(
+            makeSegment("post-title", title, {
+              label: "Post title",
+              source: subreddit || "Reddit"
+            })
+          );
         }
 
         const bodyNode =
@@ -206,10 +238,12 @@ async function getPagePayload(tabId, selectionOverride = "") {
         const postBody = clean(bodyNode?.innerText);
 
         if (postBody && postBody !== title) {
-          segments.push(makeSegment("post-body", postBody, {
-            label: "Post description",
-            source: subreddit || "Reddit"
-          }));
+          segments.push(
+            makeSegment("post-body", postBody, {
+              label: "Post description",
+              source: subreddit || "Reddit"
+            })
+          );
         }
 
         const commentNodes = Array.from(
@@ -231,24 +265,15 @@ async function getPagePayload(tabId, selectionOverride = "") {
               clean(node.querySelector("[data-testid='comment-body']")?.innerText) ||
               clean(Array.from(node.querySelectorAll("p")).map((p) => p.innerText).join(" "));
 
-            const parentComment =
-              node.parentElement?.closest("shreddit-comment") || null;
-
             let depth = 0;
-            let cursor = parentComment;
+            let cursor = node.parentElement?.closest("shreddit-comment") || null;
 
             while (cursor) {
               depth += 1;
               cursor = cursor.parentElement?.closest("shreddit-comment") || null;
             }
 
-            return {
-              node,
-              body,
-              author,
-              depth,
-              documentIndex
-            };
+            return { node, body, author, depth, documentIndex };
           })
           .filter((item) => {
             if (!item.body) return false;
@@ -266,16 +291,14 @@ async function getPagePayload(tabId, selectionOverride = "") {
           if (seen.has(normalized)) continue;
           seen.add(normalized);
 
-          segments.push(makeSegment(
-            item.depth > 0 ? "reply" : "comment",
-            item.body,
-            {
+          segments.push(
+            makeSegment(item.depth > 0 ? "reply" : "comment", item.body, {
               label: item.depth > 0 ? "Reply" : "Comment",
               author: item.author,
               depth: item.depth,
               source: subreddit || "Reddit"
-            }
-          ));
+            })
+          );
         }
 
         return {
@@ -307,6 +330,7 @@ async function getPagePayload(tabId, selectionOverride = "") {
         document.body;
 
       const clone = main?.cloneNode(true);
+
       if (clone) {
         clone.querySelectorAll(
           "script, style, noscript, svg, nav, footer, header, aside, form, [aria-hidden='true']"
@@ -317,11 +341,15 @@ async function getPagePayload(tabId, selectionOverride = "") {
       const segments = [];
 
       if (title) {
-        segments.push(makeSegment("page-title", title, { label: "Page title" }));
+        segments.push(makeSegment("page-title", title, {
+          label: "Page title"
+        }));
       }
 
       if (description && description !== title) {
-        segments.push(makeSegment("description", description, { label: "Description" }));
+        segments.push(makeSegment("description", description, {
+          label: "Description"
+        }));
       }
 
       text
@@ -331,7 +359,9 @@ async function getPagePayload(tabId, selectionOverride = "") {
         .slice(0, 80)
         .forEach((line) => {
           if (line !== title && line !== description) {
-            segments.push(makeSegment("content", line, { label: "Page content" }));
+            segments.push(makeSegment("content", line, {
+              label: "Page content"
+            }));
           }
         });
 
@@ -357,55 +387,211 @@ async function getPagePayload(tabId, selectionOverride = "") {
   };
 }
 
-async function chooseVoice() {
+async function getVoices() {
   await ensureOffscreen();
-
   const response = await sendSpeech({ type: "tellme-list-voices" });
-  const voices = response.voices || [];
+  return Array.isArray(response.voices) ? response.voices : [];
+}
+
+async function chooseVoices() {
+  const voices = await getVoices();
+  const english = voices.filter((voice) => (voice.lang || "").toLowerCase().startsWith("en"));
+
+  const pool = (english.length ? english : voices).filter(
+    (voice, index, array) => array.findIndex((item) => item.name === voice.name) === index
+  );
 
   const preferred = [
     "Samantha",
     "Ava",
     "Karen",
-    "Google US English",
     "Daniel",
-    "Alex"
+    "Alex",
+    "Google US English",
+    "Google UK English"
   ];
 
+  const selected = [];
+
   for (const name of preferred) {
-    const match = voices.find((voice) => voice.name?.toLowerCase().includes(name.toLowerCase()));
-    if (match) return match.name;
+    const voice = pool.find((item) =>
+      item.name?.toLowerCase().includes(name.toLowerCase())
+    );
+
+    if (voice && !selected.some((item) => item.name === voice.name)) {
+      selected.push(voice);
+    }
   }
 
-  const english = voices.filter((voice) => (voice.lang || "").toLowerCase().startsWith("en"));
-  return english[0]?.name || voices[0]?.name || "";
+  for (const voice of pool) {
+    if (selected.length >= 4) break;
+    if (!selected.some((item) => item.name === voice.name)) {
+      selected.push(voice);
+    }
+  }
+
+  return selected;
 }
 
-async function startReader(payload) {
-  const queue = (payload.segments || [])
-    .filter((segment) => cleanText(segment.text))
-    .map((segment) => ({
-      text: cleanText(
-        segment.author
-          ? segment.author + " says. " + segment.text
-          : segment.text
-      ),
-      label: segment.label || segment.kind || "Content",
-      kind: segment.kind || "content",
-      author: segment.author || "",
-      depth: segment.depth || 0
-    }));
+function speechChunks(text, maxLength = 1100) {
+  const normalized = cleanText(text);
+  if (normalized.length <= maxLength) return [normalized];
 
-  if (!queue.length && payload.text) {
-    queue.push({
-      text: cleanText(payload.text),
-      label: "Page",
-      kind: "content",
-      depth: 0
+  const sentences = normalized.split(/(?<=[.!?])\s+/);
+  const chunks = [];
+  let current = "";
+
+  for (const sentence of sentences) {
+    if (!current) {
+      current = sentence;
+      continue;
+    }
+
+    if ((current + " " + sentence).length <= maxLength) {
+      current += " " + sentence;
+    } else {
+      chunks.push(current);
+      current = sentence;
+    }
+  }
+
+  if (current) chunks.push(current);
+
+  return chunks.length ? chunks : [normalized];
+}
+
+function buildStoryQueue(payload, voices) {
+  const source = payload.segments || [];
+  const queue = [];
+  const authorVoiceMap = new Map();
+  let nextVoiceIndex = 0;
+  let commentCount = 0;
+
+  const narratorVoice = voices[0]?.name || "";
+  const commentVoices = voices.length > 1 ? voices : voices.length ? voices : [{ name: "" }];
+
+  const assignCommentVoice = (author) => {
+    const key = author || "anonymous";
+    if (!authorVoiceMap.has(key)) {
+      authorVoiceMap.set(key, commentVoices[nextVoiceIndex % commentVoices.length]?.name || narratorVoice);
+      nextVoiceIndex += 1;
+    }
+    return authorVoiceMap.get(key) || narratorVoice;
+  };
+
+  const add = (text, options) => {
+    speechChunks(text).forEach((chunk) => {
+      queue.push({
+        text: chunk,
+        ...options
+      });
+    });
+  };
+
+  if (payload.contentType === "reddit-discussion") {
+    const title = source.find((item) => item.kind === "post-title")?.text || payload.title;
+    const body = source.find((item) => item.kind === "post-body")?.text || "";
+
+    if (title) {
+      add("Let's start with the title. " + title, {
+        label: "Post title",
+        kind: "post-title",
+        voiceName: narratorVoice,
+        rate: 0.94,
+        pitch: 1
+      });
+    }
+
+    if (body) {
+      add("Here's what the post is about. " + body, {
+        label: "Post description",
+        kind: "post-body",
+        voiceName: narratorVoice,
+        rate: 0.96,
+        pitch: 1
+      });
+    }
+
+    const discussion = source.filter(
+      (item) => item.kind === "comment" || item.kind === "reply"
+    );
+
+    if (discussion.length) {
+      add(
+        "Now, let's get into the comments. People started responding to the post, one thought at a time.",
+        {
+          label: "Discussion introduction",
+          kind: "comment-intro",
+          voiceName: narratorVoice,
+          rate: 0.93,
+          pitch: 1
+        }
+      );
+    }
+
+    let topLevelCount = 0;
+
+    discussion.forEach((item) => {
+      const voiceName = assignCommentVoice(item.author);
+      const isReply = item.kind === "reply" || (item.depth || 0) > 0;
+
+      let lead;
+      if (!isReply) {
+        topLevelCount += 1;
+        lead = topLevelCount === 1
+          ? "One person said"
+          : "Another person said";
+      } else if ((item.depth || 0) > 1) {
+        lead = "Another reply followed";
+      } else {
+        lead = "Someone replied to that";
+      }
+
+      add(lead + ". " + item.text, {
+        label: isReply ? "Reply" : "Comment",
+        kind: isReply ? "reply" : "comment",
+        author: "",
+        depth: item.depth || 0,
+        voiceName,
+        rate: isReply ? 0.98 : 0.96,
+        pitch: isReply ? 1.02 : 0.99
+      });
+    });
+
+    if (discussion.length) {
+      add("And that is where the conversation stands in this thread.", {
+        label: "Discussion ending",
+        kind: "closing",
+        voiceName: narratorVoice,
+        rate: 0.94,
+        pitch: 1
+      });
+    }
+  } else {
+    source.forEach((item) => {
+      const lead =
+        item.kind === "page-title"
+          ? "Let's start with the title. "
+          : item.kind === "description"
+            ? "Here's the description. "
+            : "";
+
+      add(lead + item.text, {
+        label: item.label || "Content",
+        kind: item.kind || "content",
+        voiceName: narratorVoice,
+        rate: 0.97,
+        pitch: 1
+      });
     });
   }
 
-  const voiceName = await chooseVoice();
+  return queue;
+}
+
+async function startReader(payload) {
+  const voices = await chooseVoices();
+  const queue = buildStoryQueue(payload, voices);
 
   const state = {
     ...DEFAULT_STATE,
@@ -415,7 +601,7 @@ async function startReader(payload) {
     sourceTitle: payload.title || "",
     sourceUrl: payload.url || "",
     contentType: payload.contentType || "webpage",
-    voiceName
+    voiceName: voices[0]?.name || ""
   };
 
   await writeState(state);
@@ -424,9 +610,9 @@ async function startReader(payload) {
     await sendSpeech({
       type: "tellme-speak",
       text: queue[0].text,
-      voiceName,
-      rate: 0.97,
-      pitch: 1
+      voiceName: queue[0].voiceName,
+      rate: queue[0].rate,
+      pitch: queue[0].pitch
     });
   }
 }
@@ -439,6 +625,24 @@ async function sendTabToTellme(tab, selectionOverride = "") {
   await startReader(payload);
 
   return payload;
+}
+
+async function speakQueueItem(index) {
+  const state = await readState();
+  const current = state.queue[index];
+
+  if (!current) {
+    await writeState({ ...state, status: "complete" });
+    return;
+  }
+
+  await sendSpeech({
+    type: "tellme-speak",
+    text: current.text,
+    voiceName: current.voiceName || state.voiceName,
+    rate: current.rate ?? 0.97,
+    pitch: current.pitch ?? 1
+  });
 }
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
@@ -476,13 +680,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
             index: nextIndex,
             status: "reading"
           });
-          await sendSpeech({
-            type: "tellme-speak",
-            text: state.queue[nextIndex].text,
-            voiceName: state.voiceName,
-            rate: 0.97,
-            pitch: 1
-          });
+          await speakQueueItem(nextIndex);
         } else {
           await writeState({ ...state, status: "complete" });
         }
@@ -513,19 +711,16 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         return;
       }
 
-      await writeState({
-        ...state,
-        index: nextIndex
-      });
+      await writeState({ ...state, index: nextIndex });
+      await speakQueueItem(nextIndex);
 
-      await sendSpeech({
-        type: "tellme-speak",
-        text: state.queue[nextIndex].text,
-        voiceName: state.voiceName,
-        rate: 0.97,
-        pitch: 1
-      });
+      sendResponse({ ok: true });
+      return;
+    }
 
+    if (message?.type === "tellme-speech-error") {
+      const state = await readState();
+      await writeState({ ...state, status: "error" });
       sendResponse({ ok: true });
       return;
     }
