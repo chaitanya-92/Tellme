@@ -2,18 +2,18 @@
 @import "tailwindcss";
 
 :root {
-  --paper: #F3EBDD;
-  --paper-deep: #CFC2AE;
-  --ink: #1F3044;
-  --ink-soft: #70685E;
-  --muted: #765640;
-  --line: #CFC2AE;
-  --orange: #7A263A;
-  --coral: #765640;
-  --charcoal: #1F3044;
-  --camel-light: #CFC2AE;
-  --ivory: #F3EBDD;
-  --espresso-deep: #182535;
+  --paper: #F4EEDF;
+  --paper-deep: #C8BBA5;
+  --ink: #262522;
+  --ink-soft: #665F56;
+  --muted: #5A5148;
+  --line: #C8BBA5;
+  --orange: #9A3038;
+  --coral: #5A5148;
+  --charcoal: #262522;
+  --camel-light: #C8BBA5;
+  --ivory: #F4EEDF;
+  --espresso-deep: #1B1A18;
 }
 
 * { box-sizing: border-box; }
@@ -26,7 +26,7 @@ html {
 body {
   margin: 0;
   background:
-    radial-gradient(circle at 50% 0%, rgba(243,235,221,.88), transparent 35%),
+    radial-gradient(circle at 50% 0%, rgba(244,238,223,.9), transparent 35%),
     var(--paper);
   color: var(--ink);
   font-family: "DM Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -34,7 +34,7 @@ body {
 }
 
 ::selection {
-  background: rgba(183,121,69,.22);
+  background: rgba(154,48,56,.16);
   color: var(--ink);
 }
 
@@ -55,7 +55,7 @@ a {
 .vintage-paper {
   background-color: var(--paper);
   background-image:
-    linear-gradient(rgba(31,48,68,.022) 1px, transparent 1px),
+    linear-gradient(rgba(38,37,34,.025) 1px, transparent 1px),
     linear-gradient(90deg, rgba(31,48,68,.022) 1px, transparent 1px);
   background-size: 52px 52px;
 }
@@ -84,12 +84,12 @@ a {
 
 .paper-card {
   background: rgba(243,235,221,.82);
-  border: 1px solid rgba(31,48,68,.11);
-  box-shadow: 0 14px 35px rgba(31,48,68,.09);
+  border: 1px solid rgba(38,37,34,.11);
+  box-shadow: 0 14px 35px rgba(38,37,34,.08);
 }
 
 .orange-shadow {
-  box-shadow: 0 9px 24px rgba(183,121,69,.18);
+  box-shadow: 0 9px 24px rgba(154,48,56,.16);
 }
 
 .player-wave span { animation: wave 1.1s ease-in-out infinite alternate; }
@@ -122,7 +122,7 @@ a {
 
 /* Editorial newspaper system */
 .magazine-rule {
-  border-color: rgba(31,48,68,.18);
+  border-color: rgba(38,37,34,.18);
 }
 .magazine-kicker {
   font-size: 10px;
@@ -143,5 +143,5 @@ a {
   font-size: 4.6em;
   line-height: .72;
   font-weight: 600;
-  color: #7A263A;
+  color: #9A3038;
 }
