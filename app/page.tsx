@@ -55,10 +55,23 @@ export default function Home() {
   const [openStep, setOpenStep] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const [orbOffset, setOrbOffset] = useState({ x: 0, y: 0 });
+  const [marqueeDirection, setMarqueeDirection] = useState<"left" | "right">("right");
   const orbGuideRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const onScroll = () => setIsScrolled(window.scrollY > 48);
+    let lastScrollY = window.scrollY;
+    const onScroll = () => {
+      const currentScrollY = window.scrollY;
+      if (currentScrollY > lastScrollY) {
+        setMarqueeDirection("left");
+      } else if (currentScrollY < lastScrollY) {
+        setMarqueeDirection("right");
+      } else if (currentScrollY <= 8) {
+        setMarqueeDirection("right");
+      }
+      lastScrollY = currentScrollY;
+      setIsScrolled(currentScrollY > 48);
+    };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
@@ -337,7 +350,7 @@ export default function Home() {
       </section>
 
       <section className="relative z-10 overflow-hidden border-y border-[#262522]/10 bg-[#DED3BF]">
-        <div className="marquee-track flex w-max items-center py-7 text-[11px] font-medium tracking-[.18em] text-[#262522]">
+        <div className={`marquee-track flex w-max items-center py-7 text-[11px] ${marqueeDirection === "right" ? "marquee-right" : "marquee-left"}`} font-medium tracking-[.18em] text-[#262522]">
           {[0, 1].map((group) => (
             <div key={group} className="flex shrink-0 items-center">
               {[
