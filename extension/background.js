@@ -20,9 +20,33 @@ async function readState() {
 async function writeState(state) {
   await chrome.storage.local.set({ tellmeReader: state });
 
-  const reading = state.status === "reading";
-  await chrome.action.setBadgeText({ text: reading ? "▶" : "" });
-  await chrome.action.setBadgeBackgroundColor({ color: "#9A3038" });
+  const badgeByStatus = {
+    reading: "LIVE",
+    paused: "PAUSE",
+    analyzing: "…",
+    complete: "DONE",
+    stopped: "",
+    error: "!"
+  };
+
+  const badgeText = badgeByStatus[state.status] || "";
+  await chrome.action.setBadgeText({ text: badgeText });
+  await chrome.action.setBadgeBackgroundColor({
+    color: state.status === "error" ? "#7A1F2A" : "#9A3038"
+  });
+
+  const titleByStatus = {
+    reading: "Tellme is listening",
+    paused: "Tellme is paused",
+    analyzing: "Tellme is building a brief",
+    complete: "Tellme finished reading",
+    stopped: "Tellme is stopped",
+    error: "Tellme encountered an error"
+  };
+
+  await chrome.action.setTitle({
+    title: titleByStatus[state.status] || "Tellme"
+  });
 
   chrome.runtime.sendMessage({ type: "tellme-reader-updated", state }).catch(() => {});
 }
@@ -752,6 +776,14 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
       if (!tab?.id) throw new Error("No active tab");
 
+      const existing = await readState();
+      await writeState({
+        ...existing,
+        status: "analyzing",
+        sourceTitle: "",
+        sourceUrl: ""
+      });
+
       const payload = await getPagePayload(tab.id);
       const brief = buildQuickBrief(payload);
 
@@ -762,6 +794,14 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
           sourceUrl: payload.url,
           updatedAt: Date.now()
         }
+      });
+
+      await writeState({
+        ...existing,
+        status: "idle",
+        sourceTitle: payload.title || "",
+        sourceUrl: payload.url || "",
+        contentType: payload.contentType || "webpage"
       });
 
       sendResponse({
