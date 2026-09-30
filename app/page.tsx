@@ -303,9 +303,9 @@ export default function Home() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("source") !== "extension" || !params.get("token")) return;
-
     const token = params.get("token");
+
+    if (params.get("source") !== "extension" || !token) return;
 
     fetch(`/api/extension/source/${encodeURIComponent(token)}`)
       .then(async (response) => {
