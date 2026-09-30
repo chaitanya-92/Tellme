@@ -335,10 +335,19 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="relative z-10 border-y border-[#1F3044]/10 bg-[#CFC2AE]/65">
-        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-center gap-x-14 gap-y-5 px-6 py-7 text-[11px] font-medium tracking-[.18em] text-[#70685E] lg:px-10">
-          {["REDDIT", "QUORA", "HACKER NEWS", "MEDIUM", "ANY WEBPAGE"].map((x) => (
-            <span key={x}>{x}</span>
+      <section className="relative z-10 overflow-hidden border-y border-[#1F3044]/10 bg-[#CFC2AE]/65">
+        <div className="marquee-track flex w-max items-center py-7 text-[11px] font-medium tracking-[.18em] text-[#1F3044]">
+          {[0, 1].map((group) => (
+            <div key={group} className="flex shrink-0 items-center">
+              {["REDDIT", "QUORA", "HACKER NEWS", "MEDIUM", "ANY WEBPAGE"].map((x) => (
+                <span
+                  key={group + "-" + x}
+                  className="mx-7 whitespace-nowrap bg-[#D8C6AE] px-1.5 py-1 lg:mx-12"
+                >
+                  {x}
+                </span>
+              ))}
+            </div>
           ))}
         </div>
       </section>
