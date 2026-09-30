@@ -498,20 +498,21 @@ export default function Home() {
             </div>
             <span className="magazine-caption hidden sm:block">Page 02</span>
           </div>
-          <div className="grid lg:grid-cols-[.9fr_1.7fr]">
+
+          <div className="grid gap-12 pt-12 lg:grid-cols-[.78fr_1.72fr] lg:gap-16">
             <motion.div
               initial={{ opacity: 0, x: -28 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-              className="border-b border-dashed border-[#B8AB95] py-10 lg:border-b-0 lg:border-r lg:pr-14"
+              className="max-w-md"
             >
               <motion.h2
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.35 }}
                 transition={{ duration: 0.7, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-                className="vintage-serif max-w-xl text-5xl leading-[.9] sm:text-7xl"
+                className="vintage-serif text-5xl leading-[.92] sm:text-7xl"
               >
                 Stop switching between work and the web.
               </motion.h2>
@@ -520,10 +521,10 @@ export default function Home() {
               </p>
 
               <motion.div
-                initial={{ opacity: 0, y: 35, scale: 0.96 }}
+                initial={{ opacity: 0, y: 25, scale: 0.96 }}
                 whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.8, delay: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.8, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
                 className="relative mt-10 max-w-sm border-t border-[#262522] pt-5"
               >
                 <div className="flex items-center justify-between text-[9px] uppercase tracking-[.18em] text-[#665F56]">
@@ -531,15 +532,8 @@ export default function Home() {
                   <span>Keep moving</span>
                 </div>
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.98 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true, amount: 0.2 }}
                   animate={{ y: [0, -3, 0] }}
-                  transition={{
-                    opacity: { duration: 0.5 },
-                    scale: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
-                    y: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-                  }}
+                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
                   className="relative mt-4 overflow-hidden border border-[#262522]/20 bg-[#E7DED0]"
                 >
                   <img
@@ -548,48 +542,88 @@ export default function Home() {
                     className="block h-auto w-full"
                   />
                 </motion.div>
-                <div className="mt-2 flex justify-between text-[9px] uppercase tracking-[.14em] text-[#665F56]">
-                  <span>Earbuds on</span>
-                  <span>Attention elsewhere</span>
-                </div>
               </motion.div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, x: 28 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.75, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-              className="lg:pl-14"
+              initial={{ opacity: 0, y: 28 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.8, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+              className="relative min-h-[520px] overflow-hidden border border-[#262522]/15 bg-[#F7F2E8] p-5 shadow-[inset_0_0_45px_rgba(38,37,34,.05)] sm:p-8"
             >
-              {steps.map((step, i) => {
-                const isOpen = openStep === i;
-                return (
-                  <motion.div key={step.num} className="border-b border-dashed border-[#B8AB95] last:border-b-0">
-                    <button
-                      type="button"
-                      onClick={() => setOpenStep(isOpen ? -1 : i)}
-                      aria-expanded={isOpen}
-                      className="group flex w-full items-center gap-5 py-7 text-left transition-colors"
-                    >
-                      <span className="font-mono text-[10px] text-[#9A3038]">{step.num}</span>
-                      <span className="vintage-serif flex-1 text-2xl sm:text-3xl">{step.title}</span>
-                      <ChevronDown
-                        size={18}
-                        className={`text-[#665F56] transition-transform duration-300 ${isOpen ? "rotate-180 text-[#9A3038]" : "group-hover:translate-y-0.5"}`}
-                      />
-                    </button>
+              <div className="pointer-events-none absolute inset-0 opacity-60"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(38,37,34,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(38,37,34,.06) 1px, transparent 1px)",
+                  backgroundSize: "32px 32px",
+                }}
+              />
+              <div className="relative mb-5 flex items-center justify-between border-b border-dashed border-[#B8AB95] pb-3">
+                <span className="font-mono text-[9px] uppercase tracking-[.18em] text-[#665F56]">Tellme desk · notes</span>
+                <span className="font-mono text-[9px] uppercase tracking-[.18em] text-[#9A3038]">03 notes pinned</span>
+              </div>
+
+              <div className="relative h-[430px]">
+                {steps.map((step, i) => {
+                  const noteStyles = [
+                    { left: "3%", top: "5%", rotate: -3.5, bg: "#E9D8A6" },
+                    { left: "45%", top: "20%", rotate: 2.8, bg: "#F1D6A7" },
+                    { left: "19%", top: "57%", rotate: -2, bg: "#D8E0C1" },
+                  ];
+                  const note = noteStyles[i];
+
+                  return (
                     <motion.div
-                      initial={false}
-                      animate={{ height: isOpen ? "auto" : 0, opacity: isOpen ? 1 : 0 }}
-                      transition={{ duration: 0.28, ease: "easeOut" }}
-                      className="overflow-hidden"
+                      key={step.num}
+                      initial={{ opacity: 0, y: 35, rotate: note.rotate - 3 }}
+                      whileInView={{ opacity: 1, y: 0, rotate: note.rotate }}
+                      viewport={{ once: true, amount: 0.2 }}
+                      transition={{
+                        duration: 0.65,
+                        delay: i * 0.14,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                      whileHover={{
+                        y: -9,
+                        rotate: 0,
+                        scale: 1.035,
+                        boxShadow: "0 22px 34px rgba(38,37,34,.18)",
+                        transition: { duration: 0.22 },
+                      }}
+                      className="absolute w-[72%] max-w-[300px] cursor-pointer border border-[#262522]/15 px-5 pb-6 pt-7 shadow-[0_10px_20px_rgba(38,37,34,.10)] sm:w-[55%] sm:px-6"
+                      style={{
+                        left: note.left,
+                        top: note.top,
+                        backgroundColor: note.bg,
+                        transformOrigin: "center center",
+                      }}
                     >
-                      <p className="max-w-xl pb-7 pl-10 text-sm leading-6 text-[#665F56]">{step.text}</p>
+                      <span className="absolute left-1/2 top-[-7px] h-4 w-10 -translate-x-1/2 rotate-[-2deg] bg-[#F4EEDF]/80 shadow-sm" />
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-[10px] font-semibold text-[#9A3038]">{step.num}</span>
+                        <span className="text-[9px] uppercase tracking-[.16em] text-[#665F56]">tellme.</span>
+                      </div>
+                      <h3 className="vintage-serif mt-5 text-2xl leading-[.95] sm:text-3xl">{step.title}</h3>
+                      <p className="mt-4 text-xs leading-5 text-[#665F56]">{step.text}</p>
+                      <div className="mt-5 flex items-center gap-2 text-[8px] uppercase tracking-[.16em] text-[#665F56]/75">
+                        <span className="h-px w-7 bg-[#665F56]/40" />
+                        pinned note
+                      </div>
                     </motion.div>
-                  </motion.div>
-                );
-              })}
+                  );
+                })}
+
+                <motion.div
+                  initial={{ opacity: 0, scale: .7 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: .5, delay: .55 }}
+                  className="absolute bottom-8 right-[8%] flex h-20 w-20 rotate-6 items-center justify-center rounded-full border border-[#262522]/25 bg-[#F4EEDF] shadow-[0_8px_18px_rgba(38,37,34,.10)]"
+                >
+                  <span className="vintage-serif text-3xl">♪</span>
+                </motion.div>
+              </div>
             </motion.div>
           </div>
         </div>
