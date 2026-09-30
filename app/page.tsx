@@ -211,8 +211,8 @@ export default function Home() {
           </div>
         </motion.div>
       </motion.nav>
-      <section className="relative z-10 mx-auto min-h-[760px] max-w-[1080px] px-6 pb-24 pt-40 lg:px-8 lg:pt-44">
-        <div className="grid items-center gap-14 lg:grid-cols-[1fr_.72fr]">
+      <section className="relative z-10 mx-auto min-h-[650px] max-w-[1080px] px-6 pb-16 pt-32 lg:px-8 lg:pt-36">
+        <div className="grid items-center gap-8 lg:grid-cols-[1.08fr_.72fr]">
           <div className="max-w-3xl">
             <motion.div
               initial={{ opacity: 0, y: 16 }}
@@ -229,20 +229,17 @@ export default function Home() {
               initial={{ opacity: 0, y: 22 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: .8 }}
-              className="vintage-serif text-balance text-[58px] leading-[.84] sm:text-[78px] lg:text-[108px]"
+              className="vintage-serif max-w-[720px] text-balance text-[54px] leading-[.9] sm:text-[68px] lg:text-[82px]"
             >
-              You found something
-              <span className="relative block">
-                interesting<span className="absolute -bottom-2 ml-1 text-[#665F56]">.</span>
-              </span>
-              <span className="mt-5 block text-[#665F56]">You don't have to read it.</span>
+              You found something interesting<span className="text-[#9A3038]">.</span>
+              <span className="mt-3 block text-[#665F56]">Let Tellme read it.</span>
             </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: .7, delay: .1 }}
-              className="magazine-dropcap mt-8 max-w-xl text-[15px] leading-7 text-[#665F56] sm:text-base"
+              className="magazine-dropcap mt-6 max-w-lg text-[14px] leading-6 text-[#665F56] sm:text-[15px]"
             >
               Tellme turns long threads, articles, and webpages into natural audio you can listen to while you keep working.
             </motion.p>
@@ -251,7 +248,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: .7, delay: .2 }}
-              className="mt-9 flex flex-col gap-3 border-t border-[#262522]/15 pt-6 sm:flex-row"
+              className="mt-7 flex flex-col gap-3 border-t border-[#262522]/15 pt-5 sm:flex-row"
             >
               <Button size="lg">
                 Start listening free <ArrowRight size={17} className="ml-2" />
@@ -266,9 +263,9 @@ export default function Home() {
             initial={{ opacity: 0, scale: .97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: .25 }}
-            className="relative hidden min-h-[390px] lg:block"
+            className="relative hidden min-h-[330px] lg:block"
           >
-            <div className="absolute right-0 top-1/2 h-px w-full -translate-y-1/2 dashed-path opacity-70" />
+            <div className="absolute right-0 top-1/2 h-px w-full -translate-y-1/2 dashed-path opacity-55" />
             <div
               ref={orbGuideRef}
               className="absolute right-10 top-1/2 h-[270px] w-[270px] -translate-y-1/2 rounded-full border border-dashed border-[#9D9180]"
