@@ -99,7 +99,7 @@ export default function Home() {
 
       if (delta !== 0) {
         // Follow the page direction: scroll down → marquee moves right, scroll up → left.
-        marqueeTargetRef.current += delta * 0.34;
+        marqueeTargetRef.current -= delta * 0.34;
       }
 
       lastScrollY = currentScrollY;
@@ -164,63 +164,82 @@ export default function Home() {
       <motion.nav
         initial={false}
         animate={{
-          top: isScrolled ? 0 : 0,
-          left: isScrolled ? 12 : 0,
-          right: isScrolled ? 12 : 0,
-          y: isScrolled ? [0, -5, 1.5, 0] : 0,
-          scaleX: isScrolled ? [1, 1.012, 0.997, 1] : 1,
-          scaleY: isScrolled ? [1, 0.985, 1.003, 1] : 1,
-          rotate: isScrolled ? [0, -0.18, 0.05, 0] : 0,
+          top: isScrolled ? 10 : 0,
+          left: isScrolled ? 18 : 0,
+          right: isScrolled ? 18 : 0,
+          y: isScrolled ? [0, -10, 2, 0] : 0,
+          scaleX: isScrolled ? [1, 1.018, 0.994, 1] : 1,
+          scaleY: isScrolled ? [1, 0.94, 1.008, 1] : 1,
+          rotateX: isScrolled ? [0, 1.2, -0.35, 0] : 0,
+          rotateZ: isScrolled ? [0, -0.35, 0.08, 0] : 0,
         }}
         transition={{
-          top: { duration: 0.58, ease: [0.22, 1, 0.36, 1] },
-          left: { duration: 0.58, ease: [0.22, 1, 0.36, 1] },
-          right: { duration: 0.58, ease: [0.22, 1, 0.36, 1] },
-          y: { duration: 0.58, ease: [0.16, 1, 0.3, 1] },
-          scaleX: { duration: 0.58, ease: [0.16, 1, 0.3, 1] },
-          scaleY: { duration: 0.58, ease: [0.16, 1, 0.3, 1] },
-          rotate: { duration: 0.58, ease: [0.16, 1, 0.3, 1] },
+          top: { duration: 0.72, ease: [0.16, 1, 0.3, 1] },
+          left: { duration: 0.72, ease: [0.16, 1, 0.3, 1] },
+          right: { duration: 0.72, ease: [0.16, 1, 0.3, 1] },
+          y: { duration: 0.72, ease: [0.12, 0.8, 0.2, 1] },
+          scaleX: { duration: 0.72, ease: [0.12, 0.8, 0.2, 1] },
+          scaleY: { duration: 0.72, ease: [0.12, 0.8, 0.2, 1] },
+          rotateX: { duration: 0.72, ease: [0.12, 0.8, 0.2, 1] },
+          rotateZ: { duration: 0.72, ease: [0.12, 0.8, 0.2, 1] },
         }}
-        style={{ transformOrigin: "top center" }}
+        style={{ transformOrigin: "top center", perspective: 900 }}
         className={`fixed z-50 ${isScrolled ? "mx-auto max-w-[1040px]" : "w-full"}`}
       >
         <motion.div
           animate={{
             height: isScrolled ? 64 : 104,
-            borderRadius: isScrolled ? 18 : 0,
+            borderRadius: isScrolled ? 20 : 0,
             boxShadow: isScrolled
               ? [
                   "0 0 0 rgba(27,26,24,0)",
-                  "0 16px 30px rgba(27,26,24,.10)",
-                  "0 7px 18px rgba(27,26,24,.08)",
-                  "0 10px 28px rgba(27,26,24,.10)",
+                  "0 20px 45px rgba(27,26,24,.16)",
+                  "0 8px 20px rgba(27,26,24,.08)",
+                  "0 14px 34px rgba(27,26,24,.12)",
                 ]
               : "0 0 0 rgba(38,37,34,0)",
-            backgroundColor: isScrolled ? "rgba(244,238,223,.94)" : "rgba(244,238,223,0)",
+            backgroundColor: isScrolled ? "rgba(244,238,223,.96)" : "rgba(244,238,223,0)",
+            borderColor: isScrolled ? "rgba(38,37,34,.13)" : "rgba(38,37,34,.08)",
           }}
           transition={{
-            height: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-            borderRadius: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
-            boxShadow: { duration: 0.68, ease: [0.16, 1, 0.3, 1] },
-            backgroundColor: { duration: 0.35, ease: "easeOut" },
+            height: { duration: 0.62, ease: [0.16, 1, 0.3, 1] },
+            borderRadius: { duration: 0.62, ease: [0.16, 1, 0.3, 1] },
+            boxShadow: { duration: 0.78, ease: [0.12, 0.8, 0.2, 1] },
+            backgroundColor: { duration: 0.42, ease: "easeOut" },
+            borderColor: { duration: 0.42, ease: "easeOut" },
           }}
-          className="mx-auto overflow-hidden border border-[#262522]/[0.08] backdrop-blur-xl"
+          className="mx-auto overflow-hidden border backdrop-blur-xl"
         >
           <div className="mx-auto grid h-full max-w-[1040px] grid-cols-[1fr_auto] items-center px-5 sm:px-7 md:grid-cols-[1fr_1fr]">
-            <a href="#" className="flex items-center gap-3">
-              <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#262522]">
+            <motion.a
+              href="#"
+              animate={{
+                x: isScrolled ? [0, 3, 0] : 0,
+                scale: isScrolled ? [1, 1.04, 1] : 1,
+              }}
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              className="flex items-center gap-3"
+            >
+              <motion.span
+                animate={{
+                  rotate: isScrolled ? [0, -8, 4, 0] : 0,
+                  scale: isScrolled ? [1, 1.08, 1] : 1,
+                }}
+                transition={{ duration: 0.68, ease: [0.16, 1, 0.3, 1] }}
+                className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#262522]"
+              >
                 <span className="absolute top-[8px] h-px w-6 bg-[#F4EEDF]" />
                 <span className="absolute top-[13px] h-px w-6 bg-[#F4EEDF]" />
                 <span className="absolute top-[18px] h-px w-6 bg-[#F4EEDF]" />
                 <span className="absolute top-[23px] h-px w-6 bg-[#F4EEDF]" />
-              </span>
+              </motion.span>
               <span className="vintage-serif text-[23px] tracking-[-.02em]">tellme.</span>
-            </a>
+            </motion.a>
 
             <div className="flex h-full items-center justify-end gap-6 text-[11px] uppercase tracking-[.12em] text-[#665F56] sm:gap-8">
-              <a href="#how" className="transition-colors hover:text-[#262522]">how it works</a>
-              <a href="#features" className="transition-colors hover:text-[#262522]">features</a>
-              <a href="#use-cases" className="transition-colors hover:text-[#262522]">use cases</a>
+              <a href="#how" className="transition-all duration-300 hover:-translate-y-0.5 hover:text-[#262522]">how it works</a>
+              <a href="#features" className="transition-all duration-300 hover:-translate-y-0.5 hover:text-[#262522]">features</a>
+              <a href="#use-cases" className="transition-all duration-300 hover:-translate-y-0.5 hover:text-[#262522]">use cases</a>
               <Button size="sm" className="ml-2 hidden sm:inline-flex">
                 Get Tellme <ArrowRight size={15} className="ml-2" />
               </Button>
