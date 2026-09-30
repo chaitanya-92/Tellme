@@ -414,87 +414,6 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="relative z-10 border-b border-[#262522]/15 bg-[#F4EEDF]">
-        <div className="mx-auto max-w-[1080px] px-6 py-16 lg:px-8 lg:py-20">
-          <div className="mb-6 flex items-center justify-between border-b border-[#262522] pb-3">
-            <div>
-              <p className="magazine-kicker text-[#9A3038]">Listening while living</p>
-              <p className="mt-1 text-[10px] uppercase tracking-[.18em] text-[#665F56]">A scene from the everyday web</p>
-            </div>
-            <span className="magazine-caption hidden sm:block">Illustrated feature · 01</span>
-          </div>
-          <figure className="overflow-hidden border-2 border-[#262522] bg-[#EADFC8]">
-            <img
-              src="/editorial-listening.svg"
-              alt="Editorial illustration of a person wearing earbuds and listening to a webpage while working at a computer"
-              className="block h-auto w-full"
-            />
-          </figure>
-          <div className="mt-3 flex items-start justify-between gap-6">
-            <figcaption className="max-w-2xl text-[10px] uppercase tracking-[.15em] text-[#665F56]">
-              Put on your earbuds. Keep working. Tellme turns the useful parts of long pages and discussions into something you can hear.
-            </figcaption>
-            <span className="magazine-caption hidden sm:block text-[#9A3038]">The Tellme Review</span>
-          </div>
-        </div>
-      </section>
-
-      <section className="relative z-10 overflow-hidden border-b border-[#262522]/10 bg-[#F8F5EE]">
-        <div className="mx-auto max-w-[1080px] px-6 py-28 text-center lg:px-8 lg:py-36">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.35 }}
-            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto max-w-3xl"
-          >
-            <p className="magazine-caption text-[#9A3038]">A word from the listening desk</p>
-            <div className="mx-auto mt-4 h-px w-10 bg-[#9A3038]" />
-            <blockquote className="vintage-serif mt-10 text-4xl leading-[1.08] sm:text-6xl lg:text-7xl">
-              &quot;I stopped saving articles for later. Tellme lets me hear the useful parts while I keep working.&quot;
-            </blockquote>
-            <p className="mx-auto mt-6 max-w-2xl text-2xl text-[#B8AB95]">
-              Curiosity should not have to wait for an empty afternoon.
-            </p>
-
-            <div className="mt-10 flex flex-col items-center">
-              <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-[#262522] bg-[#DED3BF]">
-                <span className="vintage-serif text-3xl">A</span>
-              </div>
-              <p className="mt-4 text-sm font-semibold">A curious listener</p>
-              <p className="mt-1 text-[10px] uppercase tracking-[.18em] text-[#665F56]">Tellme early user · Listening edition</p>
-            </div>
-
-            <motion.button
-              type="button"
-              onClick={() => setShowConversation((value) => !value)}
-              whileTap={{ scale: 0.98 }}
-              className="mx-auto mt-9 flex w-full max-w-[680px] items-center justify-between rounded-full border border-[#262522]/15 bg-white px-5 py-3 text-left shadow-[0_8px_30px_rgba(38,37,34,.06)] transition-shadow hover:shadow-[0_12px_38px_rgba(38,37,34,.10)]"
-            >
-              <span className="flex items-center gap-3 text-sm text-[#665F56]">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F0ECE3]">
-                  <Cookie size={15} />
-                </span>
-                {showConversation ? "Tellme is ready to listen." : "What would you like Tellme to hear?"}
-              </span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F0ECE3] text-[#262522]">
-                <Mic size={14} />
-              </span>
-            </motion.button>
-
-            <motion.div
-              initial={false}
-              animate={{ height: showConversation ? "auto" : 0, opacity: showConversation ? 1 : 0 }}
-              className="mx-auto max-w-[680px] overflow-hidden text-left"
-            >
-              <div className="mt-2 rounded-2xl border border-[#262522]/10 bg-[#F0ECE3] px-5 py-4 text-sm text-[#665F56]">
-                Ask Tellme to summarize a thread, explain a disagreement, or find the part worth hearing.
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
       <section id="how" className="relative z-10 border-y border-[#262522]/15 bg-[#DED3BF]/35">
         <div className="mx-auto max-w-[1080px] px-6 py-24 lg:px-8 lg:py-32">
           <div className="flex items-end justify-between border-b-2 border-[#262522] pb-5">
@@ -694,6 +613,87 @@ export default function Home() {
                 </div>
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      <section className="relative z-10 overflow-hidden border-b border-[#262522]/10 bg-[#F8F5EE]">
+        <div className="mx-auto max-w-[1080px] px-6 py-28 text-center lg:px-8 lg:py-36">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.35 }}
+            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+            className="mx-auto max-w-3xl"
+          >
+            <p className="magazine-caption text-[#9A3038]">A word from the listening desk</p>
+            <div className="mx-auto mt-4 h-px w-10 bg-[#9A3038]" />
+            <blockquote className="vintage-serif mt-10 text-4xl leading-[1.08] sm:text-6xl lg:text-7xl">
+              &quot;I stopped saving articles for later. Tellme lets me hear the useful parts while I keep working.&quot;
+            </blockquote>
+            <p className="mx-auto mt-6 max-w-2xl text-2xl text-[#B8AB95]">
+              Curiosity should not have to wait for an empty afternoon.
+            </p>
+
+            <div className="mt-10 flex flex-col items-center">
+              <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-[#262522] bg-[#DED3BF]">
+                <span className="vintage-serif text-3xl">A</span>
+              </div>
+              <p className="mt-4 text-sm font-semibold">A curious listener</p>
+              <p className="mt-1 text-[10px] uppercase tracking-[.18em] text-[#665F56]">Tellme early user · Listening edition</p>
+            </div>
+
+            <motion.button
+              type="button"
+              onClick={() => setShowConversation((value) => !value)}
+              whileTap={{ scale: 0.98 }}
+              className="mx-auto mt-9 flex w-full max-w-[680px] items-center justify-between rounded-full border border-[#262522]/15 bg-white px-5 py-3 text-left shadow-[0_8px_30px_rgba(38,37,34,.06)] transition-shadow hover:shadow-[0_12px_38px_rgba(38,37,34,.10)]"
+            >
+              <span className="flex items-center gap-3 text-sm text-[#665F56]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F0ECE3]">
+                  <Cookie size={15} />
+                </span>
+                {showConversation ? "Tellme is ready to listen." : "What would you like Tellme to hear?"}
+              </span>
+              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F0ECE3] text-[#262522]">
+                <Mic size={14} />
+              </span>
+            </motion.button>
+
+            <motion.div
+              initial={false}
+              animate={{ height: showConversation ? "auto" : 0, opacity: showConversation ? 1 : 0 }}
+              className="mx-auto max-w-[680px] overflow-hidden text-left"
+            >
+              <div className="mt-2 rounded-2xl border border-[#262522]/10 bg-[#F0ECE3] px-5 py-4 text-sm text-[#665F56]">
+                Ask Tellme to summarize a thread, explain a disagreement, or find the part worth hearing.
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      <section className="relative z-10 border-b border-[#262522]/15 bg-[#F4EEDF]">
+        <div className="mx-auto max-w-[1080px] px-6 py-16 lg:px-8 lg:py-20">
+          <div className="mb-6 flex items-center justify-between border-b border-[#262522] pb-3">
+            <div>
+              <p className="magazine-kicker text-[#9A3038]">Listening while living</p>
+              <p className="mt-1 text-[10px] uppercase tracking-[.18em] text-[#665F56]">A scene from the everyday web</p>
+            </div>
+            <span className="magazine-caption hidden sm:block">Illustrated feature · 01</span>
+          </div>
+          <figure className="overflow-hidden border-2 border-[#262522] bg-[#EADFC8]">
+            <img
+              src="/editorial-listening.svg"
+              alt="Editorial illustration of a person wearing earbuds and listening to a webpage while working at a computer"
+              className="block h-auto w-full"
+            />
+          </figure>
+          <div className="mt-3 flex items-start justify-between gap-6">
+            <figcaption className="max-w-2xl text-[10px] uppercase tracking-[.15em] text-[#665F56]">
+              Put on your earbuds. Keep working. Tellme turns the useful parts of long pages and discussions into something you can hear.
+            </figcaption>
+            <span className="magazine-caption hidden sm:block text-[#9A3038]">The Tellme Review</span>
           </div>
         </div>
       </section>
