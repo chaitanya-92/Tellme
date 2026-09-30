@@ -350,7 +350,7 @@ export default function Home() {
       </section>
 
       <section className="relative z-10 overflow-hidden border-y border-[#262522]/10 bg-[#DED3BF]">
-        <div className={`marquee-track flex w-max items-center py-7 text-[11px] ${marqueeDirection === "right" ? "marquee-right" : "marquee-left"}`} font-medium tracking-[.18em] text-[#262522]">
+        <div className={`marquee-track flex w-max items-center py-7 text-[11px] font-medium tracking-[.18em] text-[#262522] ${marqueeDirection === "right" ? "marquee-right" : "marquee-left"}`}>
           {[0, 1].map((group) => (
             <div key={group} className="flex shrink-0 items-center">
               {[
