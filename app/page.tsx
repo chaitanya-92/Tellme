@@ -284,6 +284,7 @@ export default function Home() {
   const [activeFeature, setActiveFeature] = useState(0);
   const [isListening, setIsListening] = useState(true);
   const [activeFocusWord, setActiveFocusWord] = useState(0);
+  const [activeUseCase, setActiveUseCase] = useState(0);
   const [signalPath, setSignalPath] = useState("");
   const listeningTime = useListeningClock(161, isListening);
   const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
