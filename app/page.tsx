@@ -63,25 +63,6 @@ export default function Home() {
   const [showConversation, setShowConversation] = useState(false);
   const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
   const orbGuideRef = useRef<HTMLDivElement>(null);
-  const notesBoardRef = useRef<HTMLDivElement>(null);
-  const noteRefs = useRef<Array<HTMLDivElement | null>>([]);
-  const [notePositions, setNotePositions] = useState([
-    { x: 3, y: 4 },
-    { x: 54, y: 22 },
-    { x: 22, y: 58 },
-  ]);
-  const dragRef = useRef<{
-    index: number;
-    offsetX: number;
-    offsetY: number;
-    startLeft: number;
-    startTop: number;
-    boardWidth: number;
-    boardHeight: number;
-    noteWidth: number;
-    noteHeight: number;
-  } | null>(null);
-
   const marqueeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -436,301 +417,102 @@ export default function Home() {
 
           <div className="grid gap-12 pt-12 lg:grid-cols-[.78fr_1.72fr] lg:gap-16">
             <motion.div
-              initial={{ opacity: 0, x: -28 }}
+              initial={{ opacity: 0, x: -20 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
               className="max-w-md"
             >
-              <motion.h2
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.35 }}
-                transition={{ duration: 0.7, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-                className="vintage-serif text-5xl leading-[.92] sm:text-7xl"
-              >
+              <h2 className="vintage-serif text-5xl leading-[.92] sm:text-7xl">
                 Stop switching between work and the web.
-              </motion.h2>
+              </h2>
               <p className="mt-7 max-w-md text-sm leading-6 text-[#665F56]">
                 Tellme sits beside your browser and turns the pages you care about into something you can consume hands-free.
               </p>
 
-              <motion.div
-                initial={{ opacity: 0, y: 25, scale: 0.96 }}
-                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                viewport={{ once: true, amount: 0.2 }}
-                transition={{ duration: 0.8, delay: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                className="relative mt-10 max-w-sm border-t border-[#262522] pt-5"
-              >
+              <div className="mt-10 max-w-sm border-t border-[#262522] pt-5">
                 <div className="flex items-center justify-between text-[9px] uppercase tracking-[.18em] text-[#665F56]">
                   <span>Illustration · 02</span>
                   <span>Keep moving</span>
                 </div>
-                <motion.div
-                  animate={{ y: [0, -3, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                  className="relative mt-4 overflow-hidden border border-[#262522]/20 bg-[#E7DED0]"
-                >
+                <div className="relative mt-4 overflow-hidden border border-[#262522]/20 bg-[#E7DED0]">
                   <img
                     src="/editorial-listening.svg"
-                    alt="Editorial illustration of listening while working"
+                    alt="Editorial illustration of a person wearing earbuds and listening while working"
                     className="block h-auto w-full"
                   />
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             </motion.div>
 
             <motion.div
-              initial={{ opacity: 0, y: 28 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.8, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="relative min-h-[520px] overflow-hidden border border-[#262522]/15 bg-[#F7F2E8] p-5 shadow-[inset_0_0_45px_rgba(38,37,34,.05)] sm:p-8"
             >
               <div
-                ref={notesBoardRef}
-                className="relative h-[520px] touch-none"
-                aria-label="Tellme workflow whiteboard"
-              >
-                <div className="pointer-events-none absolute inset-0 opacity-60"
-                  style={{
-                    backgroundImage:
-                      "linear-gradient(rgba(38,37,34,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(38,37,34,.06) 1px, transparent 1px)",
-                    backgroundSize: "32px 32px",
-                  }}
-                />
-                <div className="pointer-events-none relative mb-5 flex items-center justify-between border-b border-dashed border-[#B8AB95] pb-3">
-                  <span className="font-mono text-[9px] uppercase tracking-[.18em] text-[#665F56]">Tellme desk · notes</span>
-                  <span className="font-mono text-[9px] uppercase tracking-[.18em] text-[#9A3038]">Drag notes to arrange</span>
+                className="absolute inset-0 opacity-60"
+                style={{
+                  backgroundImage:
+                    "linear-gradient(rgba(38,37,34,.055) 1px, transparent 1px), linear-gradient(90deg, rgba(38,37,34,.055) 1px, transparent 1px)",
+                  backgroundSize: "32px 32px",
+                }}
+              />
+
+              <div className="relative">
+                <div className="flex items-center justify-between border-b border-dashed border-[#B8AB95] pb-3">
+                  <span className="font-mono text-[9px] uppercase tracking-[.18em] text-[#665F56]">Tellme desk · mission</span>
+                  <span className="font-mono text-[9px] uppercase tracking-[.18em] text-[#9A3038]">03 steps</span>
                 </div>
 
-                <div className="absolute inset-x-0 bottom-0 top-14">
-                  {steps.map((step, i) => {
-                    const noteStyles = [
-                      { rotate: -3.5, bg: "#E9D8A6" },
-                      { rotate: 2.8, bg: "#F1D6A7" },
-                      { rotate: -2, bg: "#D8E0C1" },
-                    ];
-                    const note = noteStyles[i];
+                <div className="relative mt-8 min-h-[425px]">
+                  <div className="absolute bottom-10 left-[24px] top-10 w-px bg-[#B8AB95]" />
+                  <div className="absolute bottom-10 left-[24px] top-10 w-px border-l border-dashed border-[#9A3038]/45" />
 
-                    const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
-                      const board = notesBoardRef.current;
-                      const element = noteRefs.current[i];
-                      if (!board || !element) return;
+                  {steps.map((step, i) => (
+                    <motion.div
+                      key={step.num}
+                      initial={{ opacity: 0, x: 22 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true, amount: 0.25 }}
+                      transition={{
+                        duration: 0.55,
+                        delay: i * 0.12,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
+                      className="relative mb-7 pl-14 last:mb-0"
+                    >
+                      <div className="absolute left-0 top-7 flex h-12 w-12 items-center justify-center rounded-full border border-[#262522]/25 bg-[#F7F2E8] shadow-[0_4px_12px_rgba(38,37,34,.08)]">
+                        <span className="font-mono text-[10px] font-semibold text-[#9A3038]">{step.num}</span>
+                      </div>
 
-                      const boardRect = board.getBoundingClientRect();
-                      const noteRect = element.getBoundingClientRect();
-
-                      dragRef.current = {
-                        index: i,
-                        offsetX: event.clientX - noteRect.left,
-                        offsetY: event.clientY - noteRect.top,
-                        startLeft: noteRect.left - boardRect.left,
-                        startTop: noteRect.top - boardRect.top,
-                        boardWidth: boardRect.width,
-                        boardHeight: boardRect.height,
-                        noteWidth: noteRect.width,
-                        noteHeight: noteRect.height,
-                      };
-
-                      element.setPointerCapture(event.pointerId);
-                      element.style.zIndex = "40";
-                      element.style.transition = "none";
-                      element.style.translate = "0 0";
-                      element.dataset.dragging = "true";
-                    };
-
-                    const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-                      const drag = dragRef.current;
-                      const board = notesBoardRef.current;
-                      const element = noteRefs.current[i];
-                      if (!drag || drag.index !== i || !board || !element) return;
-
-                      const boardRect = board.getBoundingClientRect();
-                      const maxLeft = Math.max(0, drag.boardWidth - drag.noteWidth);
-                      const maxTop = Math.max(0, drag.boardHeight - drag.noteHeight);
-                      const nextLeft = Math.min(
-                        Math.max(0, event.clientX - boardRect.left - drag.offsetX),
-                        maxLeft
-                      );
-                      const nextTop = Math.min(
-                        Math.max(0, event.clientY - boardRect.top - drag.offsetY),
-                        maxTop
-                      );
-
-                      element.style.translate = `${nextLeft - drag.startLeft}px ${nextTop - drag.startTop}px`;
-                    };
-
-                    const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
-                      const drag = dragRef.current;
-                      const board = notesBoardRef.current;
-                      const element = noteRefs.current[i];
-                      if (!drag || drag.index !== i || !board || !element) return;
-
-                      const boardRect = board.getBoundingClientRect();
-                      const maxLeft = Math.max(0, drag.boardWidth - drag.noteWidth);
-                      const maxTop = Math.max(0, drag.boardHeight - drag.noteHeight);
-                      const finalLeft = Math.min(
-                        Math.max(0, event.clientX - boardRect.left - drag.offsetX),
-                        maxLeft
-                      );
-                      const finalTop = Math.min(
-                        Math.max(0, event.clientY - boardRect.top - drag.offsetY),
-                        maxTop
-                      );
-
-                      setNotePositions((current) =>
-                        current.map((position, index) =>
-                          index === i
-                            ? {
-                                x: (finalLeft / Math.max(1, maxLeft)) * 100,
-                                y: (finalTop / Math.max(1, maxTop)) * 100,
-                              }
-                            : position
-                        )
-                      );
-
-                      if (element.hasPointerCapture(event.pointerId)) {
-                        element.releasePointerCapture(event.pointerId);
-                      }
-                      element.style.translate = "0 0";
-                      element.style.transition = "";
-                      element.style.zIndex = String(10 + i);
-                      element.dataset.dragging = "false";
-                      dragRef.current = null;
-                    };
-
-                    return (
-                      <motion.div
-                        key={step.num}
-                        ref={(element) => {
-                          noteRefs.current[i] = element;
-                        }}
-                        initial={{ opacity: 0, y: 35, rotate: note.rotate - 3 }}
-                        whileInView={{ opacity: 1, y: 0, rotate: note.rotate }}
-                        viewport={{ once: true, amount: 0.2 }}
-                        transition={{
-                          duration: 0.65,
-                          delay: i * 0.14,
-                          ease: [0.16, 1, 0.3, 1],
-                        }}
-                        onPointerDown={handlePointerDown}
-                        onPointerMove={handlePointerMove}
-                        onPointerUp={handlePointerUp}
-                        onPointerCancel={handlePointerUp}
-                        whileHover={{ y: -4, scale: 1.01 }}
-                        className="absolute w-[68%] max-w-[300px] cursor-grab border border-[#262522]/15 px-5 pb-6 pt-7 shadow-[0_10px_20px_rgba(38,37,34,.10)] active:cursor-grabbing sm:w-[52%] sm:px-6"
-                        style={{
-                          left: `${notePositions[i].x}%`,
-                          top: `${notePositions[i].y}%`,
-                          backgroundColor: note.bg,
-                          zIndex: 10 + i,
-                          touchAction: "none",
-                          boxShadow: "0 10px 20px rgba(38,37,34,.10)",
-                        }}
+                      <div
+                        className={[
+                          "relative border border-[#262522]/15 px-6 pb-6 pt-7 shadow-[0_10px_22px_rgba(38,37,34,.09)]",
+                          i === 0 ? "rotate-[-1.2deg] bg-[#E9D8A6]" : "",
+                          i === 1 ? "rotate-[1deg] bg-[#F1D6A7]" : "",
+                          i === 2 ? "rotate-[-.7deg] bg-[#D8E0C1]" : "",
+                        ].join(" ")}
                       >
-                        <span className="pointer-events-none absolute left-1/2 top-[-7px] h-4 w-10 -translate-x-1/2 rotate-[-2deg] bg-[#F4EEDF]/85 shadow-sm" />
-                        <div className="pointer-events-none flex items-center justify-between">
-                          <span className="font-mono text-[10px] font-semibold text-[#9A3038]">{step.num}</span>
+                        <span className="absolute left-1/2 top-[-7px] h-4 w-11 -translate-x-1/2 rotate-[-2deg] bg-[#F4EEDF]/90 shadow-sm" />
+                        <div className="flex items-center justify-between">
+                          <span className="text-[9px] uppercase tracking-[.18em] text-[#665F56]">Mission note</span>
                           <span className="text-[9px] uppercase tracking-[.16em] text-[#665F56]">tellme.</span>
                         </div>
-                        <h3 className="pointer-events-none vintage-serif mt-5 text-2xl leading-[.95] sm:text-3xl">{step.title}</h3>
-                        <p className="pointer-events-none mt-4 text-xs leading-5 text-[#665F56]">{step.text}</p>
-                        <div className="pointer-events-none mt-5 flex items-center gap-2 text-[8px] uppercase tracking-[.16em] text-[#665F56]/75">
-                          <span className="h-px w-7 bg-[#665F56]/40" />
-                          drag & pin
+                        <h3 className="vintage-serif mt-4 text-2xl leading-[.98] sm:text-3xl">{step.title}</h3>
+                        <p className="mt-4 max-w-lg text-xs leading-5 text-[#665F56]">{step.text}</p>
+                        <div className="mt-5 flex items-center gap-2 text-[8px] uppercase tracking-[.16em] text-[#665F56]/75">
+                          <span className="h-px w-8 bg-[#665F56]/40" />
+                          step {i + 1} of 3
                         </div>
-                      </motion.div>
-                    );
-                  })}
-
-                <div className="pointer-events-none absolute bottom-4 right-4 flex items-center gap-2 rounded-full border border-[#262522]/10 bg-[#F4EEDF]/80 px-3 py-2 text-[8px] uppercase tracking-[.14em] text-[#665F56] shadow-sm">
-                  <span className="h-1.5 w-1.5 rounded-full bg-[#9A3038]" />
-                  place them your way
+                      </div>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </motion.div>
-          </div>
-        </div>
-      </section>
-
-      <section className="relative z-10 overflow-hidden border-b border-[#262522]/10 bg-[#F8F5EE]">
-        <div className="mx-auto max-w-[1080px] px-6 py-28 text-center lg:px-8 lg:py-36">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.35 }}
-            transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
-            className="mx-auto max-w-3xl"
-          >
-            <p className="magazine-caption text-[#9A3038]">A word from the listening desk</p>
-            <div className="mx-auto mt-4 h-px w-10 bg-[#9A3038]" />
-            <blockquote className="vintage-serif mt-10 text-4xl leading-[1.08] sm:text-6xl lg:text-7xl">
-              &quot;I stopped saving articles for later. Tellme lets me hear the useful parts while I keep working.&quot;
-            </blockquote>
-            <p className="mx-auto mt-6 max-w-2xl text-2xl text-[#B8AB95]">
-              Curiosity should not have to wait for an empty afternoon.
-            </p>
-
-            <div className="mt-10 flex flex-col items-center">
-              <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-full border-2 border-[#262522] bg-[#DED3BF]">
-                <span className="vintage-serif text-3xl">A</span>
-              </div>
-              <p className="mt-4 text-sm font-semibold">A curious listener</p>
-              <p className="mt-1 text-[10px] uppercase tracking-[.18em] text-[#665F56]">Tellme early user · Listening edition</p>
-            </div>
-
-            <motion.button
-              type="button"
-              onClick={() => setShowConversation((value) => !value)}
-              whileTap={{ scale: 0.98 }}
-              className="mx-auto mt-9 flex w-full max-w-[680px] items-center justify-between rounded-full border border-[#262522]/15 bg-white px-5 py-3 text-left shadow-[0_8px_30px_rgba(38,37,34,.06)] transition-shadow hover:shadow-[0_12px_38px_rgba(38,37,34,.10)]"
-            >
-              <span className="flex items-center gap-3 text-sm text-[#665F56]">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F0ECE3]">
-                  <Cookie size={15} />
-                </span>
-                {showConversation ? "Tellme is ready to listen." : "What would you like Tellme to hear?"}
-              </span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#F0ECE3] text-[#262522]">
-                <Mic size={14} />
-              </span>
-            </motion.button>
-
-            <motion.div
-              initial={false}
-              animate={{ height: showConversation ? "auto" : 0, opacity: showConversation ? 1 : 0 }}
-              className="mx-auto max-w-[680px] overflow-hidden text-left"
-            >
-              <div className="mt-2 rounded-2xl border border-[#262522]/10 bg-[#F0ECE3] px-5 py-4 text-sm text-[#665F56]">
-                Ask Tellme to summarize a thread, explain a disagreement, or find the part worth hearing.
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
-
-      <section className="relative z-10 border-b border-[#262522]/15 bg-[#F4EEDF]">
-        <div className="mx-auto max-w-[1080px] px-6 py-16 lg:px-8 lg:py-20">
-          <div className="mb-6 flex items-center justify-between border-b border-[#262522] pb-3">
-            <div>
-              <p className="magazine-kicker text-[#9A3038]">Listening while living</p>
-              <p className="mt-1 text-[10px] uppercase tracking-[.18em] text-[#665F56]">A scene from the everyday web</p>
-            </div>
-            <span className="magazine-caption hidden sm:block">Illustrated feature · 01</span>
-          </div>
-          <figure className="overflow-hidden border-2 border-[#262522] bg-[#EADFC8]">
-            <img
-              src="/editorial-listening.svg"
-              alt="Editorial illustration of a person wearing earbuds and listening to a webpage while working at a computer"
-              className="block h-auto w-full"
-            />
-          </figure>
-          <div className="mt-3 flex items-start justify-between gap-6">
-            <figcaption className="max-w-2xl text-[10px] uppercase tracking-[.15em] text-[#665F56]">
-              Put on your earbuds. Keep working. Tellme turns the useful parts of long pages and discussions into something you can hear.
-            </figcaption>
-            <span className="magazine-caption hidden sm:block text-[#9A3038]">The Tellme Review</span>
           </div>
         </div>
       </section>
