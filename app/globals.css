@@ -103,3 +103,17 @@ a {
 @media (prefers-reduced-motion: reduce) {
   .player-wave span { animation: none; }
 }
+
+.marquee-track {
+  animation: tellme-marquee 24s linear infinite;
+  will-change: transform;
+}
+
+@keyframes tellme-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
