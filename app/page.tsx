@@ -60,9 +60,9 @@ export default function Home() {
       <div className="pointer-events-none fixed right-0 top-[59%] z-0 h-px w-[31%] dashed-path opacity-80" />
       <div className="pointer-events-none fixed bottom-0 left-[50%] z-0 h-48 dashed-path-vertical opacity-70" />
 
-      <nav className="fixed inset-x-0 top-5 z-50 px-4 sm:px-8">
-        <div className="paper-card mx-auto flex h-[62px] max-w-[1180px] items-center justify-between rounded-[18px] px-5 sm:px-7">
-          <a href="#" className="flex items-center gap-3">
+      <nav className="absolute inset-x-0 top-0 z-50">
+        <div className="mx-auto grid h-[104px] max-w-[1180px] grid-cols-[1fr_auto] items-center border-b border-[#25252a]/[0.08] px-1 sm:px-0 md:grid-cols-[1fr_1fr]">
+          <a href="#" className="flex items-center gap-3 self-stretch">
             <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#25252a]">
               <span className="absolute top-[8px] h-px w-6 bg-[#f3f0e9]" />
               <span className="absolute top-[13px] h-px w-6 bg-[#f3f0e9]" />
@@ -72,15 +72,14 @@ export default function Home() {
             <span className="vintage-serif text-[21px]">tellme.</span>
           </a>
 
-          <div className="hidden items-center gap-9 text-sm text-[#6f6c68] md:flex">
+          <div className="flex h-full items-center justify-end gap-7 text-[13px] text-[#6f6c68] sm:gap-9">
             <a href="#how" className="transition-colors hover:text-[#25252a]">how it works</a>
             <a href="#features" className="transition-colors hover:text-[#25252a]">features</a>
             <a href="#use-cases" className="transition-colors hover:text-[#25252a]">use cases</a>
+            <Button size="sm" className="ml-2 hidden sm:inline-flex">
+              Get Tellme <ArrowRight size={15} className="ml-2" />
+            </Button>
           </div>
-
-          <Button size="sm">
-            Get Tellme <ArrowRight size={15} className="ml-2" />
-          </Button>
         </div>
       </nav>
 
