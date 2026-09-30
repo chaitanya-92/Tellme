@@ -11,6 +11,9 @@ The browser extension lives in the same repository as the Tellme web app so the 
 - Opens the Tellme web app with `?source=extension`.
 - Adds a **Tellme this page** context-menu action.
 - Adds Cmd/Ctrl + Shift + T shortcut.
+- Uses the Chromium TTS engine to read a structured queue in order.
+- On Reddit, reads post title → post description → comments → nested replies.
+- Popup controls: pause/resume, next passage, and stop.
 
 ## Run locally
 
