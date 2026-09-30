@@ -1557,7 +1557,7 @@ export default function Home() {
                     </li>
                     <li className="flex gap-3">
                       <span className="font-mono text-[9px] text-[#9A3038]">03</span>
-                      <span>Click <strong className="font-medium text-[#262522]">Load unpacked</strong> and select the extracted <strong className="font-medium text-[#262522]">extension</strong> folder.</span>
+                      <span>Click <strong className="font-medium text-[#262522]">Load unpacked</strong> and select the extracted Tellme folder — the folder that contains <strong className="font-medium text-[#262522]">manifest.json</strong>.</span>
                     </li>
                   </ol>
 
