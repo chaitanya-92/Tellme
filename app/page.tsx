@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -53,6 +53,14 @@ const features = [
 
 export default function Home() {
   const [openStep, setOpenStep] = useState(0);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 72);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
     <main className="vintage-paper min-h-screen overflow-hidden text-[#25252a]">
@@ -60,29 +68,48 @@ export default function Home() {
       <div className="pointer-events-none fixed right-0 top-[59%] z-0 h-px w-[31%] dashed-path opacity-80" />
       <div className="pointer-events-none fixed bottom-0 left-[50%] z-0 h-48 dashed-path-vertical opacity-70" />
 
-      <nav className="absolute inset-x-0 top-0 z-50">
-        <div className="mx-auto grid h-[104px] max-w-[1180px] grid-cols-[1fr_auto] items-center border-b border-[#25252a]/[0.08] px-1 sm:px-0 md:grid-cols-[1fr_1fr]">
-          <a href="#" className="flex items-center gap-3 self-stretch">
-            <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#25252a]">
-              <span className="absolute top-[8px] h-px w-6 bg-[#f3f0e9]" />
-              <span className="absolute top-[13px] h-px w-6 bg-[#f3f0e9]" />
-              <span className="absolute top-[18px] h-px w-6 bg-[#f3f0e9]" />
-              <span className="absolute top-[23px] h-px w-6 bg-[#f3f0e9]" />
-            </span>
-            <span className="vintage-serif text-[21px]">tellme.</span>
-          </a>
+      <motion.nav
+        initial={false}
+        animate={{
+          top: isScrolled ? 16 : 0,
+          left: isScrolled ? 16 : 0,
+          right: isScrolled ? 16 : 0,
+        }}
+        transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+        className={`fixed z-50 px-0 sm:px-0 ${isScrolled ? "mx-auto max-w-[1180px] rounded-[18px]" : "w-full"}`}
+      >
+        <motion.div
+          animate={{
+            height: isScrolled ? 62 : 104,
+            borderRadius: isScrolled ? 18 : 0,
+            boxShadow: isScrolled ? "0 14px 40px rgba(37,37,42,.12)" : "0 0 0 rgba(37,37,42,0)",
+            backgroundColor: isScrolled ? "rgba(255,255,255,.78)" : "rgba(243,240,233,0)",
+          }}
+          transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+          className="mx-auto overflow-hidden border border-[#25252a]/[0.08] backdrop-blur-xl"
+        >
+          <div className="mx-auto grid h-full max-w-[1180px] grid-cols-[1fr_auto] items-center px-5 sm:px-7 md:grid-cols-[1fr_1fr]">
+            <a href="#" className="flex items-center gap-3">
+              <span className="relative flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-[#25252a]">
+                <span className="absolute top-[8px] h-px w-6 bg-[#f3f0e9]" />
+                <span className="absolute top-[13px] h-px w-6 bg-[#f3f0e9]" />
+                <span className="absolute top-[18px] h-px w-6 bg-[#f3f0e9]" />
+                <span className="absolute top-[23px] h-px w-6 bg-[#f3f0e9]" />
+              </span>
+              <span className="vintage-serif text-[21px]">tellme.</span>
+            </a>
 
-          <div className="flex h-full items-center justify-end gap-7 text-[13px] text-[#6f6c68] sm:gap-9">
-            <a href="#how" className="transition-colors hover:text-[#25252a]">how it works</a>
-            <a href="#features" className="transition-colors hover:text-[#25252a]">features</a>
-            <a href="#use-cases" className="transition-colors hover:text-[#25252a]">use cases</a>
-            <Button size="sm" className="ml-2 hidden sm:inline-flex">
-              Get Tellme <ArrowRight size={15} className="ml-2" />
-            </Button>
+            <div className="flex h-full items-center justify-end gap-7 text-[13px] text-[#6f6c68] sm:gap-9">
+              <a href="#how" className="transition-colors hover:text-[#25252a]">how it works</a>
+              <a href="#features" className="transition-colors hover:text-[#25252a]">features</a>
+              <a href="#use-cases" className="transition-colors hover:text-[#25252a]">use cases</a>
+              <Button size="sm" className="ml-2 hidden sm:inline-flex">
+                Get Tellme <ArrowRight size={15} className="ml-2" />
+              </Button>
+            </div>
           </div>
-        </div>
-      </nav>
-
+        </motion.div>
+      </motion.nav>
       <section className="relative z-10 mx-auto min-h-[760px] max-w-[1400px] px-6 pb-24 pt-40 lg:px-10 lg:pt-52">
         <div className="grid items-center gap-14 lg:grid-cols-[1fr_.72fr]">
           <div className="max-w-3xl">
