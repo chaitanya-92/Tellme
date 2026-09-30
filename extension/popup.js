@@ -9,6 +9,10 @@ const readerDot = document.getElementById("reader-dot");
 const pauseBtn = document.getElementById("pause-btn");
 const nextBtn = document.getElementById("next-btn");
 const stopBtn = document.getElementById("stop-btn");
+const activityBanner = document.getElementById("activity-banner");
+const activityDot = document.getElementById("activity-dot");
+const activityLabel = document.getElementById("activity-label");
+const activityMeta = document.getElementById("activity-meta");
 
 async function getCurrentPagePreview() {
   const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
@@ -62,6 +66,23 @@ function renderReaderState(state) {
   };
 
   readerStateEl.textContent = labels[state.status] || "READY";
+
+  const activity = {
+    idle: ["Tellme is ready", "IDLE"],
+    analyzing: ["Tellme is analyzing", "WORKING"],
+    reading: ["Tellme is listening", "LIVE"],
+    paused: ["Tellme is paused", "PAUSED"],
+    stopped: ["Tellme is stopped", "STOPPED"],
+    complete: ["Tellme finished", "DONE"],
+    empty: ["Nothing to read", "IDLE"],
+    error: ["Tellme needs attention", "ERROR"]
+  };
+
+  const currentActivity = activity[state.status] || activity.idle;
+  activityLabel.textContent = currentActivity[0];
+  activityMeta.textContent = currentActivity[1];
+  activityBanner.className = "activity-banner " + (state.status || "idle");
+  activityDot.classList.toggle("active", state.status === "reading" || state.status === "analyzing");
 
   const total = state.queue?.length || 0;
   const current = Math.min((state.index || 0) + 1, total);
