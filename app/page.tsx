@@ -5,6 +5,7 @@ import { useMotionValue, useSpring, useTransform } from "framer-motion";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
+  ArrowDownToLine,
   Check,
   Headphones,
   MessageCircle,
