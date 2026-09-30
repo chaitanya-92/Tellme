@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800">
+<rect width="1200" height="800" fill="#eadfc8"/><rect width="1200" height="800" fill="none" stroke="#262522" stroke-width="5"/>
+<path d="M40 55H1160M40 745H1160M80 90h240M920 90h200" stroke="#262522" stroke-width="3"/><circle cx="1040" cy="125" r="58" fill="#9a3038" opacity=".88"/>
+<rect x="70" y="180" width="245" height="315" fill="#d2c1a5" stroke="#262522" stroke-width="6"/><path d="M88 220h210M88 300h210M88 380h210" stroke="#262522" stroke-width="6"/><path d="M110 210v70M140 205v75M172 214v66M205 200v80M240 210v70M272 205v75" stroke="#5b5044" stroke-width="15"/>
+<path d="M235 180c30 20 55 55 58 105M255 190c18 25 28 60 20 92M210 205c-20 35-17 75 2 105" fill="none" stroke="#262522" stroke-width="8"/>
+<path d="M70 575H1130L1080 690H120Z" fill="#4a4037" stroke="#262522" stroke-width="6"/><path d="M135 690v65M1065 690v65" stroke="#262522" stroke-width="12"/>
+<path d="M345 535c20-95 42-190 105-242 45-37 108-48 157-14 43 30 49 91 29 136-20 44-62 70-100 92l-20 68Z" fill="#5a1f24" stroke="#262522" stroke-width="7"/>
+<ellipse cx="520" cy="330" rx="93" ry="112" fill="#c69b72" stroke="#262522" stroke-width="7"/><path d="M438 318c-4-90 52-139 117-113 42 17 69 58 53 109-22-43-50-59-81-67-25 42-49 64-89 71Z" fill="#262522"/>
+<path d="M593 347c-22 12-41 12-57 1M575 381c-17 12-35 14-51 5" fill="none" stroke="#262522" stroke-width="6" stroke-linecap="round"/>
+<path d="M446 353c-12-20-3-40 16-45 18-5 31 9 28 28-2 16-13 25-26 22" fill="none" stroke="#262522" stroke-width="9"/><circle cx="457" cy="353" r="9" fill="#9a3038"/>
+<path d="M545 515c78-2 150 25 218 76l-36 45c-75-37-128-53-194-54Z" fill="#c69b72" stroke="#262522" stroke-width="7"/>
+<path d="M720 220L1090 175L1125 500L760 545Z" fill="#3d3935" stroke="#262522" stroke-width="8"/><path d="M744 240L1070 200L1098 475L775 515Z" fill="#eadfc8" stroke="#262522" stroke-width="5"/>
+<path d="M790 285h220M790 310h175M790 335h240M790 365h190M790 390h220M790 415h155" stroke="#5b5044" stroke-width="6"/><circle cx="1015" cy="300" r="9" fill="#9a3038"/><circle cx="1040" cy="335" r="9" fill="#a47732"/><circle cx="1018" cy="370" r="9" fill="#9a3038"/>
+<path d="M900 545v55M830 600h180" stroke="#262522" stroke-width="8"/><path d="M665 620h255l-30 45H635Z" fill="#d2c1a5" stroke="#262522" stroke-width="5"/><path d="M675 630h215M670 642h210M665 654h205" stroke="#7c6c59" stroke-width="3"/>
+<path d="M400 620h210l35 75H430Z" fill="#f4eedf" stroke="#262522" stroke-width="5"/><path d="M430 640h150M438 657h130M445 674h120" stroke="#7c6c59" stroke-width="3"/>
+<g fill="none" stroke-linecap="round"><path d="M610 335h12v-22h12v42h12v-64h12v90h12v-50h12v30h12v-75h12v105h12v-55h12v25h12v-90h12v130h12v-80h12v42h12v-105h12v120h12v-55h12v35h12v-72h12v92h12v-35h12v15h12" stroke="#9a3038" stroke-width="7"/><path d="M610 430h16v-18h16v36h16v-52h16v68h16v-30h16v22h16v-48h16v60h16v-25h16v14h16v-45h16v55h16v-18h16v9h16" stroke="#a47732" stroke-width="6"/></g>
+<text x="82" y="115" font-family="Georgia,serif" font-size="26" fill="#262522" letter-spacing="5">THE TELLME REVIEW · LISTENING EDITION</text><text x="82" y="735" font-family="Arial,sans-serif" font-size="16" fill="#5b5044" letter-spacing="4">STAY CURIOUS · KEEP MOVING · HEAR WHAT MATTERS</text>
+</svg>
