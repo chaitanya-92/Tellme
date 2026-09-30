@@ -37,10 +37,16 @@
         <span id="segment-count">0 passages</span>
       </div>
 
-      <button id="brief-btn" class="brief-button" type="button">
-        <span>Give me a brief</span>
-        <span aria-hidden="true">↗</span>
-      </button>
+      <div class="primary-actions">
+        <button id="tellme-btn" class="primary" type="button">
+          <span>Listen to post</span>
+          <span aria-hidden="true">→</span>
+        </button>
+        <button id="brief-btn" class="brief-button" type="button">
+          <span>Give me a brief</span>
+          <span aria-hidden="true">↗</span>
+        </button>
+      </div>
 
       <section id="brief-panel" class="brief-panel" hidden aria-live="polite"></section>
 
@@ -49,11 +55,6 @@
         <button id="next-btn" class="control" type="button" disabled>Next</button>
         <button id="stop-btn" class="control" type="button" disabled>Stop</button>
       </div>
-
-      <button id="tellme-btn" class="primary" type="button">
-        <span>Read with Tellme</span>
-        <span aria-hidden="true">→</span>
-      </button>
 
       <div class="footer-row">
         <span>⌘⇧T</span>
