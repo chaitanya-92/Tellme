@@ -504,10 +504,41 @@ export default function Home() {
       <section className="relative z-10 px-6 pb-20 lg:px-10">
         <div className="mx-auto max-w-[1400px] overflow-hidden rounded-[30px] border border-[#1F3044]/10 bg-[#1F3044] px-7 py-20 text-center text-white sm:px-10 lg:py-28">
           <p className="text-xs font-medium uppercase tracking-[.2em] text-[#B08D57]">Your next tab can wait</p>
-          <h2 className="vintage-serif mt-5 text-5xl leading-[.95] sm:text-7xl">
-            Hear what matters.<br />
-            <span className="text-white/45">Keep doing what matters.</span>
-          </h2>
+          <motion.h2
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.55 }}
+            variants={{
+              hidden: {},
+              visible: { transition: { staggerChildren: 0.16, delayChildren: 0.08 } },
+            }}
+            className="vintage-serif mt-5 text-5xl leading-[.95] sm:text-7xl"
+          >
+            <span className="block overflow-hidden">
+              <motion.span
+                variants={{
+                  hidden: { y: "105%", opacity: 0 },
+                  visible: { y: "0%", opacity: 1 },
+                }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="block"
+              >
+                Hear what matters.
+              </motion.span>
+            </span>
+            <span className="block overflow-hidden">
+              <motion.span
+                variants={{
+                  hidden: { y: "105%", opacity: 0 },
+                  visible: { y: "0%", opacity: 1 },
+                }}
+                transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                className="block text-white/45"
+              >
+                Keep doing what matters.
+              </motion.span>
+            </span>
+          </motion.h2>
           <p className="mx-auto mt-6 max-w-xl text-sm leading-6 text-white/50">
             Tellme is being built for people who want to stay curious without putting everything else on pause.
           </p>
