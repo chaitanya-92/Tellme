@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import {
   ArrowRight,
   Check,
-  ChevronDown,
   Headphones,
   MessageCircle,
   Play,
@@ -59,12 +58,19 @@ const features = [
 ];
 
 export default function Home() {
-  const [openStep, setOpenStep] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
   const [orbOffset, setOrbOffset] = useState({ x: 0, y: 0 });
   const [showConversation, setShowConversation] = useState(false);
   const [cookieChoice, setCookieChoice] = useState<"unset" | "accepted" | "rejected">("unset");
   const orbGuideRef = useRef<HTMLDivElement>(null);
+  const notesBoardRef = useRef<HTMLDivElement>(null);
+  const noteRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const [notePositions, setNotePositions] = useState([
+    { x: 3, y: 4 },
+    { x: 54, y: 22 },
+    { x: 22, y: 58 },
+  ]);
+  const dragRef = useRef<{ index: number; offsetX: number; offsetY: number } | null>(null);
 
   const marqueeRef = useRef<HTMLDivElement>(null);
 
@@ -552,77 +558,140 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
               className="relative min-h-[520px] overflow-hidden border border-[#262522]/15 bg-[#F7F2E8] p-5 shadow-[inset_0_0_45px_rgba(38,37,34,.05)] sm:p-8"
             >
-              <div className="pointer-events-none absolute inset-0 opacity-60"
-                style={{
-                  backgroundImage:
-                    "linear-gradient(rgba(38,37,34,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(38,37,34,.06) 1px, transparent 1px)",
-                  backgroundSize: "32px 32px",
-                }}
-              />
-              <div className="relative mb-5 flex items-center justify-between border-b border-dashed border-[#B8AB95] pb-3">
-                <span className="font-mono text-[9px] uppercase tracking-[.18em] text-[#665F56]">Tellme desk · notes</span>
-                <span className="font-mono text-[9px] uppercase tracking-[.18em] text-[#9A3038]">03 notes pinned</span>
-              </div>
+              <div
+                ref={notesBoardRef}
+                className="relative h-[520px] touch-none"
+                aria-label="Tellme workflow whiteboard"
+              >
+                <div className="pointer-events-none absolute inset-0 opacity-60"
+                  style={{
+                    backgroundImage:
+                      "linear-gradient(rgba(38,37,34,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(38,37,34,.06) 1px, transparent 1px)",
+                    backgroundSize: "32px 32px",
+                  }}
+                />
+                <div className="pointer-events-none relative mb-5 flex items-center justify-between border-b border-dashed border-[#B8AB95] pb-3">
+                  <span className="font-mono text-[9px] uppercase tracking-[.18em] text-[#665F56]">Tellme desk · notes</span>
+                  <span className="font-mono text-[9px] uppercase tracking-[.18em] text-[#9A3038]">Drag notes to arrange</span>
+                </div>
 
-              <div className="relative h-[430px]">
-                {steps.map((step, i) => {
-                  const noteStyles = [
-                    { left: "3%", top: "5%", rotate: -3.5, bg: "#E9D8A6" },
-                    { left: "45%", top: "20%", rotate: 2.8, bg: "#F1D6A7" },
-                    { left: "19%", top: "57%", rotate: -2, bg: "#D8E0C1" },
-                  ];
-                  const note = noteStyles[i];
+                <div className="absolute inset-x-0 bottom-0 top-14">
+                  {steps.map((step, i) => {
+                    const noteStyles = [
+                      { rotate: -3.5, bg: "#E9D8A6" },
+                      { rotate: 2.8, bg: "#F1D6A7" },
+                      { rotate: -2, bg: "#D8E0C1" },
+                    ];
+                    const note = noteStyles[i];
 
-                  return (
-                    <motion.div
-                      key={step.num}
-                      initial={{ opacity: 0, y: 35, rotate: note.rotate - 3 }}
-                      whileInView={{ opacity: 1, y: 0, rotate: note.rotate }}
-                      viewport={{ once: true, amount: 0.2 }}
-                      transition={{
-                        duration: 0.65,
-                        delay: i * 0.14,
-                        ease: [0.16, 1, 0.3, 1],
-                      }}
-                      whileHover={{
-                        y: -9,
-                        rotate: 0,
-                        scale: 1.035,
-                        boxShadow: "0 22px 34px rgba(38,37,34,.18)",
-                        transition: { duration: 0.22 },
-                      }}
-                      className="absolute w-[72%] max-w-[300px] cursor-pointer border border-[#262522]/15 px-5 pb-6 pt-7 shadow-[0_10px_20px_rgba(38,37,34,.10)] sm:w-[55%] sm:px-6"
-                      style={{
-                        left: note.left,
-                        top: note.top,
-                        backgroundColor: note.bg,
-                        transformOrigin: "center center",
-                      }}
-                    >
-                      <span className="absolute left-1/2 top-[-7px] h-4 w-10 -translate-x-1/2 rotate-[-2deg] bg-[#F4EEDF]/80 shadow-sm" />
-                      <div className="flex items-center justify-between">
-                        <span className="font-mono text-[10px] font-semibold text-[#9A3038]">{step.num}</span>
-                        <span className="text-[9px] uppercase tracking-[.16em] text-[#665F56]">tellme.</span>
-                      </div>
-                      <h3 className="vintage-serif mt-5 text-2xl leading-[.95] sm:text-3xl">{step.title}</h3>
-                      <p className="mt-4 text-xs leading-5 text-[#665F56]">{step.text}</p>
-                      <div className="mt-5 flex items-center gap-2 text-[8px] uppercase tracking-[.16em] text-[#665F56]/75">
-                        <span className="h-px w-7 bg-[#665F56]/40" />
-                        pinned note
-                      </div>
-                    </motion.div>
-                  );
-                })}
+                    const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+                      const board = notesBoardRef.current;
+                      const element = noteRefs.current[i];
+                      if (!board || !element) return;
 
-                <motion.div
-                  initial={{ opacity: 0, scale: .7 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: .5, delay: .55 }}
-                  className="absolute bottom-8 right-[8%] flex h-20 w-20 rotate-6 items-center justify-center rounded-full border border-[#262522]/25 bg-[#F4EEDF] shadow-[0_8px_18px_rgba(38,37,34,.10)]"
-                >
-                  <span className="vintage-serif text-3xl">♪</span>
-                </motion.div>
+                      const boardRect = board.getBoundingClientRect();
+                      const noteRect = element.getBoundingClientRect();
+                      dragRef.current = {
+                        index: i,
+                        offsetX: event.clientX - noteRect.left,
+                        offsetY: event.clientY - noteRect.top,
+                      };
+                      element.setPointerCapture(event.pointerId);
+                      element.style.zIndex = "30";
+                      element.dataset.dragging = "true";
+                    };
+
+                    const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+                      const drag = dragRef.current;
+                      const board = notesBoardRef.current;
+                      const element = noteRefs.current[i];
+                      if (!drag || drag.index !== i || !board || !element) return;
+
+                      const boardRect = board.getBoundingClientRect();
+                      const noteRect = element.getBoundingClientRect();
+                      const usableWidth = Math.max(1, boardRect.width - noteRect.width);
+                      const usableHeight = Math.max(1, boardRect.height - noteRect.height);
+                      const nextLeft = Math.min(
+                        Math.max(0, event.clientX - boardRect.left - drag.offsetX),
+                        usableWidth
+                      );
+                      const nextTop = Math.min(
+                        Math.max(0, event.clientY - boardRect.top - drag.offsetY),
+                        usableHeight
+                      );
+
+                      setNotePositions((current) =>
+                        current.map((position, index) =>
+                          index === i
+                            ? {
+                                x: (nextLeft / usableWidth) * 100,
+                                y: (nextTop / usableHeight) * 100,
+                              }
+                            : position
+                        )
+                      );
+                    };
+
+                    const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+                      const element = noteRefs.current[i];
+                      if (!element || !dragRef.current || dragRef.current.index !== i) return;
+                      if (element.hasPointerCapture(event.pointerId)) {
+                        element.releasePointerCapture(event.pointerId);
+                      }
+                      element.style.zIndex = String(10 + i);
+                      element.dataset.dragging = "false";
+                      dragRef.current = null;
+                    };
+
+                    return (
+                      <motion.div
+                        key={step.num}
+                        ref={(element) => {
+                          noteRefs.current[i] = element;
+                        }}
+                        initial={{ opacity: 0, y: 35, rotate: note.rotate - 3 }}
+                        whileInView={{ opacity: 1, y: 0, rotate: note.rotate }}
+                        viewport={{ once: true, amount: 0.2 }}
+                        transition={{
+                          duration: 0.65,
+                          delay: i * 0.14,
+                          ease: [0.16, 1, 0.3, 1],
+                        }}
+                        onPointerDown={handlePointerDown}
+                        onPointerMove={handlePointerMove}
+                        onPointerUp={handlePointerUp}
+                        onPointerCancel={handlePointerUp}
+                        whileHover={{ y: -5, scale: 1.015 }}
+                        className="absolute w-[68%] max-w-[300px] cursor-grab border border-[#262522]/15 px-5 pb-6 pt-7 shadow-[0_10px_20px_rgba(38,37,34,.10)] active:cursor-grabbing sm:w-[52%] sm:px-6"
+                        style={{
+                          left: `${notePositions[i].x}%`,
+                          top: `${notePositions[i].y}%`,
+                          backgroundColor: note.bg,
+                          zIndex: 10 + i,
+                          touchAction: "none",
+                          boxShadow: "0 10px 20px rgba(38,37,34,.10)",
+                        }}
+                      >
+                        <span className="pointer-events-none absolute left-1/2 top-[-7px] h-4 w-10 -translate-x-1/2 rotate-[-2deg] bg-[#F4EEDF]/85 shadow-sm" />
+                        <div className="pointer-events-none flex items-center justify-between">
+                          <span className="font-mono text-[10px] font-semibold text-[#9A3038]">{step.num}</span>
+                          <span className="text-[9px] uppercase tracking-[.16em] text-[#665F56]">tellme.</span>
+                        </div>
+                        <h3 className="pointer-events-none vintage-serif mt-5 text-2xl leading-[.95] sm:text-3xl">{step.title}</h3>
+                        <p className="pointer-events-none mt-4 text-xs leading-5 text-[#665F56]">{step.text}</p>
+                        <div className="pointer-events-none mt-5 flex items-center gap-2 text-[8px] uppercase tracking-[.16em] text-[#665F56]/75">
+                          <span className="h-px w-7 bg-[#665F56]/40" />
+                          drag & pin
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </div>
+
+                <div className="pointer-events-none absolute bottom-4 right-4 flex items-center gap-2 rounded-full border border-[#262522]/10 bg-[#F4EEDF]/80 px-3 py-2 text-[8px] uppercase tracking-[.14em] text-[#665F56] shadow-sm">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#9A3038]" />
+                  place them your way
+                </div>
               </div>
             </motion.div>
           </div>
