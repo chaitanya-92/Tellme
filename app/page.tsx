@@ -280,6 +280,7 @@ function FeatureIllustration({ index }: { index: number }) {
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isOrbHovered, setIsOrbHovered] = useState(false);
   const orbXTarget = useMotionValue(0);
   const orbYTarget = useMotionValue(0);
   const orbX = useSpring(orbXTarget, { stiffness: 150, damping: 24, mass: 0.7 });
@@ -679,19 +680,25 @@ export default function Home() {
             className="relative hidden min-h-[330px] lg:block"
           >
             <div className="absolute right-0 top-1/2 h-px w-full -translate-y-1/2 dashed-path opacity-55" />
-            <div
+            <motion.div
               ref={orbGuideRef}
-              className="absolute right-10 top-1/2 h-[270px] w-[270px] -translate-y-1/2 rounded-full border border-dashed border-[#9D9180]"
+              animate={{ scale: isOrbHovered ? 0.7777778 : 1 }}
+              transition={{ duration: 0.52, ease: [0.22, 1, 0.36, 1] }}
+              className="absolute right-10 top-1/2 h-[270px] w-[270px] -translate-y-1/2 rounded-full border border-dashed border-[#9D9180] will-change-transform"
             />
             <div className="absolute right-[135px] top-[calc(50%-135px)] h-[270px] w-px bg-[#C8BBA5]" />
             <div className="absolute right-[135px] top-1/2 h-px w-[270px] bg-[#C8BBA5]" />
 
             <motion.div
-              style={{ x: orbX, y: orbY }}
+              onMouseEnter={() => setIsOrbHovered(true)}
+              onMouseLeave={() => setIsOrbHovered(false)}
+              style={{ x: orbX, y: orbY, scale: isOrbHovered ? 1.2857143 : 1 }}
+              transition={{ duration: 0.52, ease: [0.22, 1, 0.36, 1] }}
               className="absolute right-10 top-1/2 flex h-[210px] w-[210px] -translate-y-1/2 flex-col items-center justify-center rounded-full bg-[#262522] text-center text-[#F4EEDF] shadow-[0_24px_50px_rgba(27,26,24,.18)] will-change-transform"
             >
               <motion.span
-                style={{ x: orbInnerX, y: orbInnerY }}
+                style={{ x: orbInnerX, y: orbInnerY, scale: isOrbHovered ? 0.7777778 : 1 }}
+                transition={{ duration: 0.52, ease: [0.22, 1, 0.36, 1] }}
                 className="flex h-12 w-12 items-center justify-center rounded-full bg-[#9A3038] text-[#F4EEDF] shadow-[0_8px_18px_rgba(154,48,56,.24)]"
               >
                 <Volume2 size={21} />
