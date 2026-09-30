@@ -21,5 +21,11 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Validate extension JavaScript
+        run: |
+          node --check extension/background.js
+          node --check extension/offscreen.js
+          node --check extension/popup.js
+
       - name: Build
         run: npm run build
