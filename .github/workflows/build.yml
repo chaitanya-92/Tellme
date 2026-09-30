@@ -6,12 +6,17 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -26,6 +31,31 @@ jobs:
           node --check extension/background.js
           node --check extension/offscreen.js
           node --check extension/popup.js
+          node --check extension/content.js
 
-      - name: Build
+      - name: Build website
         run: npm run build
+
+      - name: Validate and package extension
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[package]')
+        run: |
+          set -e
+          rm -f store/tellme-0.6.1.zip
+          mkdir -p store
+          cd extension
+          zip -qr ../store/tellme-0.6.1.zip .
+          cd ..
+          unzip -t store/tellme-0.6.1.zip
+          test -f store/tellme-0.6.1.zip
+          unzip -l store/tellme-0.6.1.zip | grep -q '^.*manifest.json$'
+
+      - name: Commit refreshed extension package
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[package]')
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add store/tellme-0.6.1.zip
+          git diff --cached --quiet && exit 0
+          git commit -m "build: refresh extension package [package]"
+          git push
