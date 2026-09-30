@@ -292,6 +292,7 @@ export default function Home() {
   const [activeFeature, setActiveFeature] = useState(0);
   const [extensionSource, setExtensionSource] = useState<{ title: string; url: string } | null>(null);
   const [showExtensionInstall, setShowExtensionInstall] = useState(false);
+  const [isExtensionDownloading, setIsExtensionDownloading] = useState(false);
   const [isListening, setIsListening] = useState(true);
   const [activeFocusWord, setActiveFocusWord] = useState(0);
   const [activeUseCase, setActiveUseCase] = useState(0);
@@ -1503,16 +1504,40 @@ export default function Home() {
 
                   <a
                     href="https://github.com/chaitanya-92/Tellme/raw/refs/heads/main/store/tellme-0.6.1.zip"
+                    download
+                    onClick={() => {
+                      setIsExtensionDownloading(true);
+                      window.setTimeout(() => setIsExtensionDownloading(false), 2200);
+                    }}
+                    aria-label="Download Tellme extension"
                     className="mt-6 flex items-center gap-3 border-y border-dashed border-[#B8AB95] px-1 py-4 transition-colors hover:bg-[#F7F2E8]/70"
                   >
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#262522] text-[#F4EEDF]">
-                      <ArrowDownToLine size={16} />
-                    </span>
+                    <motion.span
+                      animate={{ rotate: isExtensionDownloading ? 360 : 0 }}
+                      transition={{ duration: .8, repeat: isExtensionDownloading ? Infinity : 0, ease: "linear" }}
+                      className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#262522] text-[#F4EEDF]"
+                    >
+                      {isExtensionDownloading ? (
+                        <span className="h-4 w-4 rounded-full border-2 border-[#F4EEDF]/35 border-t-[#F4EEDF]" />
+                      ) : (
+                        <ArrowDownToLine size={16} />
+                      )}
+                    </motion.span>
                     <span className="min-w-0">
-                      <span className="block text-[10px] font-semibold uppercase tracking-[.16em] text-[#262522]">Download Tellme</span>
-                      <span className="mt-1 block truncate text-[10px] text-[#665F56]">tellme-0.6.1.zip · GitHub</span>
+                      <span className="block text-[10px] font-semibold uppercase tracking-[.16em] text-[#262522]">
+                        {isExtensionDownloading ? "Downloading Tellme…" : "Download Tellme"}
+                      </span>
+                      <span className="mt-1 block truncate text-[10px] text-[#665F56]">
+                        {isExtensionDownloading ? "Preparing the extension package…" : "tellme-0.6.1.zip · GitHub"}
+                      </span>
                     </span>
-                    <ArrowRight size={14} className="ml-auto shrink-0 text-[#9A3038]" />
+                    <motion.span
+                      animate={{ x: isExtensionDownloading ? [0, 3, 0] : 0, opacity: isExtensionDownloading ? .7 : 1 }}
+                      transition={{ duration: .7, repeat: isExtensionDownloading ? Infinity : 0, ease: "easeInOut" }}
+                      className="ml-auto shrink-0 text-[#9A3038]"
+                    >
+                      {isExtensionDownloading ? "…" : <ArrowRight size={14} />}
+                    </motion.span>
                   </a>
                 </div>
 
