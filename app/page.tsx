@@ -90,7 +90,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="vintage-paper min-h-screen overflow-hidden text-[#1F3044]">
+    <main className="vintage-paper min-h-screen overflow-hidden text-[#26384D]">
       <div className="pointer-events-none fixed left-0 top-[47%] z-0 h-px w-[43%] dashed-path opacity-80" />
       <div className="pointer-events-none fixed right-0 top-[59%] z-0 h-px w-[31%] dashed-path opacity-80" />
       <div className="pointer-events-none fixed bottom-0 left-[50%] z-0 h-48 dashed-path-vertical opacity-70" />
@@ -335,14 +335,14 @@ export default function Home() {
         </motion.div>
       </section>
 
-      <section className="relative z-10 overflow-hidden border-y border-[#1F3044]/10 bg-[#CFC2AE]/65">
+      <section className="relative z-10 overflow-hidden border-y border-[#1F3044]/10 bg-[#E7DED0]">
         <div className="marquee-track flex w-max items-center py-7 text-[11px] font-medium tracking-[.18em] text-[#1F3044]">
           {[0, 1].map((group) => (
             <div key={group} className="flex shrink-0 items-center">
-              {["REDDIT", "QUORA", "HACKER NEWS", "MEDIUM", "ANY WEBPAGE"].map((x) => (
+              {["REDDIT", "QUORA", "HACKER NEWS", "MEDIUM"].map((x) => (
                 <span
                   key={group + "-" + x}
-                  className="mx-7 whitespace-nowrap bg-[#D8C6AE] px-1.5 py-1 lg:mx-12"
+                  className="mx-7 whitespace-nowrap bg-[#F3EBDD] text-[#26384D] px-2.5 py-1.5 rounded-[2px] ring-1 ring-[#C9BBA7]/70 shadow-[0_2px_8px_rgba(38,56,77,.06)] lg:mx-12"
                 >
                   {x}
                 </span>
