@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useMotionValue, useSpring, useTransform } from "framer-motion";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
@@ -279,7 +280,12 @@ function FeatureIllustration({ index }: { index: number }) {
 
 export default function Home() {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [orbOffset, setOrbOffset] = useState({ x: 0, y: 0 });
+  const orbXTarget = useMotionValue(0);
+  const orbYTarget = useMotionValue(0);
+  const orbX = useSpring(orbXTarget, { stiffness: 150, damping: 24, mass: 0.7 });
+  const orbY = useSpring(orbYTarget, { stiffness: 150, damping: 24, mass: 0.7 });
+  const orbInnerX = useTransform(orbX, (value) => value * 0.18);
+  const orbInnerY = useTransform(orbY, (value) => value * 0.18);
   const [showConversation, setShowConversation] = useState(false);
   const [activeFeature, setActiveFeature] = useState(0);
   const [extensionSource, setExtensionSource] = useState<{ title: string; url: string } | null>(null);
@@ -394,30 +400,48 @@ export default function Home() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
 
+    let pointerFrame: number | null = null;
+    let pendingPointer: { x: number; y: number } | null = null;
+
     const onPointerMove = (event: PointerEvent) => {
       const guide = orbGuideRef.current;
       if (!guide) return;
 
-      const rect = guide.getBoundingClientRect();
-      const orbCenterX = rect.left + rect.width / 2;
-      const orbCenterY = rect.top + rect.height / 2;
-      const dx = event.clientX - orbCenterX;
-      const dy = event.clientY - orbCenterY;
-      const distance = Math.hypot(dx, dy);
-      const maxDistance = Math.max(0, rect.width / 2 - 105);
+      pendingPointer = { x: event.clientX, y: event.clientY };
+      if (pointerFrame !== null) return;
 
-      if (distance <= maxDistance) {
-        setOrbOffset({ x: dx, y: dy });
-      } else {
-        const scale = maxDistance / distance;
-        setOrbOffset({ x: dx * scale, y: dy * scale });
-      }
+      pointerFrame = window.requestAnimationFrame(() => {
+        pointerFrame = null;
+        const nextPointer = pendingPointer;
+        pendingPointer = null;
+        if (!nextPointer) return;
+
+        const rect = guide.getBoundingClientRect();
+        const orbCenterX = rect.left + rect.width / 2;
+        const orbCenterY = rect.top + rect.height / 2;
+        const dx = nextPointer.x - orbCenterX;
+        const dy = nextPointer.y - orbCenterY;
+        const distance = Math.hypot(dx, dy);
+        const maxDistance = Math.max(0, rect.width / 2 - 105);
+
+        if (distance <= maxDistance) {
+          orbXTarget.set(dx);
+          orbYTarget.set(dy);
+        } else if (distance > 0) {
+          const scale = maxDistance / distance;
+          orbXTarget.set(dx * scale);
+          orbYTarget.set(dy * scale);
+        }
+      });
     };
 
     window.addEventListener("pointermove", onPointerMove, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("pointermove", onPointerMove);
+      if (pointerFrame !== null) {
+        window.cancelAnimationFrame(pointerFrame);
+      }
       if (marqueeFrameRef.current !== null) {
         window.cancelAnimationFrame(marqueeFrameRef.current);
       }
@@ -656,13 +680,11 @@ export default function Home() {
             <div className="absolute right-[135px] top-1/2 h-px w-[270px] bg-[#C8BBA5]" />
 
             <motion.div
-              animate={{ x: orbOffset.x, y: orbOffset.y }}
-              transition={{ type: "spring", stiffness: 170, damping: 18, mass: 0.55 }}
+              style={{ x: orbX, y: orbY }}
               className="absolute right-10 top-1/2 flex h-[210px] w-[210px] -translate-y-1/2 flex-col items-center justify-center rounded-full bg-[#262522] text-center text-[#F4EEDF] shadow-[0_24px_50px_rgba(27,26,24,.18)] will-change-transform"
             >
               <motion.span
-                animate={{ x: orbOffset.x * 0.18, y: orbOffset.y * 0.18 }}
-                transition={{ type: "spring", stiffness: 190, damping: 20 }}
+                style={{ x: orbInnerX, y: orbInnerY }}
                 className="flex h-12 w-12 items-center justify-center rounded-full bg-[#9A3038] text-[#F4EEDF] shadow-[0_8px_18px_rgba(154,48,56,.24)]"
               >
                 <Volume2 size={21} />
