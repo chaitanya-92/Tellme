@@ -879,54 +879,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
       return;
     }
 
-    if (message?.type === "tellme-brief") {
-      const [tab] = await chrome.tabs.query({
-        active: true,
-        lastFocusedWindow: true
-      });
-
-      if (!tab?.id) throw new Error("No active tab");
-
-      const existing = await readState();
-      await writeState({
-        ...existing,
-        status: "analyzing",
-        sourceTitle: "",
-        sourceUrl: ""
-      });
-
-      const payload = await getPagePayload(tab.id);
-      const brief = buildQuickBrief(payload);
-
-      await chrome.storage.local.set({
-        tellmeBrief: {
-          brief,
-          sourceTitle: payload.title,
-          sourceUrl: payload.url,
-          updatedAt: Date.now()
-        }
-      });
-
-      await writeState({
-        ...existing,
-        status: "idle",
-        sourceTitle: payload.title || "",
-        sourceUrl: payload.url || "",
-        contentType: payload.contentType || "webpage"
-      });
-
-      sendResponse({
-        ok: true,
-        brief,
-        source: {
-          title: payload.title,
-          url: payload.url,
-          contentType: payload.contentType
-        }
-      });
-      return;
-    }
-
     if (message?.type === "tellme-reader-state") {
       sendResponse({ ok: true, state: await readState() });
       return;
