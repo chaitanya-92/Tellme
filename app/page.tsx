@@ -54,6 +54,7 @@ const features = [
 export default function Home() {
   const [openStep, setOpenStep] = useState(0);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [orbOffset, setOrbOffset] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     const onScroll = () => setIsScrolled(window.scrollY > 48);
@@ -95,12 +96,12 @@ export default function Home() {
             borderRadius: isScrolled ? 18 : 0,
             boxShadow: isScrolled
               ? [
-                  "0 0 0 .replace,0)",
-                  "0 22px 45px .replace,.18)",
-                  "0 8px 24px .replace,.12)",
-                  "0 12px 34px .replace,.12)",
+                  "0 0 0 rgba(75,46,43,0)",
+                  "0 22px 45px rgba(75,46,43,.18)",
+                  "0 8px 24px rgba(75,46,43,.12)",
+                  "0 12px 34px rgba(75,46,43,.12)",
                 ]
-              : "0 0 0 .replace,0)",
+              : "0 0 0 rgba(75,46,43,0)",
             backgroundColor: isScrolled ? "rgba(255,248,240,.92)" : "rgba(255,248,240,0)",
           }}
           transition={{
@@ -188,19 +189,43 @@ export default function Home() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: .25 }}
             className="relative hidden min-h-[390px] lg:block"
+            onMouseMove={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect();
+              const centerX = rect.width - 175;
+              const centerY = rect.height / 2;
+              const dx = event.clientX - rect.left - centerX;
+              const dy = event.clientY - rect.top - centerY;
+              const distance = Math.hypot(dx, dy);
+              const maxOffset = 30;
+              if (distance <= maxOffset) {
+                setOrbOffset({ x: dx, y: dy });
+              } else {
+                const scale = maxOffset / distance;
+                setOrbOffset({ x: dx * scale, y: dy * scale });
+              }
+            }}
+            onMouseLeave={() => setOrbOffset({ x: 0, y: 0 })}
           >
             <div className="absolute right-0 top-1/2 h-px w-full -translate-y-1/2 dashed-path opacity-70" />
             <div className="absolute right-10 top-1/2 h-[270px] w-[270px] -translate-y-1/2 rounded-full border border-dashed border-[#b99a7a]" />
             <div className="absolute right-[135px] top-[calc(50%-135px)] h-[270px] w-px bg-[#c9ad91]" />
             <div className="absolute right-[135px] top-1/2 h-px w-[270px] bg-[#c9ad91]" />
 
-            <div className="paper-card absolute right-10 top-1/2 flex h-[210px] w-[210px] -translate-y-1/2 flex-col items-center justify-center rounded-full bg-[#4b2e2b] text-center text-white">
-              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#c08552]">
+            <motion.div
+              animate={{ x: orbOffset.x, y: orbOffset.y }}
+              transition={{ type: "spring", stiffness: 170, damping: 18, mass: 0.55 }}
+              className="paper-card absolute right-10 top-1/2 flex h-[210px] w-[210px] -translate-y-1/2 flex-col items-center justify-center rounded-full bg-[#4b2e2b] text-center text-white will-change-transform"
+            >
+              <motion.span
+                animate={{ x: orbOffset.x * 0.18, y: orbOffset.y * 0.18 }}
+                transition={{ type: "spring", stiffness: 190, damping: 20 }}
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-[#c08552]"
+              >
                 <Volume2 size={21} />
-              </span>
+              </motion.span>
               <p className="vintage-serif mt-4 text-2xl">listen.</p>
               <p className="mt-1 text-xs text-white/55">while you keep moving</p>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
 
