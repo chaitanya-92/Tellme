@@ -106,11 +106,26 @@ a {
 }
 
 .marquee-track {
-  animation: tellme-marquee 24s linear infinite;
+  animation-duration: 24s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
   will-change: transform;
 }
 
-@keyframes tellme-marquee {
+.marquee-left {
+  animation-name: tellme-marquee-left;
+}
+
+.marquee-right {
+  animation-name: tellme-marquee-right;
+}
+
+@keyframes tellme-marquee-left {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes tellme-marquee-right {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
 }
