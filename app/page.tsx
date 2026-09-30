@@ -1498,20 +1498,18 @@ export default function Home() {
                     </li>
                   </ol>
 
-                  <a
-                    href="https://github.com/chaitanya-92/Tellme/tree/main/extension"
-                    target="_blank"
-                    rel="noreferrer"
-                    className="mt-6 inline-flex cursor-pointer items-center gap-2 border border-[#262522] bg-[#262522] px-4 py-3 text-[9px] font-semibold uppercase tracking-[.16em] text-[#F4EEDF] transition-transform duration-200 hover:-translate-y-0.5"
-                  >
-                    Get extension folder
-                    <ArrowRight size={13} />
-                  </a>
+                  <div className="mt-6 flex items-center gap-3 border border-dashed border-[#B8AB95] bg-[#F7F2E8]/55 px-4 py-3">
+                    <span className="h-2 w-2 rounded-full bg-[#9D9180]" />
+                    <div>
+                      <p className="text-[9px] font-semibold uppercase tracking-[.16em] text-[#262522]">Chrome Web Store listing</p>
+                      <p className="mt-1 text-[9px] leading-4 text-[#665F56]">Coming with the public release. Local development is available now.</p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               <div className="flex flex-col gap-2 border-t border-dashed border-[#B8AB95] px-6 py-4 text-[9px] uppercase tracking-[.14em] text-[#9D9180] sm:flex-row sm:items-center sm:justify-between sm:px-7">
-                <span>Store install coming later</span>
+                <span>Chrome Web Store install after publication</span>
                 <span>Tellme / Browser reader</span>
               </div>
             </motion.div>
