@@ -659,10 +659,15 @@ export default function Home() {
               <Button size="lg" onClick={() => setShowExtensionInstall(true)}>
                 Add to Chrome <ArrowRight size={17} className="ml-2" />
               </Button>
-              <Button size="lg" variant="secondary" asChild>
-                <a href="#how">
-                  <Play size={15} className="mr-2 fill-current" /> See how it works
-                </a>
+              <Button
+                size="lg"
+                variant="secondary"
+                onClick={() => {
+                  document.getElementById("how")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
+              >
+                <Play size={15} className="mr-2 shrink-0 fill-current" />
+                <span className="whitespace-nowrap">See how it works</span>
               </Button>
             </motion.div>
           </div>
