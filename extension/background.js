@@ -647,6 +647,60 @@ async function speakQueueItem(index) {
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   (async () => {
+    if (message?.type === "tellme-brief") {
+      const [tab] = await chrome.tabs.query({ active: true, lastFocusedWindow: true });
+      if (!tab?.id) throw new Error("No active tab");
+
+      const payload = await getPagePayload(tab.id);
+      const segments = (payload.segments || []).filter((item) => cleanText(item.text));
+      const sentences = (text) => cleanText(text).split(/(?<=[.!?])\s+/).filter((s) => s.length > 45);
+
+      const title = segments.find((s) => s.kind === "post-title" || s.kind === "page-title")?.text || payload.title;
+      const body = segments.find((s) => s.kind === "post-body" || s.kind === "description")?.text || "";
+      const discussion = segments.filter((s) => s.kind === "comment" || s.kind === "reply");
+
+      const score = (sentence) => {
+        const lower = sentence.toLowerCase();
+        const signals = ["because","however","but","reason","problem","solution","experience","recommend","important","actually","instead","learned"];
+        return signals.reduce((n, word) => n + (lower.includes(word) ? 2 : 0), 0) + Math.min(4, sentence.length / 120);
+      };
+
+      const pick = (items, count) => items
+        .map((s, i) => ({ s, i, score: score(s) }))
+        .sort((a, b) => b.score - a.score || a.i - b.i)
+        .slice(0, count)
+        .sort((a, b) => a.i - b.i)
+        .map((x) => x.s);
+
+      const about = pick(sentences(body), 2);
+      const discussionPoints = pick(discussion.flatMap((s) => sentences(s.text)), 3);
+
+      const counts = {};
+      [...body, ...discussion.flatMap((s) => s.text)].join("");
+      const words = cleanText([body, ...discussion.map((s) => s.text)].join(" "))
+        .toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/)
+        .filter((w) => w.length >= 5);
+
+      const stop = new Set(["there","their","about","would","could","which","because","really","people","these","those","being","while","where","after","before","other","still","think","thing","things"]);
+      words.forEach((w) => { if (!stop.has(w)) counts[w] = (counts[w] || 0) + 1; });
+
+      const topics = Object.entries(counts).sort((a,b) => b[1]-a[1]).slice(0,5).map(([w]) => w);
+      const commentCount = discussion.filter((s) => s.kind === "comment").length;
+      const replyCount = discussion.filter((s) => s.kind === "reply").length;
+
+      sendResponse({
+        ok: true,
+        brief: {
+          title,
+          about: (about.length ? about.join(" ") : body) || "Tellme found limited body text, so the title is the clearest context.",
+          viewpoints: discussionPoints,
+          topics,
+          stats: payload.contentType === "reddit-discussion" ? { comments: commentCount, replies: replyCount } : null
+        }
+      });
+      return;
+    }
+
     if (message?.type === "tellme-current-page") {
       const [tab] = await chrome.tabs.query({
         active: true,
