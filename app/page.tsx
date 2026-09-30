@@ -375,6 +375,31 @@ export default function Home() {
         </div>
       </section>
 
+      <section className="relative z-10 border-b border-[#262522]/15 bg-[#F4EEDF]">
+        <div className="mx-auto max-w-[1080px] px-6 py-16 lg:px-8 lg:py-20">
+          <div className="mb-6 flex items-center justify-between border-b border-[#262522] pb-3">
+            <div>
+              <p className="magazine-kicker text-[#9A3038]">Listening while living</p>
+              <p className="mt-1 text-[10px] uppercase tracking-[.18em] text-[#665F56]">A scene from the everyday web</p>
+            </div>
+            <span className="magazine-caption hidden sm:block">Illustrated feature · 01</span>
+          </div>
+          <figure className="overflow-hidden border-2 border-[#262522] bg-[#EADFC8]">
+            <img
+              src="/editorial-listening.svg"
+              alt="Editorial illustration of a person wearing earbuds and listening to a webpage while working at a computer"
+              className="block h-auto w-full"
+            />
+          </figure>
+          <div className="mt-3 flex items-start justify-between gap-6">
+            <figcaption className="max-w-2xl text-[10px] uppercase tracking-[.15em] text-[#665F56]">
+              Put on your earbuds. Keep working. Tellme turns the useful parts of long pages and discussions into something you can hear.
+            </figcaption>
+            <span className="magazine-caption hidden sm:block text-[#9A3038]">The Tellme Review</span>
+          </div>
+        </div>
+      </section>
+
       <section id="how" className="relative z-10 border-y border-[#262522]/15 bg-[#DED3BF]/35">
         <div className="mx-auto max-w-[1080px] px-6 py-24 lg:px-8 lg:py-32">
           <div className="flex items-end justify-between border-b-2 border-[#262522] pb-5">
