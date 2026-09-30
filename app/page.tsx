@@ -679,7 +679,7 @@ export default function Home() {
           transition={{ duration: .8, delay: .35 }}
           className="relative mx-auto mt-20 max-w-[1000px]"
         >
-          <div className="overflow-hidden border-y-2 border-[#262522] bg-[#F4EEDF]/60">
+          <div className="overflow-hidden border-y border-[#262522]/20 bg-transparent">
             <div className="flex h-11 items-center gap-2 border-b border-[#262522]/10 px-4">
               <span className="h-2.5 w-2.5 rounded-full bg-[#262522]/20" />
               <span className="h-2.5 w-2.5 rounded-full bg-[#262522]/20" />
@@ -858,7 +858,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="relative min-h-[520px] overflow-hidden border border-[#262522]/15 bg-[#F7F2E8] p-5 shadow-[inset_0_0_45px_rgba(38,37,34,.05)] sm:p-8"
+              className="relative min-h-[520px] overflow-hidden border-y border-[#262522]/18 bg-[#F7F2E8]/60 p-5 sm:p-8"
             >
               <div
                 className="absolute inset-0 opacity-60"
@@ -1000,10 +1000,10 @@ export default function Home() {
                     aria-pressed={activeFeature === i}
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: .96 }}
-                    className={`group relative flex h-12 w-12 cursor-pointer items-center justify-center border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9A3038] ${activeFeature === i ? "border-[#262522] bg-[#262522] text-[#F4EEDF] shadow-[0_8px_18px_rgba(38,37,34,.10)]" : "border-[#B8AB95] bg-[#F4EEDF]/65 text-[#665F56] hover:border-[#665F56] hover:bg-[#F7F2E8]"}`}
+                    className={`group relative flex h-10 min-w-10 cursor-pointer items-center justify-center border-b-2 transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9A3038] ${activeFeature === i ? "border-[#9A3038] text-[#262522]" : "border-transparent text-[#665F56] hover:border-[#B8AB95] hover:text-[#9A3038]"}`}
                   >
-                    <Icon size={17} strokeWidth={1.5} className={`transition-transform duration-300 ${activeFeature === i ? "scale-110 text-[#F4EEDF]" : "group-hover:scale-110 group-hover:text-[#9A3038]"}`} />
-                    <span className={`absolute inset-x-0 bottom-0 h-[2px] origin-center bg-[#9A3038] transition-transform duration-300 ${activeFeature === i ? "scale-x-100" : "scale-x-0"}`} />
+                    <Icon size={17} strokeWidth={1.5} className={`transition-transform duration-300 ${activeFeature === i ? "scale-105 text-[#9A3038]" : "group-hover:scale-110 group-hover:text-[#9A3038]"}`} />
+                    <span className="sr-only">{activeFeature === i ? "Selected" : ""}</span>
                   </motion.button>
                 ))}
                 <span className="ml-1 text-[9px] uppercase tracking-[.18em] text-[#9D9180]">Select a signal</span>
@@ -1046,7 +1046,7 @@ export default function Home() {
                 <span className="font-mono text-[8px] tracking-[.18em] text-[#665F56]">0{activeFeature + 1}</span>
               </div>
 
-              <div className="relative overflow-hidden border border-[#262522]/15 bg-[#F4EEDF] shadow-[0_16px_35px_rgba(38,37,34,.07)]">
+              <div className="relative overflow-hidden border-y border-[#262522]/18 bg-[#F4EEDF]/70">
                 <div className="flex items-center justify-between border-b border-dashed border-[#B8AB95] px-5 py-3 text-[9px] uppercase tracking-[.18em] text-[#665F56]">
                   <span>Tellme / interaction study</span>
                   <span>Signal / live</span>
@@ -1375,8 +1375,8 @@ export default function Home() {
             </div>          </div>       </div>
       </section>
 
-      <section className="relative z-10 px-6 pb-20 pt-10 lg:px-8">
-        <div className="mx-auto max-w-[1080px] border-y-2 border-[#262522] bg-[#262522] px-7 py-20 text-center text-white sm:px-10 lg:py-28">
+      <section className="relative z-10 border-y border-[#F4EEDF]/10 bg-[#262522] text-white">
+        <div className="mx-auto max-w-[1080px] px-6 py-20 text-center sm:px-8 lg:py-28">
           <div className="mb-8 flex items-center justify-between border-b border-white/15 pb-4 text-[9px] uppercase tracking-[.2em] text-white/45">
             <span>The Tellme Review</span><span>Final page</span><span>2026</span>
           </div>
