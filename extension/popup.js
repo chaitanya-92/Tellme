@@ -1,5 +1,6 @@
 const titleEl = document.getElementById("page-title");
 const metaEl = document.getElementById("page-meta");
+const extraEl = document.getElementById("page-extra");
 const button = document.getElementById("tellme-btn");
 const status = document.getElementById("status");
 
@@ -31,6 +32,7 @@ async function preview() {
   } catch {
     titleEl.textContent = "This page cannot be inspected";
     metaEl.textContent = "Try another tab";
+    extraEl.textContent = "";
   }
 }
 
