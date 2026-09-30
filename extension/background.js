@@ -1,4 +1,4 @@
-const MAX_REDDIT_COMMENTS = 500;
+const MAX_REDDIT_COMMENTS = 1000;
 const DEFAULT_STATE = {
   queue: [],
   index: 0,
