@@ -5,7 +5,6 @@ const DEFAULT_STATE = {
   queue: [],
   index: 0,
   status: "idle",
-  utteranceId: "",
   sourceTitle: "",
   sourceUrl: ""
 };
@@ -261,22 +260,20 @@ async function speakCurrent() {
 
   if (!current) {
     await chrome.tts.stop();
-    await writeState({ ...state, status: "complete", utteranceId: "" });
+    await writeState({ ...state, status: "complete" });
     return;
   }
 
   chrome.tts.stop();
 
-  const utteranceId = "tellme-" + Date.now() + "-" + state.index;
-
   await writeState({
     ...state,
-    status: "reading",
-    utteranceId
+    status: "reading"
   });
 
+  // Chrome generates its own utterance ID for tts events. Do not pass a
+  // custom utteranceId here: it is not a supported tts.speak option.
   chrome.tts.speak(current.text, {
-    utteranceId,
     rate: 1.02,
     pitch: 1,
     enqueue: false
@@ -350,9 +347,8 @@ async function sendTabToTellme(tab, selectionOverride) {
 
 chrome.tts.onEvent.addListener(async (event) => {
   const state = await readState();
-  if (event.utteranceId !== state.utteranceId) return;
 
-  if (event.type === "end") {
+  if (event.type === "end" && state.status === "reading") {
     const nextIndex = state.index + 1;
 
     if (nextIndex >= state.queue.length) {
@@ -365,7 +361,7 @@ chrome.tts.onEvent.addListener(async (event) => {
   }
 
   if (event.type === "error") {
-    await writeState({ ...state, status: "error", utteranceId: "" });
+    await writeState({ ...state, status: "error" });
   }
 });
 
@@ -392,7 +388,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         await writeState({ ...state, status: "reading" });
       } else if (message.command === "stop") {
         chrome.tts.stop();
-        await writeState({ ...state, status: "stopped", utteranceId: "" });
+        await writeState({ ...state, status: "stopped" });
       } else if (message.command === "next") {
         chrome.tts.stop();
 
@@ -406,8 +402,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         } else {
           await writeState({
             ...state,
-            status: "complete",
-            utteranceId: ""
+            status: "complete"
           });
         }
       }
